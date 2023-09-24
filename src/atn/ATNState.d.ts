@@ -9,6 +9,7 @@ import { Transition } from "./Transition.js";
 
 import type { EpsilonTransition } from "./EpsilonTransition.js";
 import type { BasicState } from "./BasicState.js";
+import { IntervalSet } from "../misc/IntervalSet.js";
 
 /**
  * The following images show the relation of states and
@@ -71,6 +72,7 @@ import type { BasicState } from "./BasicState.js";
  * <embed src="images/OptionalNonGreedy.svg" type="image/svg+xml"/>
  */
 export declare class ATNState {
+
     // eslint-disable-next-line @typescript-eslint/naming-convention
     public static readonly INVALID_STATE_NUMBER: number;
 
@@ -80,6 +82,7 @@ export declare class ATNState {
     public stateNumber: number;
     public ruleIndex: number;
     public epsilonOnlyTransitions: boolean;
+    public nextTokenWithinRule: IntervalSet | null;
     public transitions: Transition[];
 
     public constructor();
