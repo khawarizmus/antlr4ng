@@ -12,7 +12,6 @@ import { BitSet } from "../misc/BitSet.js";
 import { HashSet } from "../misc/HashSet.js";
 import { Interval } from '../misc/Interval.js';
 import { DoubleDict } from "../utils/DoubleDict.js";
-import { arrayToString } from "../utils/arrayToString.js";
 import { ATN } from './ATN.js';
 import { ATNConfig } from './ATNConfig.js';
 import { ATNConfigSet } from './ATNConfigSet.js';
@@ -32,6 +31,8 @@ import { SetTransition } from './SetTransition.js';
 import { SingletonPredictionContext } from './SingletonPredictionContext.js';
 import { TransitionType } from './TransitionType.js';
 import { Vocabulary } from '../Vocabulary.js';
+
+import { arrayToString } from "../utils/helpers.js";
 
 /**
  * The embodiment of the adaptive LL(*), ALL(*), parsing strategy.

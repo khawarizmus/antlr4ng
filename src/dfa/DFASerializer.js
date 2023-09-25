@@ -4,7 +4,7 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { arrayToString } from "../utils/arrayToString.js";
+import { arrayToString } from "../utils/helpers.js";
 
 /**
  * A DFA walker that knows how to dump them to serialized strings.

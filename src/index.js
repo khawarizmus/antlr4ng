@@ -71,8 +71,6 @@ import { ErrorNode } from "./tree/ErrorNode.js";
 
 import { XPath } from "./tree/xpath/XPath.js";
 
-import { arrayToString } from "./utils/arrayToString.js";
-
 import { Transition } from "./atn/Transition.js";
 import { TransitionType } from "./atn/TransitionType.js";
 
@@ -83,7 +81,7 @@ export default {
     ATNDeserializer, LexerInterpreter, ParserInterpreter, InterpreterRuleContext,
     PredictionContextCache, LexerATNSimulator, ParserATNSimulator, DFA, RecognitionException, NoViableAltException,
     FailedPredicateException, BaseErrorListener, DiagnosticErrorListener, BailErrorStrategy, DefaultErrorStrategy, LexerNoViableAltException,
-    ParseCancellationException, arrayToString, Vocabulary, TokenStream, Transition, TransitionType, TokenFactory,
+    ParseCancellationException, Vocabulary, TokenStream, Transition, TransitionType, TokenFactory,
     XPath, ATNSimulator, TokenStreamRewriter, ErrorNode, InputMismatchException,
     BlockStartState, BasicState, DecisionState, PlusBlockStartState, StarBlockStartState, StarLoopEntryState,
     PlusLoopbackState, StarLoopbackState, LoopEndState, TokensStartState, NotSetTransition
@@ -96,7 +94,7 @@ export {
     ATNDeserializer, LexerInterpreter, ParserInterpreter, InterpreterRuleContext,
     PredictionContextCache, LexerATNSimulator, ParserATNSimulator, DFA, RecognitionException, NoViableAltException,
     FailedPredicateException, BaseErrorListener, DiagnosticErrorListener, BailErrorStrategy, DefaultErrorStrategy, LexerNoViableAltException,
-    ParseCancellationException, arrayToString, Vocabulary, TokenStream, Transition, TransitionType, TokenFactory,
+    ParseCancellationException, Vocabulary, TokenStream, Transition, TransitionType, TokenFactory,
     XPath, ATNSimulator, TokenStreamRewriter, ErrorNode, InputMismatchException,
     BlockStartState, BasicState, DecisionState, PlusBlockStartState, StarBlockStartState, StarLoopEntryState,
     PlusLoopbackState, StarLoopbackState, LoopEndState, TokensStartState, NotSetTransition

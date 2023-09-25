@@ -48,11 +48,5 @@
     "exports": {
         "types": "./src/index.d.ts",
         "default": "./dist/antlr4.mjs"
-    },
-    "babel": {
-        "presets": [
-            "@babel/preset-env"
-        ],
-        "targets": "defaults"
     }
 }

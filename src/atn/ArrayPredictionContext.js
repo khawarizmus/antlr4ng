@@ -5,8 +5,9 @@
  */
 
 import { PredictionContext } from "./PredictionContext.js";
-import { equalArrays } from "../utils/equalArrays.js";
 import { HashCode } from "../misc/HashCode.js";
+
+import { equalArrays } from "../utils/helpers.js";
 
 export class ArrayPredictionContext extends PredictionContext {
 

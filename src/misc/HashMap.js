@@ -4,8 +4,7 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { standardEqualsFunction } from "../utils/standardEqualsFunction.js";
-import { standardHashCodeFunction } from "../utils/standardHashCodeFunction.js";
+import { standardEqualsFunction, standardHashCodeFunction } from "../utils/helpers.js";
 
 const HASH_KEY_PREFIX = "h-";
 

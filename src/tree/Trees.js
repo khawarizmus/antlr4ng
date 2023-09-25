@@ -7,8 +7,9 @@
 import { Token } from '../Token.js';
 import { ErrorNode } from './ErrorNode.js';
 import { TerminalNode } from './TerminalNode.js';
-import { escapeWhitespace } from "../utils/escapeWhitespace.js";
 import { RuleContext } from "../atn/RuleContext.js";
+
+import { escapeWhitespace } from "../utils/helpers.js";
 
 /** A set of utility routines useful for all kinds of ANTLR trees. */
 export const Trees = {

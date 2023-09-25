@@ -7,10 +7,10 @@
 import { ATN } from './ATN.js';
 import { SemanticContext } from './SemanticContext.js';
 import { merge } from './PredictionContextUtils.js';
-import { arrayToString } from "../utils/arrayToString.js";
 import { HashSet } from "../misc/HashSet.js";
-import { equalArrays } from "../utils/equalArrays.js";
 import { HashCode } from "../misc/HashCode.js";
+
+import { equalArrays, arrayToString } from "../utils/helpers.js";
 
 function hashATNConfig(c) {
     return c.hashCodeForConfigSet();

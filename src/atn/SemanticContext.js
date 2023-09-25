@@ -4,9 +4,10 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { equalArrays } from "../utils/equalArrays.js";
 import { HashCode } from "../misc/HashCode.js";
 import { HashSet } from "../misc/HashSet.js";
+
+import { equalArrays } from "../utils/helpers.js";
 
 /**
  * A tree structure used to record the semantic context in which
