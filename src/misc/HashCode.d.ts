@@ -4,8 +4,12 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-export declare class DFA {
-    public constructor(ds: unknown, index: number);
+export declare class HashCode {
+    public constructor();
 
-    public toLexerString(): string;
+    public static hashStuff(v: unknown): number;
+
+    public update(v: unknown): void;
+    public finish(): number;
+
 }

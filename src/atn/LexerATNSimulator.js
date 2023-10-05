@@ -582,7 +582,7 @@ export class LexerATNSimulator extends ATNSimulator {
      * traversing the DFA, we will know which rule to accept.
      */
     addDFAState(configs) {
-        const proposed = new DFAState(null, configs);
+        const proposed = new DFAState(configs);
         let firstConfigWithRuleStopState = null;
         for (let i = 0; i < configs.items.length; i++) {
             const cfg = configs.items[i];

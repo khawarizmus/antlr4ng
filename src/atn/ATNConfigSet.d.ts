@@ -8,4 +8,6 @@ import { ATNConfig } from "./ATNConfig.js";
 
 export declare class ATNConfigSet {
     public configs: ATNConfig[];
+
+    public equals(other: unknown): boolean;
 }

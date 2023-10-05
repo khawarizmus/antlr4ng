@@ -4,14 +4,16 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+import { Vocabulary } from "../Vocabulary.js";
+import { DFA } from "./DFA.js";
 import { DFASerializer } from "./DFASerializer.js";
 
 export class LexerDFASerializer extends DFASerializer {
-    constructor(dfa) {
-        super(dfa, null);
+    public constructor(dfa: DFA) {
+        super(dfa, Vocabulary.EMPTY_VOCABULARY);
     }
 
-    getEdgeLabel(i) {
+    public getEdgeLabel = (i: number): string => {
         return "'" + String.fromCharCode(i) + "'";
-    }
+    };
 }
