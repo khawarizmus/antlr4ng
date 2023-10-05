@@ -30,7 +30,7 @@ export class Vocabulary {
                 continue;
             }
 
-            if (!tokenName.isEmpty()) {
+            if (tokenName?.length > 0) {
                 const firstChar = tokenName.charAt(0);
                 if (firstChar === "'") {
                     symbolicNames[i] = null;

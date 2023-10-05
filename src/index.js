@@ -74,6 +74,8 @@ import { XPath } from "./tree/xpath/XPath.js";
 import { Transition } from "./atn/Transition.js";
 import { TransitionType } from "./atn/TransitionType.js";
 
+import { arrayToString } from "./utils/helpers.js";
+
 export default {
     Token, CommonToken, CharStreams, CharStream, InputStream, CommonTokenStream, Lexer, Parser,
     TerminalNode, ParseTreeWalker, RuleContext, ParserRuleContext, Interval, IntervalSet,
@@ -84,7 +86,7 @@ export default {
     ParseCancellationException, Vocabulary, TokenStream, Transition, TransitionType, TokenFactory,
     XPath, ATNSimulator, TokenStreamRewriter, ErrorNode, InputMismatchException,
     BlockStartState, BasicState, DecisionState, PlusBlockStartState, StarBlockStartState, StarLoopEntryState,
-    PlusLoopbackState, StarLoopbackState, LoopEndState, TokensStartState, NotSetTransition
+    PlusLoopbackState, StarLoopbackState, LoopEndState, TokensStartState, NotSetTransition, arrayToString
 };
 
 export {
@@ -97,5 +99,5 @@ export {
     ParseCancellationException, Vocabulary, TokenStream, Transition, TransitionType, TokenFactory,
     XPath, ATNSimulator, TokenStreamRewriter, ErrorNode, InputMismatchException,
     BlockStartState, BasicState, DecisionState, PlusBlockStartState, StarBlockStartState, StarLoopEntryState,
-    PlusLoopbackState, StarLoopbackState, LoopEndState, TokensStartState, NotSetTransition
+    PlusLoopbackState, StarLoopbackState, LoopEndState, TokensStartState, NotSetTransition, arrayToString
 };

@@ -32,9 +32,9 @@ import { MySQLLexer } from "../generated/MySQLLexer.js";
 
 import { ErrorReportCallback } from "../support/helpers.js";
 import {
-    BaseErrorListener, FailedPredicateException, IntervalSet, ATNSimulator,
-    NoViableAltException, RecognitionException, Recognizer, Token,
-} from "antlr4ng";
+    ATNSimulator, BaseErrorListener, FailedPredicateException, IntervalSet, NoViableAltException,
+    RecognitionException, Recognizer, Token,
+} from "../../../src/index.js";
 
 class Vocabulary {
     public getDisplayName(_symbol: number): string {

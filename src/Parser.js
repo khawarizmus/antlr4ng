@@ -603,8 +603,13 @@ export class Parser extends Recognizer {
                 if (seenOne) {
                     console.log();
                 }
-                console.log("Decision " + dfa.decision + ":");
-                console.log(dfa.toString(this.vocabulary));
+
+                // During tests this field is assigned. Avoids accessing Node.js stuff outside of the tests.
+                if (this.printer) {
+                    this.printer.println("Decision " + dfa.decision + ":");
+                    this.printer.print(dfa.toString(this.vocabulary));
+                }
+
                 seenOne = true;
             }
         }

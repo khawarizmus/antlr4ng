@@ -57,7 +57,7 @@ export class CommonToken extends Token {
 
     toString(recognizer) {
         let channelStr = "";
-        if (this._channel > 0) {
+        if (this.channel > 0) {
             channelStr = ",channel=" + this.channel;
         }
 

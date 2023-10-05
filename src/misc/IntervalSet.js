@@ -413,11 +413,12 @@ export class IntervalSet {
             result += "{";
         }
 
-        let elementsAreChar;
+        let elementsAreChar = false;
         let vocabulary;
         if (elementsAreCharOrVocabulary instanceof Vocabulary) {
             vocabulary = elementsAreCharOrVocabulary;
-            elementsAreChar = false;
+        } else if (Array.isArray(elementsAreCharOrVocabulary)) {
+            vocabulary = Vocabulary.fromTokenNames(elementsAreCharOrVocabulary);
         } else {
             elementsAreChar = elementsAreCharOrVocabulary ?? false;
         }

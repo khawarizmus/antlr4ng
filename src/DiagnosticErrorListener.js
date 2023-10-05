@@ -30,9 +30,8 @@ import { BitSet } from "./misc/BitSet.js";
 export class DiagnosticErrorListener extends BaseErrorListener {
     constructor(exactOnly) {
         super();
-        exactOnly = exactOnly || true;
         // whether all ambiguities or only exact ambiguities are reported.
-        this.exactOnly = exactOnly;
+        this.exactOnly = exactOnly ?? true;
     }
 
     reportAmbiguity(recognizer, dfa, startIndex, stopIndex, exact, ambigAlts, configs) {
@@ -96,7 +95,7 @@ export class DiagnosticErrorListener extends BaseErrorListener {
         }
         const result = new BitSet();
         for (let i = 0; i < configs.items.length; i++) {
-            result.add(configs.items[i].alt);
+            result.set(configs.items[i].alt);
         }
         return `{${result.values().join(", ")}}`;
     }

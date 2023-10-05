@@ -61,7 +61,7 @@ export class BitSet {
     }
 
     values() {
-        const result = new Array(this.length());
+        const result = new Array(this.length);
         let pos = 0;
         const length = this.data.length;
         for (let k = 0; k < length; ++k) {
