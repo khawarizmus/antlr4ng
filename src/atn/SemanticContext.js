@@ -143,7 +143,8 @@ class AND extends SemanticContext {
     }
 
     updateHashCode(hash) {
-        hash.update(this.opnds, "AND");
+        hash.update(this.opnds);
+        hash.updateWithHashCode(3813686060); // Hash code of "AND".
     }
 
     /**
@@ -243,7 +244,8 @@ class OR extends SemanticContext {
     }
 
     updateHashCode(hash) {
-        hash.update(this.opnds, "OR");
+        hash.update(this.opnds);
+        hash.updateWithHashCode(3383313031); // Hash code of "OR".
     }
 
     /**

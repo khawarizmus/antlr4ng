@@ -98,19 +98,11 @@ const stringSeedHashCode = Math.round(Math.random() * Math.pow(2, 32));
  * @returns The generated hash code.
  */
 export const stringHashCode = (value: string): number => {
-    if (!value) {
-        return 0;
-    }
+    let h1b;
+    let k1;
 
-    const type = typeof value;
-    const key = type === "string" ? value : type === "object" && value.toString ? value.toString() : false;
-    if (!key) {
-        return 0;
-    }
-    let h1b; let k1;
-
-    const remainder = key.length & 3; // key.length % 4
-    const bytes = key.length - remainder;
+    const remainder = value.length & 3; // key.length % 4
+    const bytes = value.length - remainder;
     let h1 = stringSeedHashCode;
     const c1 = 0xcc9e2d51;
     const c2 = 0x1b873593;
@@ -118,10 +110,10 @@ export const stringHashCode = (value: string): number => {
 
     while (i < bytes) {
         k1 =
-            ((key.charCodeAt(i) & 0xff)) |
-            ((key.charCodeAt(++i) & 0xff) << 8) |
-            ((key.charCodeAt(++i) & 0xff) << 16) |
-            ((key.charCodeAt(++i) & 0xff) << 24);
+            ((value.charCodeAt(i) & 0xff)) |
+            ((value.charCodeAt(++i) & 0xff) << 8) |
+            ((value.charCodeAt(++i) & 0xff) << 16) |
+            ((value.charCodeAt(++i) & 0xff) << 24);
         ++i;
 
         k1 = ((((k1 & 0xffff) * c1) + ((((k1 >>> 16) * c1) & 0xffff) << 16))) & 0xffffffff;
@@ -139,13 +131,13 @@ export const stringHashCode = (value: string): number => {
     /*  eslint-disable no-fallthrough */
     switch (remainder) {
         case 3:
-            k1 ^= (key.charCodeAt(i + 2) & 0xff) << 16;
+            k1 ^= (value.charCodeAt(i + 2) & 0xff) << 16;
         // no-break
         case 2:
-            k1 ^= (key.charCodeAt(i + 1) & 0xff) << 8;
+            k1 ^= (value.charCodeAt(i + 1) & 0xff) << 8;
         // no-break
         case 1:
-            k1 ^= (key.charCodeAt(i) & 0xff);
+            k1 ^= (value.charCodeAt(i) & 0xff);
             k1 = (((k1 & 0xffff) * c1) + ((((k1 >>> 16) * c1) & 0xffff) << 16)) & 0xffffffff;
             k1 = (k1 << 15) | (k1 >>> 17);
             k1 = (((k1 & 0xffff) * c2) + ((((k1 >>> 16) * c2) & 0xffff) << 16)) & 0xffffffff;
@@ -153,7 +145,7 @@ export const stringHashCode = (value: string): number => {
         default:
     }
 
-    h1 ^= key.length;
+    h1 ^= value.length;
 
     h1 ^= h1 >>> 16;
     h1 = (((h1 & 0xffff) * 0x85ebca6b) + ((((h1 >>> 16) * 0x85ebca6b) & 0xffff) << 16)) & 0xffffffff;

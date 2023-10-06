@@ -4,10 +4,10 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { HashCode } from "../misc/HashCode.ts";
+import { HashCode, IHashUpdatable } from "../misc/HashCode.ts";
 import { ATNState } from "./ATNState.js";
 
-export declare class ATNConfig {
+export declare class ATNConfig implements IHashUpdatable {
     public state: ATNState;
 
     public updateHashCode(hash: HashCode): void;
