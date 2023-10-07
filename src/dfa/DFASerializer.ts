@@ -35,7 +35,7 @@ export class DFASerializer {
 
                 for (let i = 0; i < n; i++) {
                     const t = s.edges[i];
-                    if (t !== null && t.stateNumber !== -1) {
+                    if (t !== null && t.stateNumber !== 0x7FFFFFFF) {
                         buf += this.getStateString(s);
                         const label = this.getEdgeLabel(i);
                         buf += "-";

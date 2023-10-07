@@ -10,7 +10,6 @@ import { ATNConfigSet } from './ATNConfigSet.js';
 import { ATNConfig } from './ATNConfig.js';
 import { SemanticContext } from './SemanticContext.js';
 import { BitSet } from "../misc/BitSet.js";
-import { AltDict } from "../misc/AltDict.js";
 import { HashCode } from "../misc/HashCode.js";
 import { HashMap } from "../misc/HashMap.js";
 
@@ -526,12 +525,12 @@ export const PredictionMode = {
      * </pre>
      */
     getStateToAltMap: function (configs) {
-        const m = new AltDict();
+        const m = {};
         configs.items.map(function (c) {
-            let alts = m.get(c.state);
-            if (alts === null) {
+            let alts = m[c.state];
+            if (!alts) {
                 alts = new BitSet();
-                m.set(c.state, alts);
+                m[c.state] = alts;
             }
             alts.set(c.alt);
         });
@@ -539,13 +538,17 @@ export const PredictionMode = {
     },
 
     hasStateAssociatedWithOneAlt: function (configs) {
-        const values = PredictionMode.getStateToAltMap(configs).values();
-        for (let i = 0; i < values.length; i++) {
-            if (values[i].length === 1) {
-                return true;
+        // Count how many alts per state there are in the configs.
+        const counts = {};
+        configs.items.forEach((c) => {
+            const state = c.state;
+            if (!counts[state]) {
+                counts[state] = 0;
             }
-        }
-        return false;
+            counts[state]++;
+        });
+
+        return Object.values(counts).some(count => { return count === 1; });
     },
 
     getSingleViableAlt: function (altsets) {

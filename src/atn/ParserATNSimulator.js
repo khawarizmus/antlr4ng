@@ -1641,13 +1641,17 @@ export class ParserATNSimulator extends ATNSimulator {
         if (to === null) {
             return null;
         }
+
         to = this.addDFAState(dfa, to); // used existing if possible not incoming
         if (from_ === null || t < -1 || t > this.atn.maxTokenType) {
             return to;
         }
+
         if (from_.edges === null) {
-            from_.edges = [];
+            from_.edges = new Array(this.atn.maxTokenType + 2);
+            from_.edges.fill(null);
         }
+
         from_.edges[t + 1] = to; // connect
 
         if (this.debug) {
