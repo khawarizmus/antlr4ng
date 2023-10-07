@@ -14,16 +14,14 @@ export class HashSet<T extends IComparable> {
     private hashFunction: HashFunction;
     private equalsFunction: EqualsFunction;
 
-    static #prefix = "h-";
-
-    public constructor(hashFunction: HashFunction | null, equalsFunction: EqualsFunction | null) {
+    public constructor(hashFunction?: HashFunction, equalsFunction?: EqualsFunction) {
         this.data = {};
         this.hashFunction = hashFunction ?? standardHashCodeFunction;
         this.equalsFunction = equalsFunction ?? standardEqualsFunction;
     }
 
     public add(value: T): T {
-        const key = HashSet.#prefix + this.hashFunction(value);
+        const key = this.hashFunction(value);
         if (key in this.data) {
             const entries = this.data[key];
             for (const entry of entries) {
@@ -47,7 +45,7 @@ export class HashSet<T extends IComparable> {
     }
 
     public get(value: T): T | null {
-        const key = HashSet.#prefix + this.hashFunction(value);
+        const key = this.hashFunction(value);
         if (key in this.data) {
             const entries = this.data[key];
 
@@ -62,9 +60,7 @@ export class HashSet<T extends IComparable> {
     }
 
     public values(): T[] {
-        return Object.keys(this.data).filter((key) => {
-            return key.startsWith(HashSet.#prefix);
-        }).flatMap((key) => {
+        return Object.keys(this.data).flatMap((key) => {
             return this.data[key];
         }, this);
     }
@@ -74,9 +70,7 @@ export class HashSet<T extends IComparable> {
     }
 
     public get length(): number {
-        return Object.keys(this.data).filter((key) => {
-            return key.startsWith(HashSet.#prefix);
-        }).map((key) => {
+        return Object.keys(this.data).map((key) => {
             return this.data[key].length;
         }, this).reduce((accumulator, item) => {
             return accumulator + item;

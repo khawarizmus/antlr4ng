@@ -11,7 +11,12 @@
         ],
         "noImplicitAny": true,
         "strictNullChecks": true,
-        "preserveConstEnums": true
+        "preserveConstEnums": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noFallthroughCasesInSwitch": false, // Switch to true when string hash in helpers.ts is no longer needed.
+        "forceConsistentCasingInFileNames": true,
     },
     "include": [
         "src/**/*.ts",

@@ -18,7 +18,7 @@ export class DFA {
      *  ({@link Set} only allows you to see if it's there).
      */
 
-    public readonly states = new HashSet<DFAState>(null, null);
+    public readonly states = new HashSet<DFAState>();
 
     public s0: DFAState | null = null;
 

@@ -38,5 +38,8 @@ export * from "./LexerNoViableAltException.js";
 
 export * from "./atn/index.js";
 export * from "./dfa/index.js";
-export * from "./misc/index.js";
+
+export * from "./misc/Interval.js";
+export * from "./misc/IntervalSet.js";
+
 export * from "./tree/index.js";
