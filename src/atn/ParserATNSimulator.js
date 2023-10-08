@@ -7,7 +7,6 @@
 import { NoViableAltException } from '../NoViableAltException.js';
 import { Token } from '../Token.js';
 import { DFAState } from '../dfa/DFAState.js';
-import { PredPrediction } from '../dfa/PredPrediction.js';
 import { BitSet } from "../misc/BitSet.js";
 import { HashSet } from "../misc/HashSet.js";
 import { Interval } from '../misc/Interval.js';
@@ -1044,7 +1043,7 @@ export class ParserATNSimulator extends ATNSimulator {
             const pred = altToPred[i];
             // unpredicated is indicated by SemanticContext.NONE
             if (ambigAlts !== null && ambigAlts.get(i)) {
-                pairs.push(new PredPrediction(pred, i));
+                pairs.push(new DFAState.PredPrediction(pred, i));
             }
             if (pred !== SemanticContext.NONE) {
                 containsPredicate = true;

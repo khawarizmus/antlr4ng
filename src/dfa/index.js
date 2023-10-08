@@ -7,4 +7,3 @@
 export { DFA } from './DFA.js';
 export { DFASerializer } from './DFASerializer.js';
 export { LexerDFASerializer } from './LexerDFASerializer.js';
-export { PredPrediction } from './PredPrediction.js';
