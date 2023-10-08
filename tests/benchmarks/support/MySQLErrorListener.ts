@@ -48,7 +48,7 @@ class LexerNoViableAltException extends RecognitionException {
 class InputMismatchException extends RecognitionException {
 }
 
-export class MySQLErrorListener extends BaseErrorListener<ATNSimulator> {
+export class MySQLErrorListener extends BaseErrorListener {
 
     private static simpleRules: Set<number> = new Set([
         MySQLParser.RULE_identifier,
@@ -99,8 +99,8 @@ export class MySQLErrorListener extends BaseErrorListener<ATNSimulator> {
         super();
     }
 
-    public override syntaxError<T>(recognizer: Recognizer<ATNSimulator>, offendingSymbol: T | null,
-        line: number, charPositionInLine: number, msg: string, e: RecognitionException | null): void {
+    public override syntaxError = <T>(recognizer: Recognizer<ATNSimulator>, offendingSymbol: T | null,
+        line: number, charPositionInLine: number, msg: string, e: RecognitionException | null): void => {
 
         let message = "";
 
@@ -329,7 +329,7 @@ export class MySQLErrorListener extends BaseErrorListener<ATNSimulator> {
 
             }
         }
-    }
+    };
 
     private intervalToString(set: IntervalSet, maxCount: number, vocabulary: Vocabulary): string {
         //const symbols = set.toList();

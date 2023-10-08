@@ -25,7 +25,7 @@ import { Token } from "./Token.js";
  *
  * <p>TODO: what to do about lexers</p>
  */
-export declare interface ANTLRErrorStrategy {
+export interface ANTLRErrorStrategy {
     /**
      * Reset the error handler state for the specified {@code recognizer}.
      *

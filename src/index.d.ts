@@ -37,7 +37,10 @@ export * from "./ParseCancellationException.js";
 export * from "./LexerNoViableAltException.js";
 
 export * from "./atn/index.js";
-export * from "./dfa/index.js";
+
+export * from "./dfa/DFA.js";
+export * from "./dfa/DFASerializer.js";
+export * from "./dfa/LexerDFASerializer.js";
 
 export * from "./misc/Interval.js";
 export * from "./misc/IntervalSet.js";

@@ -9,6 +9,7 @@ import { ATNState } from "./ATNState.js";
 
 export declare class ATNConfig implements IHashUpdatable {
     public state: ATNState;
+    public alt: number;
 
     public updateHashCode(hash: HashCode): void;
 }
