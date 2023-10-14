@@ -4,25 +4,32 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+import { Lexer } from "../Lexer.js";
 import { HashCode } from "../misc/HashCode.js";
 
-export class LexerAction {
-    constructor(action) {
+export abstract class LexerAction {
+    public readonly actionType: number;
+    public isPositionDependent: boolean;
+
+    public constructor(action: number) {
         this.actionType = action;
         this.isPositionDependent = false;
     }
 
-    hashCode() {
+    public hashCode(): number {
         const hash = new HashCode();
         this.updateHashCode(hash);
+
         return hash.finish();
     }
 
-    updateHashCode(hash) {
+    public updateHashCode(hash: HashCode): void {
         hash.update(this.actionType);
     }
 
-    equals(other) {
+    public equals(other: unknown): boolean {
         return this === other;
     }
+
+    public abstract execute(lexer: Lexer): void;
 }

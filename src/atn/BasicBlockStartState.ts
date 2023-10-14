@@ -8,7 +8,7 @@ import { ATNStateType } from "./ATNStateType.js";
 import { BlockStartState } from "./BlockStartState.js";
 
 export class BasicBlockStartState extends BlockStartState {
-    get stateType() {
+    public override get stateType(): number {
         return ATNStateType.BLOCK_START;
     }
 

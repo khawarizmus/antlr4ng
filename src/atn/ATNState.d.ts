@@ -90,6 +90,6 @@ export declare class ATNState {
     public toString(): string;
     public equals(other: unknown): boolean;
     public isNonGreedyExitState(): boolean;
-    public addTransition(transition: Transition, index: number): void;
+    public addTransition(transition: Transition, index?: number): void;
     public hashCode(): number;
 }

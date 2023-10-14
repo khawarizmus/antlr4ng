@@ -4,6 +4,8 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+/* eslint-disable @typescript-eslint/naming-convention */
+
 export const LexerActionType = {
     // The type of a {@link LexerChannelAction} action.
     CHANNEL: 0,
@@ -20,5 +22,5 @@ export const LexerActionType = {
     //The type of a {@link LexerSkipAction} action.
     SKIP: 6,
     //The type of a {@link LexerTypeAction} action.
-    TYPE: 7
+    TYPE: 7,
 };

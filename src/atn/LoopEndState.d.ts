@@ -10,4 +10,5 @@ import { ATNState } from "./ATNState.js";
  * Mark the end of a * or + loop
  */
 export class LoopEndState extends ATNState {
+    public loopBackState: ATNState | null;
 }

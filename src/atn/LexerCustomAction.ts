@@ -4,8 +4,12 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { LexerActionType } from "../atn/LexerActionType.js";
+/* eslint-disable jsdoc/require-param */
+
+import { LexerActionType } from "./LexerActionType.js";
 import { LexerAction } from "./LexerAction.js";
+import { Lexer } from "../Lexer.js";
+import { HashCode } from "../misc/HashCode.js";
 
 /**
  * Executes a custom lexer action by calling {@link Recognizer//action} with the
@@ -18,6 +22,9 @@ import { LexerAction } from "./LexerAction.js";
  * command argument could not be evaluated when the grammar was compiled.</p>
  */
 export class LexerCustomAction extends LexerAction {
+    private ruleIndex: number;
+    private actionIndex: number;
+
     /**
      * Constructs a custom lexer action with the specified rule and action
      * indexes.
@@ -27,7 +34,7 @@ export class LexerCustomAction extends LexerAction {
      * @param actionIndex The action index to use for calls to
      * {@link Recognizer//action}.
      */
-    constructor(ruleIndex, actionIndex) {
+    public constructor(ruleIndex: number, actionIndex: number) {
         super(LexerActionType.CUSTOM);
         this.ruleIndex = ruleIndex;
         this.actionIndex = actionIndex;
@@ -38,15 +45,15 @@ export class LexerCustomAction extends LexerAction {
      * <p>Custom actions are implemented by calling {@link Lexer//action} with the
      * appropriate rule and action indexes.</p>
      */
-    execute(lexer) {
+    public override execute(lexer: Lexer): void {
         lexer.action(null, this.ruleIndex, this.actionIndex);
     }
 
-    updateHashCode(hash) {
+    public override updateHashCode(hash: HashCode): void {
         hash.update(this.actionType, this.ruleIndex, this.actionIndex);
     }
 
-    equals(other) {
+    public override equals(other: unknown): boolean {
         if (this === other) {
             return true;
         } else if (!(other instanceof LexerCustomAction)) {

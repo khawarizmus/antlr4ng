@@ -137,6 +137,9 @@ export class Recognizer {
         return true;
     }
 
+    action(_localctx, ruleIndex, actionIndex) {
+    }
+
     get atn() {
         return this.interpreter.atn;
     }

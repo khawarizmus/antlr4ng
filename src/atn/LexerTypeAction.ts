@@ -6,6 +6,8 @@
 
 import { LexerActionType } from "./LexerActionType.js";
 import { LexerAction } from "./LexerAction.js";
+import { Lexer } from "../Lexer.js";
+import { HashCode } from "../misc/HashCode.js";
 
 /**
  * Implements the {@code type} lexer action by calling {@link Lexer//setType}
@@ -13,20 +15,23 @@ import { LexerAction } from "./LexerAction.js";
  */
 
 export class LexerTypeAction extends LexerAction {
-    constructor(type) {
+    public readonly type: number;
+
+    public constructor(type: number) {
         super(LexerActionType.TYPE);
         this.type = type;
     }
 
-    execute(lexer) {
-        lexer.type = this.type;
+    public override execute(lexer: Lexer): void {
+        // eslint-disable-next-line no-underscore-dangle
+        lexer._type = this.type;
     }
 
-    updateHashCode(hash) {
+    public override updateHashCode(hash: HashCode): void {
         hash.update(this.actionType, this.type);
     }
 
-    equals(other) {
+    public override equals(other: unknown): boolean {
         if (this === other) {
             return true;
         } else if (!(other instanceof LexerTypeAction)) {
@@ -36,7 +41,7 @@ export class LexerTypeAction extends LexerAction {
         }
     }
 
-    toString() {
+    public override toString(): string {
         return "type(" + this.type + ")";
     }
 }

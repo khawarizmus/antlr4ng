@@ -4,17 +4,24 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+/* eslint-disable jsdoc/require-param */
+
 import { LexerActionType } from "./LexerActionType.js";
 import { LexerAction } from "./LexerAction.js";
+import { Lexer } from "../Lexer.js";
+import { HashCode } from "../misc/HashCode.js";
 
 /**
  * Implements the {@code channel} lexer action by calling
  * {@link Lexer//setChannel} with the assigned channel.
  * Constructs a new {@code channel} action with the specified channel value.
+ *
  * @param channel The channel value to pass to {@link Lexer//setChannel}
  */
 export class LexerChannelAction extends LexerAction {
-    constructor(channel) {
+    public readonly channel: number;
+
+    public constructor(channel: number) {
         super(LexerActionType.CHANNEL);
         this.channel = channel;
     }
@@ -23,15 +30,16 @@ export class LexerChannelAction extends LexerAction {
      * <p>This action is implemented by calling {@link Lexer//setChannel} with the
      * value provided by {@link //getChannel}.</p>
      */
-    execute(lexer) {
+    public execute(lexer: Lexer): void {
+        // eslint-disable-next-line no-underscore-dangle
         lexer._channel = this.channel;
     }
 
-    updateHashCode(hash) {
+    public override updateHashCode(hash: HashCode): void {
         hash.update(this.actionType, this.channel);
     }
 
-    equals(other) {
+    public override equals(other: unknown): boolean {
         if (this === other) {
             return true;
         } else if (!(other instanceof LexerChannelAction)) {
@@ -41,7 +49,7 @@ export class LexerChannelAction extends LexerAction {
         }
     }
 
-    toString() {
+    public override toString(): string {
         return "channel(" + this.channel + ")";
     }
 }

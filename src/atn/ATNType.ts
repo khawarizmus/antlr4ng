@@ -4,10 +4,12 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+/* eslint-disable @typescript-eslint/naming-convention */
+
 /**
  * Represents the type of recognizer an ATN applies to
  */
 export const ATNType = {
     LEXER: 0,
-    PARSER: 1
+    PARSER: 1,
 };

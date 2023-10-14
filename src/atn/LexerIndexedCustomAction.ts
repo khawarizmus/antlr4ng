@@ -4,6 +4,14 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+/* eslint-disable jsdoc/require-param */
+
+import type { LexerActionExecutor } from "./LexerActionExecutor.js";
+import type { CharStream } from "../CharStream.js";
+import { LexerAction } from "./LexerAction.js";
+import { Lexer } from "../Lexer.js";
+import { HashCode } from "../misc/HashCode.js";
+
 /**
  * This implementation of {@link LexerAction} is used for tracking input offsets
  * for position-dependent actions within a {@link LexerActionExecutor}.
@@ -27,10 +35,11 @@
  * input {@link CharStream}.
  */
 
-import { LexerAction } from "./LexerAction.js";
-
 export class LexerIndexedCustomAction extends LexerAction {
-    constructor(offset, action) {
+    private readonly offset: number;
+    private readonly action: LexerAction;
+
+    public constructor(offset: number, action: LexerAction) {
         super(action.actionType);
         this.offset = offset;
         this.action = action;
@@ -41,16 +50,16 @@ export class LexerIndexedCustomAction extends LexerAction {
      * <p>This method calls {@link //execute} on the result of {@link //getAction}
      * using the provided {@code lexer}.</p>
      */
-    execute(lexer) {
+    public execute(lexer: Lexer): void {
         // assume the input stream position was properly set by the calling code
         this.action.execute(lexer);
     }
 
-    updateHashCode(hash) {
+    public override updateHashCode(hash: HashCode): void {
         hash.update(this.actionType, this.offset, this.action);
     }
 
-    equals(other) {
+    public override equals(other: unknown): boolean {
         if (this === other) {
             return true;
         } else if (!(other instanceof LexerIndexedCustomAction)) {

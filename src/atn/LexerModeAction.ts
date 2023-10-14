@@ -4,15 +4,21 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { LexerActionType } from "../atn/LexerActionType.js";
+/* eslint-disable jsdoc/require-param */
+
+import { LexerActionType } from "./LexerActionType.js";
 import { LexerAction } from "./LexerAction.js";
+import { Lexer } from "../Lexer.js";
+import { HashCode } from "../misc/HashCode.js";
 
 /**
  * Implements the {@code mode} lexer action by calling {@link Lexer//mode} with
  * the assigned mode
  */
 export class LexerModeAction extends LexerAction {
-    constructor(mode) {
+    private readonly mode: number;
+
+    public constructor(mode: number) {
         super(LexerActionType.MODE);
         this.mode = mode;
     }
@@ -21,15 +27,15 @@ export class LexerModeAction extends LexerAction {
      * <p>This action is implemented by calling {@link Lexer//mode} with the
      * value provided by {@link //getMode}.</p>
      */
-    execute(lexer) {
+    public override execute(lexer: Lexer): void {
         lexer.mode(this.mode);
     }
 
-    updateHashCode(hash) {
+    public override updateHashCode(hash: HashCode): void {
         hash.update(this.actionType, this.mode);
     }
 
-    equals(other) {
+    public override equals(other: unknown): boolean {
         if (this === other) {
             return true;
         } else if (!(other instanceof LexerModeAction)) {
@@ -39,7 +45,7 @@ export class LexerModeAction extends LexerAction {
         }
     }
 
-    toString() {
+    public override toString(): string {
         return "mode(" + this.mode + ")";
     }
 }

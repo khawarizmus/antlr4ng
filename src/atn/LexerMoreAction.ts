@@ -4,8 +4,11 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { LexerActionType } from "../atn/LexerActionType.js";
+/* eslint-disable jsdoc/require-param */
+
+import { LexerActionType } from "./LexerActionType.js";
 import { LexerAction } from "./LexerAction.js";
+import { Lexer } from "../Lexer.js";
 
 /**
  * Implements the {@code more} lexer action by calling {@link Lexer//more}.
@@ -14,20 +17,21 @@ import { LexerAction } from "./LexerAction.js";
  * implemented as a singleton instance exposed by {@link //INSTANCE}.</p>
  */
 export class LexerMoreAction extends LexerAction {
-    constructor() {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    public static readonly INSTANCE = new LexerMoreAction();
+
+    public constructor() {
         super(LexerActionType.MORE);
     }
 
     /**
      * <p>This action is implemented by calling {@link Lexer//popMode}.</p>
      */
-    execute(lexer) {
+    public override execute(lexer: Lexer): void {
         lexer.more();
     }
 
-    toString() {
+    public override toString(): string {
         return "more";
     }
 }
-
-LexerMoreAction.INSTANCE = new LexerMoreAction();

@@ -59,6 +59,7 @@ export declare abstract class Lexer extends Recognizer<LexerATNSimulator> implem
     public skip(): void;
     public more(): void;
     public more(m: number): void;
+    public mode(m: number): void;
     public pushMode(m: number): void;
     public popMode(): number;
     public emitToken(token: Token): void;

@@ -4,8 +4,9 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { LexerActionType } from "../atn/LexerActionType.js";
+import { LexerActionType } from "./LexerActionType.js";
 import { LexerAction } from "./LexerAction.js";
+import { Lexer } from "../Lexer.js";
 
 /**
  * Implements the {@code skip} lexer action by calling {@link Lexer//skip}.
@@ -14,18 +15,19 @@ import { LexerAction } from "./LexerAction.js";
  * implemented as a singleton instance exposed by {@link //INSTANCE}.</p>
  */
 export class LexerSkipAction extends LexerAction {
-    constructor() {
+    /** Provides a singleton instance of this parameter-less lexer action. */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    public static readonly INSTANCE = new LexerSkipAction();
+
+    public constructor() {
         super(LexerActionType.SKIP);
     }
 
-    execute(lexer) {
+    public execute(lexer: Lexer): void {
         lexer.skip();
     }
 
-    toString() {
+    public override toString(): string {
         return "skip";
     }
 }
-
-// Provides a singleton instance of this parameterless lexer action.
-LexerSkipAction.INSTANCE = new LexerSkipAction();

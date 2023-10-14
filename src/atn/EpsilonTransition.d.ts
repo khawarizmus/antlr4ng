@@ -10,7 +10,7 @@ import { Transition } from "./Transition.js";
 export declare class EpsilonTransition extends Transition {
     public outermostPrecedenceReturn: number;
 
-    public constructor(target: ATNState, outermostPrecedenceReturn: number);
+    public constructor(target: ATNState, outermostPrecedenceReturn?: number);
 
     public override getSerializationType(): number;
     public matches(symbol: number, minVocabSymbol: number, maxVocabSymbol: number): boolean;

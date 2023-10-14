@@ -39,10 +39,10 @@ export class ATN {
     public readonly decisionToState: DecisionState[] = [];
 
     /** Maps from rule index to starting state number. */
-    public readonly ruleToStartState: RuleStartState[] = [];
+    public ruleToStartState: Array<RuleStartState | null> = []; // Initialized by the ATN deserializer.
 
     /** Maps from rule index to stop state number. */
-    public readonly ruleToStopState: RuleStopState[] = [];
+    public ruleToStopState: Array<RuleStopState | null> = []; // Initialized by the ATN deserializer.
 
     public readonly modeNameToStartState = new Map<string, TokensStartState>();
 
@@ -52,15 +52,15 @@ export class ATN {
      * type if the {@link ATNDeserializationOptions//isGenerateRuleBypassTransitions}
      * deserialization option was specified; otherwise, this is {@code null}
      */
-    public readonly ruleToTokenType: number[] = [];
+    public ruleToTokenType: number[] = []; // Initialized by the ATN deserializer.
 
     /**
      * For lexer ATNs, this is an array of {@link LexerAction} objects which may
      * be referenced by action transitions in the ATN
      */
-    public readonly lexerActions: LexerAction[] = [];
+    public lexerActions: LexerAction[] = [];
 
-    public readonly modeToStartState: RuleStartState[] = [];
+    public readonly modeToStartState: Array<RuleStartState | null> = [];
 
     public constructor(grammarType: number, maxTokenType: number) {
         this.grammarType = grammarType;

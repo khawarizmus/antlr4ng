@@ -31,6 +31,7 @@ export declare abstract class Recognizer<ATNInterpreter extends ATNSimulator> {
 
     public sempred(_localctx: RuleContext | null, ruleIndex: number, actionIndex: number): boolean;
     public precpred(localctx: RuleContext | null, precedence: number): boolean;
+    public action(_localctx: RuleContext | null, ruleIndex: number, actionIndex: number): void;
 
     public get atn(): ATN;
 

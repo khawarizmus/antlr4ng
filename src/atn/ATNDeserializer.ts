@@ -4,154 +4,150 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { Token } from '../Token.js';
-import { ATN } from './ATN.js';
-import { ATNType } from './ATNType.js';
+/* eslint-disable @typescript-eslint/naming-convention */
 
-import { BasicState } from './BasicState.js';
-import { DecisionState } from './DecisionState.js';
-import { BlockStartState } from './BlockStartState.js';
-import { BlockEndState } from './BlockEndState.js';
-import { LoopEndState } from './LoopEndState.js';
-import { RuleStartState } from './RuleStartState.js';
-import { RuleStopState } from './RuleStopState.js';
-import { TokensStartState } from './TokensStartState.js';
-import { PlusLoopbackState } from './PlusLoopbackState.js';
-import { StarLoopbackState } from './StarLoopbackState.js';
-import { StarLoopEntryState } from './StarLoopEntryState.js';
-import { PlusBlockStartState } from './PlusBlockStartState.js';
-import { StarBlockStartState } from './StarBlockStartState.js';
-import { BasicBlockStartState } from './BasicBlockStartState.js';
+import { Token } from "../Token.js";
+import { ATN } from "./ATN.js";
+import { ATNType } from "./ATNType.js";
 
-import { AtomTransition } from './AtomTransition.js';
-import { SetTransition } from './SetTransition.js';
-import { NotSetTransition } from './NotSetTransition.js';
-import { RuleTransition } from './RuleTransition.js';
-import { RangeTransition } from './RangeTransition.js';
-import { ActionTransition } from './ActionTransition.js';
-import { EpsilonTransition } from './EpsilonTransition.js';
-import { WildcardTransition } from './WildcardTransition.js';
-import { PredicateTransition } from './PredicateTransition.js';
-import { PrecedencePredicateTransition } from './PrecedencePredicateTransition.js';
+import { BasicState } from "./BasicState.js";
+import { DecisionState } from "./DecisionState.js";
+import { BlockStartState } from "./BlockStartState.js";
+import { BlockEndState } from "./BlockEndState.js";
+import { LoopEndState } from "./LoopEndState.js";
+import { RuleStartState } from "./RuleStartState.js";
+import { RuleStopState } from "./RuleStopState.js";
+import { TokensStartState } from "./TokensStartState.js";
+import { PlusLoopbackState } from "./PlusLoopbackState.js";
+import { StarLoopbackState } from "./StarLoopbackState.js";
+import { StarLoopEntryState } from "./StarLoopEntryState.js";
+import { PlusBlockStartState } from "./PlusBlockStartState.js";
+import { StarBlockStartState } from "./StarBlockStartState.js";
+import { BasicBlockStartState } from "./BasicBlockStartState.js";
 
-import { IntervalSet } from '../misc/IntervalSet.js';
-import { ATNDeserializationOptions } from './ATNDeserializationOptions.js';
+import { AtomTransition } from "./AtomTransition.js";
+import { SetTransition } from "./SetTransition.js";
+import { NotSetTransition } from "./NotSetTransition.js";
+import { RuleTransition } from "./RuleTransition.js";
+import { RangeTransition } from "./RangeTransition.js";
+import { ActionTransition } from "./ActionTransition.js";
+import { EpsilonTransition } from "./EpsilonTransition.js";
+import { WildcardTransition } from "./WildcardTransition.js";
+import { PredicateTransition } from "./PredicateTransition.js";
+import { PrecedencePredicateTransition } from "./PrecedencePredicateTransition.js";
 
-import { LexerActionType } from './LexerActionType.js';
-import { LexerSkipAction } from './LexerSkipAction.js';
-import { LexerChannelAction } from './LexerChannelAction.js';
-import { LexerCustomAction } from './LexerCustomAction.js';
-import { LexerMoreAction } from './LexerMoreAction.js';
-import { LexerTypeAction } from './LexerTypeAction.js';
-import { LexerPushModeAction } from './LexerPushModeAction.js';
-import { LexerPopModeAction } from './LexerPopModeAction.js';
-import { LexerModeAction } from './LexerModeAction.js';
+import { IntervalSet } from "../misc/IntervalSet.js";
+import { ATNDeserializationOptions } from "./ATNDeserializationOptions.js";
+
+import { LexerActionType } from "./LexerActionType.js";
+import { LexerSkipAction } from "./LexerSkipAction.js";
+import { LexerChannelAction } from "./LexerChannelAction.js";
+import { LexerCustomAction } from "./LexerCustomAction.js";
+import { LexerMoreAction } from "./LexerMoreAction.js";
+import { LexerTypeAction } from "./LexerTypeAction.js";
+import { LexerPushModeAction } from "./LexerPushModeAction.js";
+import { LexerPopModeAction } from "./LexerPopModeAction.js";
+import { LexerModeAction } from "./LexerModeAction.js";
 import { ATNStateType } from "./ATNStateType.js";
 import { TransitionType } from "./TransitionType.js";
+import { ATNState } from "./ATNState.js";
+import { LexerAction } from "./LexerAction.js";
+import { Transition } from "./Transition.js";
 
-const SERIALIZED_VERSION = 4;
-
-function initArray(length, value) {
-    const tmp = [];
+const initArray = <T>(length: number, value: T) => {
+    const tmp = new Array<T>(length - 1);
     tmp[length - 1] = value;
-    return tmp.map(function (i) { return value; });
-}
+
+    return tmp.map(() => { return value; });
+};
 
 export class ATNDeserializer {
-    constructor(options) {
-        if (options === undefined || options === null) {
+    public static readonly SERIALIZED_VERSION = 4;
+
+    private data: number[] = [];
+    private pos = 0;
+
+    private readonly deserializationOptions: ATNDeserializationOptions;
+    private stateFactories: Array<(() => ATNState) | null> | null = null;
+    private actionFactories: Array<(data1: number, data2: number) => LexerAction> | null = null;
+
+    public constructor(options?: ATNDeserializationOptions) {
+        if (!options) {
             options = ATNDeserializationOptions.defaultOptions;
         }
+
         this.deserializationOptions = options;
         this.stateFactories = null;
         this.actionFactories = null;
     }
 
-    deserialize(data) {
-        const legacy = this.reset(data);
-        this.checkVersion(legacy);
-        if (legacy)
-            this.skipUUID();
+    public deserialize(data: number[]): ATN {
+        this.reset(data);
+        this.checkVersion();
+
         const atn = this.readATN();
-        this.readStates(atn, legacy);
-        this.readRules(atn, legacy);
+        this.readStates(atn);
+        this.readRules(atn);
         this.readModes(atn);
-        const sets = [];
-        this.readSets(atn, sets, this.readInt.bind(this));
-        if (legacy)
-            this.readSets(atn, sets, this.readInt32.bind(this));
+
+        const sets: IntervalSet[] = [];
+        this.readSets(atn, sets);
         this.readEdges(atn, sets);
         this.readDecisions(atn);
-        this.readLexerActions(atn, legacy);
+        this.readLexerActions(atn);
         this.markPrecedenceDecisions(atn);
         this.verifyATN(atn);
+
         if (this.deserializationOptions.generateRuleBypassTransitions && atn.grammarType === ATNType.PARSER) {
             this.generateRuleBypassTransitions(atn);
             // re-verify after modification
             this.verifyATN(atn);
         }
+
         return atn;
     }
 
-    reset(data) {
-        const version = data.charCodeAt ? data.charCodeAt(0) : data[0];
-        if (version === SERIALIZED_VERSION - 1) {
-            const adjust = function (c) {
-                const v = c.charCodeAt(0);
-                return v > 1 ? v - 2 : v + 65534;
-            };
-            const temp = data.split("").map(adjust);
-            // don't adjust the first value since that's the version number
-            temp[0] = data.charCodeAt(0);
-            this.data = temp;
-            this.pos = 0;
-            return true;
-        } else {
-            this.data = data;
-            this.pos = 0;
-            return false;
-        }
+    public reset(data: number[]): boolean {
+        this.data = data;
+        this.pos = 0;
+
+        return false;
     }
 
-    skipUUID() {
-        let count = 0;
-        while (count++ < 8)
-            this.readInt();
-    }
-
-    checkVersion(legacy) {
+    public checkVersion(): void {
         const version = this.readInt();
-        if (!legacy && version !== SERIALIZED_VERSION) {
-            throw ("Could not deserialize ATN with version " + version + " (expected " + SERIALIZED_VERSION + ").");
+        if (version !== ATNDeserializer.SERIALIZED_VERSION) {
+            throw new Error("Could not deserialize ATN with version " + version + " (expected " +
+                ATNDeserializer.SERIALIZED_VERSION + ").");
         }
     }
 
-    readATN() {
+    public readATN(): ATN {
         const grammarType = this.readInt();
         const maxTokenType = this.readInt();
+
         return new ATN(grammarType, maxTokenType);
     }
 
-    readStates(atn, legacy) {
-        let j, pair, stateNumber;
-        const loopBackStateNumbers = [];
-        const endStateNumbers = [];
-        const nstates = this.readInt();
-        for (let i = 0; i < nstates; i++) {
-            const stype = this.readInt();
+    public readStates(atn: ATN): void {
+        let j;
+        let stateNumber;
+
+        const loopBackStateNumbers: Array<[LoopEndState, number]> = [];
+        const endStateNumbers: Array<[BlockStartState, number]> = [];
+        const stateCount = this.readInt();
+        for (let i = 0; i < stateCount; i++) {
+            const stateType = this.readInt();
             // ignore bad type of states
-            if (stype === ATNStateType.INVALID_TYPE) {
+            if (stateType === ATNStateType.INVALID_TYPE) {
                 atn.addState(null);
                 continue;
             }
-            let ruleIndex = this.readInt();
-            if (legacy && ruleIndex === 0xFFFF) {
-                ruleIndex = -1;
-            }
-            const s = this.stateFactory(stype, ruleIndex);
-            if (stype === ATNStateType.LOOP_END) { // special case
+            const ruleIndex = this.readInt();
+            const s = this.stateFactory(stateType, ruleIndex);
+            if (stateType === ATNStateType.LOOP_END) { // special case
                 const loopBackStateNumber = this.readInt();
-                loopBackStateNumbers.push([s, loopBackStateNumber]);
+                loopBackStateNumbers.push([s as LoopEndState, loopBackStateNumber]);
             } else if (s instanceof BlockStartState) {
                 const endStateNumber = this.readInt();
                 endStateNumbers.push([s, endStateNumber]);
@@ -161,114 +157,111 @@ export class ATNDeserializer {
         // delay the assignment of loop back and end states until we know all the
         // state instances have been initialized
         for (j = 0; j < loopBackStateNumbers.length; j++) {
-            pair = loopBackStateNumbers[j];
+            const pair = loopBackStateNumbers[j];
             pair[0].loopBackState = atn.states[pair[1]];
         }
 
         for (j = 0; j < endStateNumbers.length; j++) {
-            pair = endStateNumbers[j];
-            pair[0].endState = atn.states[pair[1]];
+            const pair = endStateNumbers[j];
+            pair[0].endState = atn.states[pair[1]] as BlockEndState;
         }
 
-        let numNonGreedyStates = this.readInt();
+        const numNonGreedyStates = this.readInt();
         for (j = 0; j < numNonGreedyStates; j++) {
             stateNumber = this.readInt();
-            atn.states[stateNumber].nonGreedy = true;
+            (atn.states[stateNumber] as DecisionState).nonGreedy = true;
         }
 
-        let numPrecedenceStates = this.readInt();
+        const numPrecedenceStates = this.readInt();
         for (j = 0; j < numPrecedenceStates; j++) {
             stateNumber = this.readInt();
-            atn.states[stateNumber].isPrecedenceRule = true;
+            (atn.states[stateNumber] as RuleStartState).isPrecedenceRule = true;
         }
     }
 
-    readRules(atn, legacy) {
+    public readRules(atn: ATN): void {
         let i;
-        const nrules = this.readInt();
+        const ruleCount = this.readInt();
         if (atn.grammarType === ATNType.LEXER) {
-            atn.ruleToTokenType = initArray(nrules, 0);
+            atn.ruleToTokenType = initArray(ruleCount, 0);
         }
-        atn.ruleToStartState = initArray(nrules, 0);
-        for (i = 0; i < nrules; i++) {
+        atn.ruleToStartState = initArray<RuleStartState | null>(ruleCount, null);
+        for (i = 0; i < ruleCount; i++) {
             const s = this.readInt();
-            atn.ruleToStartState[i] = atn.states[s];
+            atn.ruleToStartState[i] = atn.states[s] as RuleStartState;
             if (atn.grammarType === ATNType.LEXER) {
-                let tokenType = this.readInt();
-                if (legacy && tokenType === 0xFFFF) {
-                    tokenType = Token.EOF;
-                }
+                const tokenType = this.readInt();
                 atn.ruleToTokenType[i] = tokenType;
             }
         }
-        atn.ruleToStopState = initArray(nrules, 0);
+        atn.ruleToStopState = initArray<RuleStopState | null>(ruleCount, null);
         for (i = 0; i < atn.states.length; i++) {
             const state = atn.states[i];
             if (!(state instanceof RuleStopState)) {
                 continue;
             }
             atn.ruleToStopState[state.ruleIndex] = state;
-            atn.ruleToStartState[state.ruleIndex].stopState = state;
+            atn.ruleToStartState[state.ruleIndex]!.stopState = state;
         }
     }
 
-    readModes(atn) {
-        const nmodes = this.readInt();
-        for (let i = 0; i < nmodes; i++) {
-            let s = this.readInt();
-            atn.modeToStartState.push(atn.states[s]);
+    public readModes(atn: ATN): void {
+        const modeCount = this.readInt();
+        for (let i = 0; i < modeCount; i++) {
+            const s = this.readInt();
+            atn.modeToStartState.push(atn.states[s] as RuleStartState);
         }
     }
 
-    readSets(atn, sets, reader) {
+    public readSets(atn: ATN, sets: IntervalSet[]): void {
         const m = this.readInt();
         for (let i = 0; i < m; i++) {
-            const iset = new IntervalSet();
-            sets.push(iset);
+            const intervalSet = new IntervalSet();
+            sets.push(intervalSet);
             const n = this.readInt();
             const containsEof = this.readInt();
             if (containsEof !== 0) {
-                iset.addOne(-1);
+                intervalSet.addOne(-1);
             }
             for (let j = 0; j < n; j++) {
-                const i1 = reader();
-                const i2 = reader();
-                iset.addRange(i1, i2);
+                const i1 = this.readInt();
+                const i2 = this.readInt();
+                intervalSet.addRange(i1, i2);
             }
         }
     }
 
-    readEdges(atn, sets) {
-        let i, j, state, trans, target;
-        const nedges = this.readInt();
-        for (i = 0; i < nedges; i++) {
+    public readEdges(atn: ATN, sets: IntervalSet[]): void {
+        let i; let j; let state; let trans; let target;
+        const edgeCount = this.readInt();
+        for (i = 0; i < edgeCount; i++) {
             const src = this.readInt();
             const trg = this.readInt();
             const ttype = this.readInt();
             const arg1 = this.readInt();
             const arg2 = this.readInt();
             const arg3 = this.readInt();
-            trans = this.edgeFactory(atn, ttype, src, trg, arg1, arg2, arg3, sets);
-            const srcState = atn.states[src];
+            trans = this.edgeFactory(atn, ttype, trg, arg1, arg2, arg3, sets);
+            const srcState = atn.states[src]!;
             srcState.addTransition(trans);
         }
         // edges for rule stop states can be derived, so they aren't serialized
         for (i = 0; i < atn.states.length; i++) {
-            state = atn.states[i];
+            state = atn.states[i]!;
             for (j = 0; j < state.transitions.length; j++) {
                 const t = state.transitions[j];
                 if (!(t instanceof RuleTransition)) {
                     continue;
                 }
                 let outermostPrecedenceReturn = -1;
-                if (atn.ruleToStartState[t.target.ruleIndex].isPrecedenceRule) {
+                if (atn.ruleToStartState[t.target.ruleIndex]!.isPrecedenceRule) {
                     if (t.precedence === 0) {
                         outermostPrecedenceReturn = t.target.ruleIndex;
                     }
                 }
 
                 trans = new EpsilonTransition(t.followState, outermostPrecedenceReturn);
-                atn.ruleToStopState[t.target.ruleIndex].addTransition(trans);
+                atn.ruleToStopState[t.target.ruleIndex]!.addTransition(trans);
             }
         }
 
@@ -277,12 +270,12 @@ export class ATNDeserializer {
             if (state instanceof BlockStartState) {
                 // we need to know the end state to set its start state
                 if (state.endState === null) {
-                    throw ("IllegalState");
+                    throw new Error("IllegalState");
                 }
                 // block end states can only be associated to a single block start
                 // state
                 if (state.endState.startState) {
-                    throw ("IllegalState");
+                    throw new Error("IllegalState");
                 }
                 state.endState.startState = state;
             }
@@ -304,36 +297,30 @@ export class ATNDeserializer {
         }
     }
 
-    readDecisions(atn) {
-        const ndecisions = this.readInt();
-        for (let i = 0; i < ndecisions; i++) {
+    public readDecisions(atn: ATN): void {
+        const decisionCount = this.readInt();
+        for (let i = 0; i < decisionCount; i++) {
             const s = this.readInt();
-            const decState = atn.states[s];
+            const decState = atn.states[s] as DecisionState;
             atn.decisionToState.push(decState);
             decState.decision = i;
         }
     }
 
-    readLexerActions(atn, legacy) {
+    public readLexerActions(atn: ATN): void {
         if (atn.grammarType === ATNType.LEXER) {
             const count = this.readInt();
-            atn.lexerActions = initArray(count, null);
+            atn.lexerActions = [];
             for (let i = 0; i < count; i++) {
                 const actionType = this.readInt();
-                let data1 = this.readInt();
-                if (legacy && data1 === 0xFFFF) {
-                    data1 = -1;
-                }
-                let data2 = this.readInt();
-                if (legacy && data2 === 0xFFFF) {
-                    data2 = -1;
-                }
-                atn.lexerActions[i] = this.lexerActionFactory(actionType, data1, data2);
+                const data1 = this.readInt();
+                const data2 = this.readInt();
+                atn.lexerActions.push(this.lexerActionFactory(actionType, data1, data2));
             }
         }
     }
 
-    generateRuleBypassTransitions(atn) {
+    public generateRuleBypassTransitions(atn: ATN): void {
         let i;
         const count = atn.ruleToStartState.length;
         for (i = 0; i < count; i++) {
@@ -344,8 +331,8 @@ export class ATNDeserializer {
         }
     }
 
-    generateRuleBypassTransition(atn, idx) {
-        let i, state;
+    public generateRuleBypassTransition(atn: ATN, idx: number): void {
+        let i; let state;
         const bypassStart = new BasicBlockStartState();
         bypassStart.ruleIndex = idx;
         atn.addState(bypassStart);
@@ -362,30 +349,29 @@ export class ATNDeserializer {
         let excludeTransition = null;
         let endState = null;
 
-        if (atn.ruleToStartState[idx].isPrecedenceRule) {
+        if (atn.ruleToStartState[idx]!.isPrecedenceRule) {
             // wrap from the beginning of the rule to the StarLoopEntryState
             endState = null;
             for (i = 0; i < atn.states.length; i++) {
-                state = atn.states[i];
+                state = atn.states[i] as LoopEndState;
                 if (this.stateIsEndStateFor(state, idx)) {
                     endState = state;
-                    excludeTransition = state.loopBackState.transitions[0];
+                    excludeTransition = state.loopBackState!.transitions[0];
                     break;
                 }
             }
             if (excludeTransition === null) {
-                throw ("Couldn't identify final state of the precedence rule prefix section.");
+                throw new Error("Couldn't identify final state of the precedence rule prefix section.");
             }
         } else {
-            endState = atn.ruleToStopState[idx];
+            endState = atn.ruleToStopState[idx]!;
         }
 
         // all non-excluded transitions that currently target end state need to
         // target blockEnd instead
         for (i = 0; i < atn.states.length; i++) {
-            state = atn.states[i];
-            for (let j = 0; j < state.transitions.length; j++) {
-                const transition = state.transitions[j];
+            state = atn.states[i]!;
+            for (const transition of state.transitions) {
                 if (transition === excludeTransition) {
                     continue;
                 }
@@ -397,15 +383,17 @@ export class ATNDeserializer {
 
         // all transitions leaving the rule start state need to leave blockStart
         // instead
-        const ruleToStartState = atn.ruleToStartState[idx];
+        const ruleToStartState = atn.ruleToStartState[idx]!;
         const count = ruleToStartState.transitions.length;
         while (count > 0) {
             bypassStart.addTransition(ruleToStartState.transitions[count - 1]);
             ruleToStartState.transitions = ruleToStartState.transitions.slice(-1);
         }
         // link the new states
-        atn.ruleToStartState[idx].addTransition(new EpsilonTransition(bypassStart));
-        bypassStop.addTransition(new EpsilonTransition(endState));
+        atn.ruleToStartState[idx]!.addTransition(new EpsilonTransition(bypassStart));
+        if (endState) {
+            bypassStop.addTransition(new EpsilonTransition(endState));
+        }
 
         const matchState = new BasicState();
         atn.addState(matchState);
@@ -413,7 +401,7 @@ export class ATNDeserializer {
         bypassStart.addTransition(new EpsilonTransition(matchState));
     }
 
-    stateIsEndStateFor(state, idx) {
+    public stateIsEndStateFor(state: ATNState, idx: number): ATNState | null {
         if (state.ruleIndex !== idx) {
             return null;
         }
@@ -435,18 +423,18 @@ export class ATNDeserializer {
     /**
      * Analyze the {@link StarLoopEntryState} states in the specified ATN to set
      * the {@link StarLoopEntryState} field to the correct value.
+     *
      * @param atn The ATN.
      */
-    markPrecedenceDecisions(atn) {
-        for (let i = 0; i < atn.states.length; i++) {
-            const state = atn.states[i];
+    public markPrecedenceDecisions(atn: ATN): void {
+        for (const state of atn.states) {
             if (!(state instanceof StarLoopEntryState)) {
                 continue;
             }
             // We analyze the ATN to determine if this ATN decision state is the
             // decision for the closure block that determines whether a
             // precedence rule should continue or complete.
-            if (atn.ruleToStartState[state.ruleIndex].isPrecedenceRule) {
+            if (atn.ruleToStartState[state.ruleIndex]!.isPrecedenceRule) {
                 const maybeLoopEndState = state.transitions[state.transitions.length - 1].target;
                 if (maybeLoopEndState instanceof LoopEndState) {
                     if (maybeLoopEndState.epsilonOnlyTransitions &&
@@ -458,16 +446,17 @@ export class ATNDeserializer {
         }
     }
 
-    verifyATN(atn) {
+    public verifyATN(atn: ATN): void {
         if (!this.deserializationOptions.verifyATN) {
             return;
         }
+
         // verify assumptions
-        for (let i = 0; i < atn.states.length; i++) {
-            const state = atn.states[i];
+        for (const state of atn.states) {
             if (state === null) {
                 continue;
             }
+
             this.checkCondition(state.epsilonOnlyTransitions || state.transitions.length <= 1);
             if (state instanceof PlusBlockStartState) {
                 this.checkCondition(state.loopBackState !== null);
@@ -481,7 +470,7 @@ export class ATNDeserializer {
                     this.checkCondition(state.transitions[1].target instanceof StarBlockStartState);
                     this.checkCondition(state.nonGreedy);
                 } else {
-                    throw ("IllegalState");
+                    throw new Error("IllegalState");
                 }
             } else if (state instanceof StarLoopbackState) {
                 this.checkCondition(state.transitions.length === 1);
@@ -502,7 +491,7 @@ export class ATNDeserializer {
         }
     }
 
-    checkCondition(condition, message) {
+    public checkCondition(condition: boolean, message?: string): void {
         if (!condition) {
             if (message === undefined || message === null) {
                 message = "IllegalState";
@@ -511,25 +500,22 @@ export class ATNDeserializer {
         }
     }
 
-    readInt() {
+    public readInt(): number {
         return this.data[this.pos++];
     }
 
-    readInt32() {
-        const low = this.readInt();
-        const high = this.readInt();
-        return low | (high << 16);
-    }
-
-    edgeFactory(atn, type, src, trg, arg1, arg2, arg3, sets) {
-        const target = atn.states[trg];
+    public edgeFactory(atn: ATN, type: number, trg: number, arg1: number, arg2: number,
+        arg3: number, sets: IntervalSet[]): Transition {
+        const target = atn.states[trg]!;
         switch (type) {
             case TransitionType.EPSILON:
                 return new EpsilonTransition(target);
             case TransitionType.RANGE:
-                return arg3 !== 0 ? new RangeTransition(target, Token.EOF, arg2) : new RangeTransition(target, arg1, arg2);
+                return arg3 !== 0
+                    ? new RangeTransition(target, Token.EOF, arg2)
+                    : new RangeTransition(target, arg1, arg2);
             case TransitionType.RULE:
-                return new RuleTransition(atn.states[arg1], arg2, arg3, target);
+                return new RuleTransition(atn.states[arg1]!, arg2, arg3, target);
             case TransitionType.PREDICATE:
                 return new PredicateTransition(target, arg1, arg2, arg3 !== 0);
             case TransitionType.PRECEDENCE:
@@ -545,55 +531,75 @@ export class ATNDeserializer {
             case TransitionType.WILDCARD:
                 return new WildcardTransition(target);
             default:
-                throw "The specified transition type: " + type + " is not valid.";
+                throw new Error("The specified transition type: " + type + " is not valid.");
         }
     }
 
-    stateFactory(type, ruleIndex) {
+    public stateFactory(type: number, ruleIndex: number): ATNState | null {
         if (this.stateFactories === null) {
-            const sf = [];
+            const sf: Array<(() => ATNState) | null> = [];
             sf[ATNStateType.INVALID_TYPE] = null;
-            sf[ATNStateType.BASIC] = () => new BasicState();
-            sf[ATNStateType.RULE_START] = () => new RuleStartState();
-            sf[ATNStateType.BLOCK_START] = () => new BasicBlockStartState();
-            sf[ATNStateType.PLUS_BLOCK_START] = () => new PlusBlockStartState();
-            sf[ATNStateType.STAR_BLOCK_START] = () => new StarBlockStartState();
-            sf[ATNStateType.TOKEN_START] = () => new TokensStartState();
-            sf[ATNStateType.RULE_STOP] = () => new RuleStopState();
-            sf[ATNStateType.BLOCK_END] = () => new BlockEndState();
-            sf[ATNStateType.STAR_LOOP_BACK] = () => new StarLoopbackState();
-            sf[ATNStateType.STAR_LOOP_ENTRY] = () => new StarLoopEntryState();
-            sf[ATNStateType.PLUS_LOOP_BACK] = () => new PlusLoopbackState();
-            sf[ATNStateType.LOOP_END] = () => new LoopEndState();
+            sf[ATNStateType.BASIC] = () => { return new BasicState(); };
+            sf[ATNStateType.RULE_START] = () => { return new RuleStartState(); };
+            sf[ATNStateType.BLOCK_START] = () => { return new BasicBlockStartState(); };
+            sf[ATNStateType.PLUS_BLOCK_START] = () => { return new PlusBlockStartState(); };
+            sf[ATNStateType.STAR_BLOCK_START] = () => { return new StarBlockStartState(); };
+            sf[ATNStateType.TOKEN_START] = () => { return new TokensStartState(); };
+            sf[ATNStateType.RULE_STOP] = () => { return new RuleStopState(); };
+            sf[ATNStateType.BLOCK_END] = () => { return new BlockEndState(); };
+            sf[ATNStateType.STAR_LOOP_BACK] = () => { return new StarLoopbackState(); };
+            sf[ATNStateType.STAR_LOOP_ENTRY] = () => { return new StarLoopEntryState(); };
+            sf[ATNStateType.PLUS_LOOP_BACK] = () => { return new PlusLoopbackState(); };
+            sf[ATNStateType.LOOP_END] = () => { return new LoopEndState(); };
             this.stateFactories = sf;
         }
 
         if (type > this.stateFactories.length || this.stateFactories[type] === null) {
-            throw ("The specified state type " + type + " is not valid.");
+            throw new Error("The specified state type " + type + " is not valid.");
         } else {
-            const s = this.stateFactories[type]();
+            const s = this.stateFactories[type]?.() ?? null;
             if (s !== null) {
                 s.ruleIndex = ruleIndex;
+
                 return s;
             }
         }
+
+        return null;
     }
 
-    lexerActionFactory(type, data1, data2) {
+    public lexerActionFactory(type: number, data1: number, data2: number): LexerAction {
         if (this.actionFactories === null) {
             const af = [];
-            af[LexerActionType.CHANNEL] = (data1, data2) => new LexerChannelAction(data1);
-            af[LexerActionType.CUSTOM] = (data1, data2) => new LexerCustomAction(data1, data2);
-            af[LexerActionType.MODE] = (data1, data2) => new LexerModeAction(data1);
-            af[LexerActionType.MORE] = (data1, data2) => LexerMoreAction.INSTANCE;
-            af[LexerActionType.POP_MODE] = (data1, data2) => LexerPopModeAction.INSTANCE;
-            af[LexerActionType.PUSH_MODE] = (data1, data2) => new LexerPushModeAction(data1);
-            af[LexerActionType.SKIP] = (data1, data2) => LexerSkipAction.INSTANCE;
-            af[LexerActionType.TYPE] = (data1, data2) => new LexerTypeAction(data1);
+            af[LexerActionType.CHANNEL] = (data1: number, _data2: number) => {
+                return new LexerChannelAction(data1);
+            };
+            af[LexerActionType.CUSTOM] = (data1: number, data2: number) => {
+                return new LexerCustomAction(data1, data2);
+            };
+            af[LexerActionType.MODE] = (data1: number, _data2: number) => {
+                return new LexerModeAction(data1);
+            };
+            af[LexerActionType.MORE] = (_data1: number, _data2: number) => {
+                return LexerMoreAction.INSTANCE;
+            };
+            af[LexerActionType.POP_MODE] = (_data1: number, _data2: number) => {
+                return LexerPopModeAction.INSTANCE;
+            };
+            af[LexerActionType.PUSH_MODE] = (data1: number, _data2: number) => {
+                return new LexerPushModeAction(data1);
+            };
+            af[LexerActionType.SKIP] = (_data1: number, _data2: number) => {
+                return LexerSkipAction.INSTANCE;
+            };
+            af[LexerActionType.TYPE] = (data1: number, _data2: number) => {
+                return new LexerTypeAction(data1);
+            };
             this.actionFactories = af;
         }
+
         if (type > this.actionFactories.length || this.actionFactories[type] === null) {
-            throw ("The specified lexer action type " + type + " is not valid.");
+            throw new Error("The specified lexer action type " + type + " is not valid.");
         } else {
             return this.actionFactories[type](data1, data2);
         }
