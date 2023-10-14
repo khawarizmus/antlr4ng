@@ -10,8 +10,10 @@ import { HashCode } from "../misc/HashCode.js";
 import { equalArrays } from "../utils/helpers.js";
 
 export class ArrayPredictionContext extends PredictionContext {
+    public readonly parents: Array<PredictionContext | null> = [];
+    public readonly returnStates: number[] = [];
 
-    constructor(parents, returnStates) {
+    public constructor(parents: Array<PredictionContext | null>, returnStates: number[]) {
         /**
          * Parent can be null only if full ctx mode and we make an array
          * from {@link //EMPTY} and non-empty. We merge {@link //EMPTY} by using
@@ -24,37 +26,43 @@ export class ArrayPredictionContext extends PredictionContext {
         super(hashCode);
         this.parents = parents;
         this.returnStates = returnStates;
+
         return this;
     }
 
-    isEmpty() {
+    public override isEmpty(): boolean {
         // since EMPTY_RETURN_STATE can only appear in the last position, we
         // don't need to verify that size==1
         return this.returnStates[0] === PredictionContext.EMPTY_RETURN_STATE;
     }
 
-    getParent(index) {
+    public getParent(index: number): PredictionContext | null {
         return this.parents[index];
     }
 
-    getReturnState(index) {
+    public getReturnState(index: number): number {
         return this.returnStates[index];
     }
 
-    equals(other) {
+    public equals(other: unknown): boolean {
         if (this === other) {
             return true;
-        } else if (!(other instanceof ArrayPredictionContext)) {
-            return false;
-        } else if (this.hashCode() !== other.hashCode()) {
-            return false; // can't be same if hash is different
-        } else {
-            return equalArrays(this.returnStates, other.returnStates) &&
-                equalArrays(this.parents, other.parents);
         }
+
+        if (!(other instanceof ArrayPredictionContext)) {
+            return false;
+        }
+
+        if (this.hashCode() !== other.hashCode()) {
+            return false; // can't be same if hash is different
+        }
+
+        return equalArrays(this.returnStates, other.returnStates) &&
+            equalArrays(this.parents, other.parents);
+
     }
 
-    toString() {
+    public override toString(): string {
         if (this.isEmpty()) {
             return "[]";
         } else {
@@ -74,11 +82,12 @@ export class ArrayPredictionContext extends PredictionContext {
                     s = s + "null";
                 }
             }
+
             return s + "]";
         }
     }
 
-    get length() {
+    public get length(): number {
         return this.returnStates.length;
     }
 }
