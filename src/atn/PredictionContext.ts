@@ -1,0 +1,50 @@
+/*
+ * Copyright (c) The ANTLR Project. All rights reserved.
+ * Use of this file is governed by the BSD 3-clause license that
+ * can be found in the LICENSE.txt file in the project root.
+ */
+
+/* eslint-disable @typescript-eslint/naming-convention, jsdoc/require-returns, jsdoc/require-param */
+
+import { HashCode } from "../misc/HashCode.js";
+
+export abstract class PredictionContext {
+    /**
+     * Represents {@code $} in an array in full context mode, when {@code $}
+     * doesn't mean wildcard: {@code $ + x = [$,x]}. Here,
+     * {@code $} = {@link //EMPTY_RETURN_STATE}.
+     */
+    public static readonly EMPTY_RETURN_STATE = 0x7FFFFFFF;
+
+    // Temporarily here. Should be moved to EmptyPredictionContext. It's initialized in that context class.
+    public static EMPTY: PredictionContext;
+
+    public static trace_atn_sim = false;
+
+    private cachedHashCode: number;
+
+    public constructor(cachedHashCode: number) {
+        this.cachedHashCode = cachedHashCode;
+    }
+
+    public isEmpty(): boolean {
+        return false;
+    }
+
+    public hasEmptyPath(): boolean {
+        return this.getReturnState(this.length - 1) === PredictionContext.EMPTY_RETURN_STATE;
+    }
+
+    public hashCode(): number {
+        return this.cachedHashCode;
+    }
+
+    public updateHashCode(hash: HashCode): void {
+        hash.update(this.cachedHashCode);
+    }
+
+    public abstract getParent(index: number): PredictionContext | null;
+    public abstract getReturnState(index: number): number;
+    public abstract get length(): number;
+    public abstract equals(obj: unknown): boolean;
+}
