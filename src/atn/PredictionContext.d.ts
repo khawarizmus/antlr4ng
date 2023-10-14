@@ -6,7 +6,7 @@
 
 import { HashCode } from "../misc/HashCode.ts";
 
-export class PredictionContext {
+export abstract class PredictionContext {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     public static EMPTY_RETURN_STATE: number;
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -21,4 +21,6 @@ export class PredictionContext {
     public hashCode(): number;
 
     public updateHashCode(hash: HashCode): void;
+
+    public abstract equals(obj: unknown): boolean;
 }
