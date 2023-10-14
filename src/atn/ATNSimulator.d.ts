@@ -4,5 +4,8 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+import { PredictionContext } from "./PredictionContext.ts";
+
 export declare class ATNSimulator {
+    public getCachedContext(context: PredictionContext): PredictionContext;
 }
