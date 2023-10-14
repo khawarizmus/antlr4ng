@@ -13,17 +13,17 @@ import { HashMap } from "../misc/HashMap.js";
  * can be used for both lexers and parsers.
  */
 export class PredictionContextCache {
-
-    constructor() {
-        this.cache = new HashMap();
-    }
+    private cache = new HashMap<PredictionContext, PredictionContext>();
 
     /**
      * Add a context to the cache and return it. If the context already exists,
      * return that one instead and do not add a new context to the cache.
      * Protect shared cache from unsafe thread access.
+     *
+     * @param ctx tbd
+     * @returns tbd
      */
-    add(ctx) {
+    public add(ctx: PredictionContext): PredictionContext {
         if (ctx === PredictionContext.EMPTY) {
             return PredictionContext.EMPTY;
         }
@@ -32,14 +32,15 @@ export class PredictionContextCache {
             return existing;
         }
         this.cache.set(ctx, ctx);
+
         return ctx;
     }
 
-    get(ctx) {
+    public get(ctx: PredictionContext): PredictionContext | null {
         return this.cache.get(ctx) || null;
     }
 
-    get length() {
+    public get length(): number {
         return this.cache.length;
     }
 }

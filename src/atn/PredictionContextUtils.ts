@@ -4,34 +4,43 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+/* eslint-disable jsdoc/require-returns, jsdoc/require-param */
+
 import { RuleContext } from "./RuleContext.js";
 import { PredictionContext } from "./PredictionContext.js";
 import { ArrayPredictionContext } from "./ArrayPredictionContext.js";
 import { SingletonPredictionContext } from "./SingletonPredictionContext.js";
 import { EmptyPredictionContext } from "./EmptyPredictionContext.js";
 import { HashMap } from "../misc/HashMap.js";
+import { ATN } from "./ATN.js";
+import { PredictionContextCache } from "./PredictionContextCache.js";
+import { DoubleDict } from "../utils/DoubleDict.js";
+import { ParserRuleContext } from "../ParserRuleContext.js";
+import { RuleTransition } from "./RuleTransition.js";
 
 /**
  * Convert a {@link RuleContext} tree to a {@link PredictionContext} graph.
  * Return {@link //EMPTY} if {@code outerContext} is empty or null.
  */
-export function predictionContextFromRuleContext(atn, outerContext) {
+export const predictionContextFromRuleContext = (atn: ATN, outerContext: RuleContext): PredictionContext => {
     if (outerContext === undefined || outerContext === null) {
-        outerContext = RuleContext.EMPTY;
+        outerContext = ParserRuleContext.EMPTY;
     }
     // if we are in RuleContext of start rule, s, then PredictionContext
     // is EMPTY. Nobody called us. (if we are empty, return empty)
-    if (outerContext.parent === null || outerContext === RuleContext.EMPTY) {
+    if (outerContext.parent === null || outerContext === ParserRuleContext.EMPTY) {
         return PredictionContext.EMPTY;
     }
     // If we have a parent, convert it to a PredictionContext graph
     const parent = predictionContextFromRuleContext(atn, outerContext.parent);
-    const state = atn.states[outerContext.invokingState];
-    const transition = state.transitions[0];
-    return SingletonPredictionContext.create(parent, transition.followState.stateNumber);
-}
+    const state = atn.states[outerContext.invokingState]!;
+    const transition = state.transitions[0] as RuleTransition;
 
-export function getCachedPredictionContext(context, contextCache, visited) {
+    return SingletonPredictionContext.create(parent, transition.followState.stateNumber);
+};
+
+export const getCachedPredictionContext = (context: PredictionContext, contextCache: PredictionContextCache,
+    visited: HashMap<PredictionContext, PredictionContext>): PredictionContext => {
     if (context.isEmpty()) {
         return context;
     }
@@ -42,12 +51,13 @@ export function getCachedPredictionContext(context, contextCache, visited) {
     existing = contextCache.get(context);
     if (existing !== null) {
         visited.set(context, existing);
+
         return existing;
     }
     let changed = false;
     let parents = [];
     for (let i = 0; i < parents.length; i++) {
-        const parent = getCachedPredictionContext(context.getParent(i), contextCache, visited);
+        const parent = getCachedPredictionContext(context.getParent(i)!, contextCache, visited);
         if (changed || parent !== context.getParent(i)) {
             if (!changed) {
                 parents = [];
@@ -62,25 +72,26 @@ export function getCachedPredictionContext(context, contextCache, visited) {
     if (!changed) {
         contextCache.add(context);
         visited.set(context, context);
+
         return context;
     }
     let updated = null;
     if (parents.length === 0) {
         updated = PredictionContext.EMPTY;
     } else if (parents.length === 1) {
-        updated = SingletonPredictionContext.create(parents[0], context
-            .getReturnState(0));
+        updated = SingletonPredictionContext.create(parents[0], context.getReturnState(0));
     } else {
-        updated = new ArrayPredictionContext(parents, context.returnStates);
+        updated = new ArrayPredictionContext(parents, (context as ArrayPredictionContext).returnStates);
     }
     contextCache.add(updated);
     visited.set(updated, updated);
     visited.set(context, updated);
 
     return updated;
-}
+};
 
-export function merge(a, b, rootIsWildcard, mergeCache) {
+export const merge = (a: PredictionContext, b: PredictionContext, rootIsWildcard: boolean,
+    mergeCache: DoubleDict<PredictionContext, PredictionContext, PredictionContext> | null): PredictionContext => {
     // share same graph if both same
     if (a === b) {
         return a;
@@ -100,13 +111,14 @@ export function merge(a, b, rootIsWildcard, mergeCache) {
     }
     // convert singleton so both are arrays to normalize
     if (a instanceof SingletonPredictionContext) {
-        a = new ArrayPredictionContext([a.getParent()], [a.returnState]);
+        a = new ArrayPredictionContext([a.parent], [a.returnState]);
     }
     if (b instanceof SingletonPredictionContext) {
-        b = new ArrayPredictionContext([b.getParent()], [b.returnState]);
+        b = new ArrayPredictionContext([b.parent], [b.returnState]);
     }
-    return mergeArrays(a, b, rootIsWildcard, mergeCache);
-}
+
+    return mergeArrays(a as ArrayPredictionContext, b as ArrayPredictionContext, rootIsWildcard, mergeCache);
+};
 
 /**
  * Merge two {@link ArrayPredictionContext} instances.
@@ -128,16 +140,19 @@ export function merge(a, b, rootIsWildcard, mergeCache) {
  * {@link SingletonPredictionContext}.<br>
  * <embed src="images/ArrayMerge_EqualTop.svg" type="image/svg+xml"/></p>
  */
-function mergeArrays(a, b, rootIsWildcard, mergeCache) {
+const mergeArrays = (a: ArrayPredictionContext, b: ArrayPredictionContext, rootIsWildcard: boolean,
+    mergeCache: DoubleDict<PredictionContext, PredictionContext, PredictionContext> | null): PredictionContext => {
     if (mergeCache !== null) {
         let previous = mergeCache.get(a, b);
         if (previous !== null) {
-            if (PredictionContext.trace_atn_sim) console.log("mergeArrays a=" + a + ",b=" + b + " -> previous");
+            if (PredictionContext.trace_atn_sim) { console.log("mergeArrays a=" + a + ",b=" + b + " -> previous"); }
+
             return previous;
         }
         previous = mergeCache.get(b, a);
         if (previous !== null) {
-            if (PredictionContext.trace_atn_sim) console.log("mergeArrays a=" + a + ",b=" + b + " -> previous");
+            if (PredictionContext.trace_atn_sim) { console.log("mergeArrays a=" + a + ",b=" + b + " -> previous"); }
+
             return previous;
         }
     }
@@ -146,36 +161,36 @@ function mergeArrays(a, b, rootIsWildcard, mergeCache) {
     let j = 0; // walks b
     let k = 0; // walks target M array
 
-    let mergedReturnStates = new Array(a.returnStates.length + b.returnStates.length).fill(0);
-    let mergedParents = new Array(a.returnStates.length + b.returnStates.length).fill(null);
+    let mergedReturnStates = new Array<number>(a.returnStates.length + b.returnStates.length).fill(0);
+    let mergedParents = new Array<PredictionContext | null>(a.returnStates.length + b.returnStates.length).fill(null);
     // walk and merge to yield mergedParents, mergedReturnStates
     while (i < a.returnStates.length && j < b.returnStates.length) {
-        const a_parent = a.parents[i];
-        const b_parent = b.parents[j];
+        const aParent = a.parents[i];
+        const bParent = b.parents[j];
         if (a.returnStates[i] === b.returnStates[j]) {
             // same payload (stack tops are equal), must yield merged singleton
             const payload = a.returnStates[i];
             // $+$ = $
             const bothDollars = payload === PredictionContext.EMPTY_RETURN_STATE &&
-                a_parent === null && b_parent === null;
-            const ax_ax = (a_parent !== null && b_parent !== null && a_parent === b_parent); // ax+ax
+                aParent === null && bParent === null;
+            const axAx = (aParent !== null && bParent !== null && aParent === bParent); // ax+ax
             // ->
             // ax
-            if (bothDollars || ax_ax) {
-                mergedParents[k] = a_parent; // choose left
+            if (bothDollars || axAx) {
+                mergedParents[k] = aParent; // choose left
                 mergedReturnStates[k] = payload;
             } else { // ax+ay -> a'[x,y]
-                mergedParents[k] = merge(a_parent, b_parent, rootIsWildcard, mergeCache);
+                mergedParents[k] = merge(aParent!, bParent!, rootIsWildcard, mergeCache);
                 mergedReturnStates[k] = payload;
             }
             i += 1; // hop over left one as usual
             j += 1; // but also skip one in right side since we merge
         } else if (a.returnStates[i] < b.returnStates[j]) { // copy a[i] to M
-            mergedParents[k] = a_parent;
+            mergedParents[k] = aParent;
             mergedReturnStates[k] = a.returnStates[i];
             i += 1;
         } else { // b > a, copy b[j] to M
-            mergedParents[k] = b_parent;
+            mergedParents[k] = bParent;
             mergedReturnStates[k] = b.returnStates[j];
             j += 1;
         }
@@ -198,63 +213,68 @@ function mergeArrays(a, b, rootIsWildcard, mergeCache) {
     // trim merged if we combined a few that had same stack tops
     if (k < mergedParents.length) { // write index < last position; trim
         if (k === 1) { // for just one merged element, return singleton top
-            const a_ = SingletonPredictionContext.create(mergedParents[0],
-                mergedReturnStates[0]);
+            const aNew = SingletonPredictionContext.create(mergedParents[0], mergedReturnStates[0]);
             if (mergeCache !== null) {
-                mergeCache.set(a, b, a_);
+                mergeCache.set(a, b, aNew);
             }
-            return a_;
+
+            return aNew;
         }
         mergedParents = mergedParents.slice(0, k);
         mergedReturnStates = mergedReturnStates.slice(0, k);
     }
 
-    const M = new ArrayPredictionContext(mergedParents, mergedReturnStates);
+    const merged = new ArrayPredictionContext(mergedParents, mergedReturnStates);
 
     // if we created same array as a or b, return that instead
     // TODO: track whether this is possible above during merge sort for speed
-    if (M.equals(a)) {
+    if (merged.equals(a)) {
         if (mergeCache !== null) {
             mergeCache.set(a, b, a);
         }
-        if (PredictionContext.trace_atn_sim) console.log("mergeArrays a=" + a + ",b=" + b + " -> a");
+        if (PredictionContext.trace_atn_sim) { console.log("mergeArrays a=" + a + ",b=" + b + " -> a"); }
+
         return a;
     }
-    if (M.equals(b)) {
+    if (merged.equals(b)) {
         if (mergeCache !== null) {
             mergeCache.set(a, b, b);
         }
-        if (PredictionContext.trace_atn_sim) console.log("mergeArrays a=" + a + ",b=" + b + " -> b");
+        if (PredictionContext.trace_atn_sim) { console.log("mergeArrays a=" + a + ",b=" + b + " -> b"); }
+
         return b;
     }
     combineCommonParents(mergedParents);
 
     if (mergeCache !== null) {
-        mergeCache.set(a, b, M);
+        mergeCache.set(a, b, merged);
     }
 
-    if (PredictionContext.trace_atn_sim) console.log("mergeArrays a=" + a + ",b=" + b + " -> " + M);
+    if (PredictionContext.trace_atn_sim) { console.log("mergeArrays a=" + a + ",b=" + b + " -> " + merged); }
 
-    return M;
-}
+    return merged;
+};
 
 /**
  * Make pass over all <em>M</em> {@code parents}; merge any {@code equals()}
  * ones.
  */
-function combineCommonParents(parents) {
-    const uniqueParents = new HashMap();
+export const combineCommonParents = (parents: Array<PredictionContext | null>): void => {
+    const uniqueParents = new HashMap<PredictionContext, PredictionContext>();
 
-    for (let p = 0; p < parents.length; p++) {
-        const parent = parents[p];
-        if (!(uniqueParents.containsKey(parent))) {
-            uniqueParents.set(parent, parent);
+    for (const parent of parents) {
+        if (parent) {
+            if (!(uniqueParents.containsKey(parent))) {
+                uniqueParents.set(parent, parent);
+            }
         }
     }
     for (let q = 0; q < parents.length; q++) {
-        parents[q] = uniqueParents.get(parents[q]);
+        if (parents[q]) {
+            parents[q] = uniqueParents.get(parents[q]!);
+        }
     }
-}
+};
 
 /**
  * Merge two {@link SingletonPredictionContext} instances.
@@ -285,9 +305,11 @@ function combineCommonParents(parents) {
  * @param b the second {@link SingletonPredictionContext}
  * @param rootIsWildcard {@code true} if this is a local-context merge,
  * otherwise false to indicate a full-context merge
- * @param mergeCache
+ * @param mergeCache tbd
  */
-function mergeSingletons(a, b, rootIsWildcard, mergeCache) {
+export const mergeSingletons = (a: SingletonPredictionContext, b: SingletonPredictionContext,
+    rootIsWildcard: boolean,
+    mergeCache: DoubleDict<PredictionContext, PredictionContext, PredictionContext> | null): PredictionContext => {
     if (mergeCache !== null) {
         let previous = mergeCache.get(a, b);
         if (previous !== null) {
@@ -304,10 +326,11 @@ function mergeSingletons(a, b, rootIsWildcard, mergeCache) {
         if (mergeCache !== null) {
             mergeCache.set(a, b, rootMerge);
         }
+
         return rootMerge;
     }
     if (a.returnState === b.returnState) {
-        const parent = merge(a.parent, b.parent, rootIsWildcard, mergeCache);
+        const parent = merge(a.parent!, b.parent!, rootIsWildcard, mergeCache);
         // if parent is same as existing a or b parent or reduced to a parent,
         // return it
         if (parent === a.parent) {
@@ -324,6 +347,7 @@ function mergeSingletons(a, b, rootIsWildcard, mergeCache) {
         if (mergeCache !== null) {
             mergeCache.set(a, b, spc);
         }
+
         return spc;
     } else { // a != b payloads differ
         // see if we can collapse parents due to $+x parents if local ctx
@@ -345,6 +369,7 @@ function mergeSingletons(a, b, rootIsWildcard, mergeCache) {
             if (mergeCache !== null) {
                 mergeCache.set(a, b, apc);
             }
+
             return apc;
         }
         // parents differ and can't merge them. Just pack together
@@ -357,13 +382,14 @@ function mergeSingletons(a, b, rootIsWildcard, mergeCache) {
             payloads[1] = a.returnState;
             parents = [b.parent, a.parent];
         }
-        const a_ = new ArrayPredictionContext(parents, payloads);
+        const aNew = new ArrayPredictionContext(parents, payloads);
         if (mergeCache !== null) {
-            mergeCache.set(a, b, a_);
+            mergeCache.set(a, b, aNew);
         }
-        return a_;
+
+        return aNew;
     }
-}
+};
 
 /**
  * Handle case where at least one of {@code a} or {@code b} is
@@ -403,7 +429,8 @@ function mergeSingletons(a, b, rootIsWildcard, mergeCache) {
  * @param rootIsWildcard {@code true} if this is a local-context merge,
  * otherwise false to indicate a full-context merge
  */
-function mergeRoot(a, b, rootIsWildcard) {
+export const mergeRoot = (a: SingletonPredictionContext, b: SingletonPredictionContext,
+    rootIsWildcard: boolean): PredictionContext | null => {
     if (rootIsWildcard) {
         if (a === PredictionContext.EMPTY) {
             return PredictionContext.EMPTY; // // + b =//
@@ -418,23 +445,29 @@ function mergeRoot(a, b, rootIsWildcard) {
             const payloads = [b.returnState,
             PredictionContext.EMPTY_RETURN_STATE];
             const parents = [b.parent, null];
+
             return new ArrayPredictionContext(parents, payloads);
         } else if (b === PredictionContext.EMPTY) { // x + $ = [$,x] ($ is always first if present)
             const payloads = [a.returnState, PredictionContext.EMPTY_RETURN_STATE];
             const parents = [a.parent, null];
+
             return new ArrayPredictionContext(parents, payloads);
         }
     }
+
     return null;
-}
+};
 
 // ter's recursive version of Sam's getAllNodes()
-export function getAllContextNodes(context, nodes, visited) {
+export const getAllContextNodes = (context: PredictionContext | null, nodes: PredictionContext[],
+    visited: HashMap<PredictionContext, PredictionContext> | null): PredictionContext[] => {
     if (nodes === null) {
         nodes = [];
+
         return getAllContextNodes(context, nodes, visited);
     } else if (visited === null) {
         visited = new HashMap();
+
         return getAllContextNodes(context, nodes, visited);
     } else {
         if (context === null || visited.containsKey(context)) {
@@ -445,6 +478,7 @@ export function getAllContextNodes(context, nodes, visited) {
         for (let i = 0; i < context.length; i++) {
             getAllContextNodes(context.getParent(i), nodes, visited);
         }
+
         return nodes;
     }
-}
+};

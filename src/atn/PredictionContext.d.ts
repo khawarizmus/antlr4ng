@@ -12,6 +12,9 @@ export abstract class PredictionContext {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     public static EMPTY: PredictionContext;
 
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    public static trace_atn_sim: boolean;
+
     public constructor(cachedHashCode: number);
 
     public isEmpty(): boolean;
@@ -23,4 +26,8 @@ export abstract class PredictionContext {
     public updateHashCode(hash: HashCode): void;
 
     public abstract equals(obj: unknown): boolean;
+    public abstract get length(): number;
+    public abstract getParent(index: number): PredictionContext | null;
+    public abstract getReturnState(index: number): number;
+
 }
