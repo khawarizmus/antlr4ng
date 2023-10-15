@@ -4,24 +4,35 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+import { ATNState } from "./ATNState.js";
 import { Transition } from "./Transition.js";
 import { TransitionType } from "./TransitionType.js";
 
 export class ActionTransition extends Transition {
-    constructor(target, ruleIndex, actionIndex, isCtxDependent) {
+    public ruleIndex: number;
+    public actionIndex: number;
+    public isCtxDependent: boolean;
+
+    public constructor(target: ATNState, ruleIndex: number, actionIndex: number, isCtxDependent: boolean) {
         super(target);
-        this.serializationType = TransitionType.ACTION;
         this.ruleIndex = ruleIndex;
         this.actionIndex = actionIndex === undefined ? -1 : actionIndex;
         this.isCtxDependent = isCtxDependent === undefined ? false : isCtxDependent; // e.g., $i ref in pred
-        this.isEpsilon = true;
     }
 
-    matches(symbol, minVocabSymbol, maxVocabSymbol) {
+    public override get isEpsilon(): boolean {
+        return true;
+    }
+
+    public override getSerializationType(): number {
+        return TransitionType.ACTION;
+    }
+
+    public matches(_symbol: number, _minVocabSymbol: number, _maxVocabSymbol: number): boolean {
         return false;
     }
 
-    toString() {
+    public override toString(): string {
         return "action_" + this.ruleIndex + ":" + this.actionIndex;
     }
 }

@@ -10,6 +10,7 @@ import { Transition } from "./Transition.js";
 export declare class WildcardTransition extends Transition {
     public constructor(target: ATNState);
 
+    public override getSerializationType(): number;
     public matches(symbol: number, minVocabSymbol: number, maxVocabSymbol: number): boolean;
     public toString(): string;
 }

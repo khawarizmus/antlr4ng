@@ -10,7 +10,10 @@ import { TransitionType } from "./TransitionType.js";
 export class NotSetTransition extends SetTransition {
     constructor(target, set) {
         super(target, set);
-        this.serializationType = TransitionType.NOT_SET;
+    }
+
+    getSerializationType() {
+        return TransitionType.NOT_SET;
     }
 
     matches(symbol, minVocabSymbol, maxVocabSymbol) {

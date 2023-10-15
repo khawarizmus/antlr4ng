@@ -9,18 +9,27 @@ import { Transition } from "./Transition.js";
 import { TransitionType } from './TransitionType.js';
 
 export class RangeTransition extends Transition {
+    #label;
+
     constructor(target, start, stop) {
         super(target);
-        this.serializationType = TransitionType.RANGE;
         this.start = start;
         this.stop = stop;
-        this.label = this.makeLabel();
+        this.#label = this.makeLabel();
+    }
+
+    get label() {
+        return this.#label;
     }
 
     makeLabel() {
         const s = new IntervalSet();
         s.addRange(this.start, this.stop);
         return s;
+    }
+
+    getSerializationType() {
+        return TransitionType.RANGE;
     }
 
     matches(symbol, minVocabSymbol, maxVocabSymbol) {

@@ -15,8 +15,14 @@ export class RuleTransition extends Transition {
         this.precedence = precedence;
         // what node to begin computations following ref to rule
         this.followState = followState;
-        this.serializationType = TransitionType.RULE;
-        this.isEpsilon = true;
+    }
+
+    get isEpsilon() {
+        return true;
+    }
+
+    getSerializationType() {
+        return TransitionType.RULE;
     }
 
     matches(symbol, minVocabSymbol, maxVocabSymbol) {

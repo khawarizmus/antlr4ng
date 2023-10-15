@@ -12,10 +12,11 @@ export declare class PredicateTransition extends AbstractPredicateTransition {
     public ruleIndex: number;
     public predIndex: number;
     public isCtxDependent: boolean;
-    public isEpsilon: boolean;
+    public get isEpsilon(): boolean;
 
     public constructor(target: ATNState, ruleIndex: number, predIndex: number, isCtxDependent: boolean);
 
+    public override getSerializationType(): number;
     public matches(symbol: number, minVocabSymbol: number, maxVocabSymbol: number): boolean;
     public getPredicate(): Predicate;
     public toString(): string;

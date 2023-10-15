@@ -4,6 +4,8 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+/* eslint-disable @typescript-eslint/naming-convention */
+
 export const TransitionType = {
     // constants for serialization
     EPSILON: 1,

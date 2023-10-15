@@ -10,7 +10,10 @@ import { TransitionType } from "./TransitionType.js";
 export class WildcardTransition extends Transition {
     constructor(target) {
         super(target);
-        this.serializationType = TransitionType.WILDCARD;
+    }
+
+    getSerializationType() {
+        return TransitionType.WILDCARD;
     }
 
     matches(symbol, minVocabSymbol, maxVocabSymbol) {

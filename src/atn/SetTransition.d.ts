@@ -13,6 +13,7 @@ export declare class SetTransition extends Transition {
 
     public constructor(target: ATNState, set: IntervalSet);
 
+    public override getSerializationType(): number;
     public override matches(symbol: number, minVocabSymbol: number, maxVocabSymbol: number): boolean;
     public toString(): string;
 }

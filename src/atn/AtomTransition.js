@@ -9,12 +9,13 @@ import { Transition } from "./Transition.js";
 import { TransitionType } from "./TransitionType.js";
 
 export class AtomTransition extends Transition {
+    #label;
+
     constructor(target, label) {
         super(target);
         // The token type or character value; or, signifies special label.
         this.label_ = label;
-        this.label = this.makeLabel();
-        this.serializationType = TransitionType.ATOM;
+        this.#label = this.makeLabel();
     }
 
     makeLabel() {
@@ -23,8 +24,16 @@ export class AtomTransition extends Transition {
         return s;
     }
 
+    get label() {
+        return this.#label;
+    }
+
     matches(symbol, minVocabSymbol, maxVocabSymbol) {
         return this.label_ === symbol;
+    }
+
+    getSerializationType() {
+        return TransitionType.ATOM;
     }
 
     toString() {

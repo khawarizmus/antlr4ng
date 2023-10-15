@@ -10,13 +10,19 @@ import { TransitionType } from "./TransitionType.js";
 export class EpsilonTransition extends Transition {
     constructor(target, outermostPrecedenceReturn) {
         super(target);
-        this.serializationType = TransitionType.EPSILON;
-        this.isEpsilon = true;
         this.outermostPrecedenceReturn = outermostPrecedenceReturn;
+    }
+
+    get isEpsilon() {
+        return true;
     }
 
     matches(symbol, minVocabSymbol, maxVocabSymbol) {
         return false;
+    }
+
+    getSerializationType() {
+        return TransitionType.EPSILON;
     }
 
     toString() {

@@ -11,15 +11,21 @@ import { TransitionType } from "./TransitionType.js";
 export class PredicateTransition extends AbstractPredicateTransition {
     constructor(target, ruleIndex, predIndex, isCtxDependent) {
         super(target);
-        this.serializationType = TransitionType.PREDICATE;
         this.ruleIndex = ruleIndex;
         this.predIndex = predIndex;
         this.isCtxDependent = isCtxDependent; // e.g., $i ref in pred
-        this.isEpsilon = true;
+    }
+
+    get isEpsilon() {
+        return true;
     }
 
     matches(symbol, minVocabSymbol, maxVocabSymbol) {
         return false;
+    }
+
+    getSerializationType() {
+        return TransitionType.PREDICATE;
     }
 
     getPredicate() {

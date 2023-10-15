@@ -13,6 +13,7 @@ export declare class RangeTransition extends Transition {
 
     public constructor(target: ATNState, start: number, stop: number);
 
+    public override getSerializationType(): number;
     public matches(symbol: number, minVocabSymbol: number, maxVocabSymbol: number): boolean;
     public toString(): string;
 }

@@ -13,6 +13,7 @@ export declare class PrecedencePredicateTransition extends AbstractPredicateTran
 
     public constructor(target: ATNState, precedence: number);
 
+    public override getSerializationType(): number;
     public matches(symbol: number, minVocabSymbol: number, maxVocabSymbol: number): boolean;
     public getPredicate(): PrecedencePredicate;
     public toString(): string;

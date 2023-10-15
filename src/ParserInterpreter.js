@@ -155,7 +155,7 @@ export class ParserInterpreter extends Parser {
         }
 
         let transition = p.transitions[predictedAlt - 1];
-        switch (transition.serializationType) {
+        switch (transition.getSerializationType()) {
             case TransitionType.EPSILON:
                 if (this.#pushRecursionContextStates.get(p.stateNumber) &&
                     !(transition.target instanceof LoopEndState)) {

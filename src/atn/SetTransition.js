@@ -11,15 +11,24 @@ import { Transition } from "./Transition.js";
 import { TransitionType } from "./TransitionType.js";
 
 export class SetTransition extends Transition {
+    #label;
+
     constructor(target, set) {
         super(target);
-        this.serializationType = TransitionType.SET;
         if (set !== undefined && set !== null) {
-            this.label = set;
+            this.#label = set;
         } else {
-            this.label = new IntervalSet();
-            this.label.addOne(Token.INVALID_TYPE);
+            this.#label = new IntervalSet();
+            this.#label.addOne(Token.INVALID_TYPE);
         }
+    }
+
+    get label() {
+        return this.#label;
+    }
+
+    getSerializationType() {
+        return TransitionType.SET;
     }
 
     matches(symbol, minVocabSymbol, maxVocabSymbol) {

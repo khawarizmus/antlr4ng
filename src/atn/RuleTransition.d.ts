@@ -11,9 +11,10 @@ export declare class RuleTransition extends Transition {
     public ruleIndex: number;
     public precedence: number;
     public followState: ATNState;
-    public isEpsilon: boolean;
+    public get isEpsilon(): boolean;
 
     public constructor(ruleStart: ATNState, ruleIndex: number, precedence: number, followState: ATNState);
 
+    public override getSerializationType(): number;
     public matches(symbol: number, minVocabSymbol: number, maxVocabSymbol: number): boolean;
 }

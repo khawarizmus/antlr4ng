@@ -11,9 +11,11 @@ import { TransitionType } from "./TransitionType.js";
 export class PrecedencePredicateTransition extends AbstractPredicateTransition {
     constructor(target, precedence) {
         super(target);
-        this.serializationType = TransitionType.PRECEDENCE;
         this.precedence = precedence;
-        this.isEpsilon = true;
+    }
+
+    get isEpsilon() {
+        return true;
     }
 
     matches(symbol, minVocabSymbol, maxVocabSymbol) {
@@ -22,6 +24,10 @@ export class PrecedencePredicateTransition extends AbstractPredicateTransition {
 
     getPredicate() {
         return new PrecedencePredicate(this.precedence);
+    }
+
+    getSerializationType() {
+        return TransitionType.PRECEDENCE;
     }
 
     toString() {

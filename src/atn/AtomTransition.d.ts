@@ -10,6 +10,7 @@ import { Transition } from "./Transition.js";
 export declare class AtomTransition extends Transition {
     public constructor(target: ATNState, label: number);
 
+    public override getSerializationType(): number;
     public matches(symbol: number, minVocabSymbol: number, maxVocabSymbol: number): boolean;
     public toString(): string;
 }

@@ -12,6 +12,7 @@ export declare class EpsilonTransition extends Transition {
 
     public constructor(target: ATNState, outermostPrecedenceReturn: number);
 
+    public override getSerializationType(): number;
     public matches(symbol: number, minVocabSymbol: number, maxVocabSymbol: number): boolean;
     public toString(): string;
 }
