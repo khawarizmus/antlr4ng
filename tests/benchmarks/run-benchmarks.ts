@@ -209,9 +209,9 @@ parserRun(0);
 
 console.log("Running antlr4ng parser (warm) ...");
 parserRun(1);
-parserRun(2);
-parserRun(3);
-parserRun(4);
-parserRun(5);
+//parserRun(2);
+//parserRun(3);
+//parserRun(4);
+//parserRun(5);
 
 console.log("Done");

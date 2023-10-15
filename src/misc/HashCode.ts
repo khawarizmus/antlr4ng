@@ -4,7 +4,7 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-export type HashableTypes = string | number | boolean | IHashUpdatable | HashableTypes[];
+export type HashableTypes = string | number | boolean | IHashUpdatable | HashableTypes[] | null;
 
 export interface IHashUpdatable {
     updateHashCode(hash: HashCode): void;
