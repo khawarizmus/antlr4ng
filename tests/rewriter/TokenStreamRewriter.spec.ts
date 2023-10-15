@@ -13,8 +13,8 @@ import { Calc } from "./generatedCode/calc.js";
 
 /**
  *
- * @param {antlr4.Lexer} lexerClass The lexer class to use.
- * @param {string} input The input to lex.
+ * @param lexerClass The lexer class to use.
+ * @param input The input to lex.
  *
  * @returns A new TokenStreamRewriter instance.
  */

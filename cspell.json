@@ -30,6 +30,7 @@
         "bitrix",
         "interp",
         "localctx",
+        "longlong",
         "nbits",
         "outfile",
         "parentctx",

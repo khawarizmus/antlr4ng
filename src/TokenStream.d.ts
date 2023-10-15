@@ -23,7 +23,7 @@ export declare interface TokenStream extends IntStream {
      * @see IntStream#LA
      */
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    LT(k: number): Token;
+    LT(k: number): Token | null;
 
     /**
      * Gets the {@link Token} at the specified {@code index} in the stream. When

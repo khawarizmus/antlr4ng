@@ -19,7 +19,7 @@ export declare abstract class Recognizer<ATNInterpreter extends ATNSimulator> {
 
     public interpreter: ATNInterpreter;
 
-    public addErrorListener(listener: BaseErrorListener<ATNInterpreter>): void;
+    public addErrorListener(listener: BaseErrorListener): void;
     public removeErrorListeners(): void;
 
     public getTokenTypeMap(): Map<Vocabulary, Map<string, number>>;

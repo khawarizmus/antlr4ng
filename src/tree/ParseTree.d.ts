@@ -30,10 +30,10 @@ export declare interface ParseTree {
      * invocation. For abstract syntax trees (ASTs), this is a {@link Token}
      * object.
      */
-    getPayload<T>(): T;
+    getPayload(): unknown;
 
     /** If there are children, get the {@code i}th value indexed from 0. */
-    getChild<T extends ParseTree>(i: number): T | null;
+    getChild(i: number): ParseTree | null;
 
     /**
      * How many children are there? If there is none, then this
