@@ -52,12 +52,12 @@ export interface ANTLRErrorListener {
      *        the parser was able to recover in line without exiting the
      *        surrounding rule.
      */
-    syntaxError?: <S extends Token, T extends ATNSimulator>(recognizer: Recognizer<T>,
+    syntaxError<S extends Token, T extends ATNSimulator>(recognizer: Recognizer<T>,
         offendingSymbol: S | null,
         line: number,
         charPositionInLine: number,
         msg: string,
-        e: RecognitionException | null) => void;
+        e: RecognitionException | null): void;
 
     /**
      * This method is called by the parser when a full-context prediction
@@ -99,13 +99,13 @@ export interface ANTLRErrorListener {
      * @param configs the ATN configuration set where the ambiguity was
      * identified
      */
-    reportAmbiguity?: (recognizer: Parser,
+    reportAmbiguity(recognizer: Parser,
         dfa: DFA,
         startIndex: number,
         stopIndex: number,
         exact: boolean,
         ambigAlts: BitSet | null,
-        configs: ATNConfigSet) => void;
+        configs: ATNConfigSet): void;
 
     /**
      * This method is called when an SLL conflict occurs and the parser is about
@@ -130,12 +130,12 @@ export interface ANTLRErrorListener {
      * @param configs the ATN configuration set where the SLL conflict was
      * detected
      */
-    reportAttemptingFullContext?: (recognizer: Parser,
+    reportAttemptingFullContext(recognizer: Parser,
         dfa: DFA,
         startIndex: number,
         stopIndex: number,
         conflictingAlts: BitSet | null,
-        configs: ATNConfigSet) => void;
+        configs: ATNConfigSet): void;
 
     /**
      * This method is called by the parser when a full-context prediction has a
@@ -175,10 +175,10 @@ export interface ANTLRErrorListener {
      * @param configs the ATN configuration set where the unambiguous prediction
      * was determined
      */
-    reportContextSensitivity?: (recognizer: Parser,
+    reportContextSensitivity(recognizer: Parser,
         dfa: DFA,
         startIndex: number,
         stopIndex: number,
         prediction: number,
-        configs: ATNConfigSet) => void;
+        configs: ATNConfigSet): void;
 }

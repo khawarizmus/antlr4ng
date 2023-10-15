@@ -4,12 +4,13 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { DefaultErrorStrategy } from "./DefaultErrorStrategy.js";
+/* eslint-disable jsdoc/require-param */
+
 import { InputMismatchException } from "./InputMismatchException.js";
+import { ParseCancellationException } from "./misc/ParseCancellationException.js";
+import { DefaultErrorStrategy } from "./DefaultErrorStrategy.js";
 import { Parser } from "./Parser.js";
 import { RecognitionException } from "./RecognitionException.js";
-import { Token } from "./Token.js";
-import { ParseCancellationException } from "./misc/ParseCancellationException.js";
 import { ParserRuleContext } from "./ParserRuleContext.js";
 
 // For jsdoc only.
@@ -19,7 +20,7 @@ import type { ANTLRErrorStrategy } from "./ANTLRErrorStrategy.js";
  * This implementation of {@link ANTLRErrorStrategy} responds to syntax errors
  * by immediately canceling the parse operation with a
  * {@link ParseCancellationException}. The implementation ensures that the
- * {@link ParserRuleContext#exception} field is set for all parse tree nodes
+ * {@link ParserRuleContext//exception} field is set for all parse tree nodes
  * that were not completed prior to encountering the error.
  *
  * <p>
@@ -30,7 +31,7 @@ import type { ANTLRErrorStrategy } from "./ANTLRErrorStrategy.js";
  * stage of two-stage parsing to immediately terminate if an error is
  * encountered, and immediately fall back to the second stage. In addition to
  * avoiding wasted work by attempting to recover from errors here, the empty
- * implementation of {@link BailErrorStrategy#sync} improves the performance of
+ * implementation of {@link BailErrorStrategy//sync} improves the performance of
  * the first stage.</li>
  * <li><strong>Silent validation:</strong> When syntax errors are not being
  * reported or logged, and the parse result is simply ignored if errors occur,
@@ -44,45 +45,39 @@ import type { ANTLRErrorStrategy } from "./ANTLRErrorStrategy.js";
  * @see Parser#setErrorHandler(ANTLRErrorStrategy)
  */
 export class BailErrorStrategy extends DefaultErrorStrategy {
+
     /**
      * Instead of recovering from exception {@code e}, re-throw it wrapped
-     *  in a {@link ParseCancellationException} so it is not caught by the
-     *  rule function catches.  Use {@link Exception#getCause()} to get the
-     *  original {@link RecognitionException}.
-     *
-     * @param recognizer the parser instance
-     * @param e the recognition exception to report
+     * in a {@link ParseCancellationException} so it is not caught by the
+     * rule function catches. Use {@link Exception//getCause()} to get the
+     * original {@link RecognitionException}.
      */
-    public override recover = (recognizer: Parser, e: RecognitionException): void => {
-        for (let context: ParserRuleContext | null = recognizer.context; context !== null; context = context.parent) {
+    public override recover(recognizer: Parser, e: RecognitionException): void {
+        let context: ParserRuleContext | null = recognizer.context;
+        while (context !== null) {
             context.exception = e;
+            context = context.parent;
         }
-
         throw new ParseCancellationException(e);
-    };
+    }
 
     /**
      * Make sure we don't attempt to recover inline; if the parser
-     *  successfully recovers, it won't throw an exception.
-     *
-     * @param recognizer the parser instance
+     * successfully recovers, it won't throw an exception.
      */
-    public override recoverInline = (recognizer: Parser): Token => {
-        const e = new InputMismatchException(recognizer);
-        for (let context: ParserRuleContext | null = recognizer.context; context !== null;
-            context = context.parent) {
-            context.exception = e;
+    public override recoverInline(recognizer: Parser): never {
+        const exception = new InputMismatchException(recognizer);
+        let context: ParserRuleContext | null = recognizer.context;
+        while (context !== null) {
+            context.exception = exception;
+            context = context.parent;
         }
 
-        throw new ParseCancellationException(e);
-    };
+        throw new ParseCancellationException(exception);
+    }
 
-    /**
-     * Make sure we don't attempt to recover from problems in subrules.
-     *
-     * @param _recognizer the parser instance
-     */
-    public override sync = (_recognizer: Parser | null): void => {
-        // Nothing to do
-    };
+    // Make sure we don't attempt to recover from problems in subrules.//
+    public override sync(_recognizer: Parser): void {
+        // pass
+    }
 }

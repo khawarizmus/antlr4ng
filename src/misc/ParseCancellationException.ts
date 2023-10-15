@@ -18,42 +18,8 @@ import type { BailErrorStrategy } from "../BailErrorStrategy.js";
  */
 export class ParseCancellationException extends Error {
 
-    public constructor();
-    public constructor(message: string);
-    public constructor(cause: Error);
-    public constructor(message: string, cause: Error);
-    public constructor(...args: unknown[]) {
-        switch (args.length) {
-            case 0: {
-                super();
-
-                break;
-            }
-
-            case 1: {
-                if (typeof args[0] === "string") {
-                    const [message] = args;
-                    super(message);
-
-                    break;
-                }
-
-                const [cause] = args as [Error];
-                super("", { cause });
-
-                break;
-            }
-
-            case 2: {
-                const [message, cause] = args as [string, Error];
-                super(message, cause);
-
-                break;
-            }
-
-            default: {
-                throw new Error(`Invalid number of arguments`);
-            }
-        }
+    public constructor(_e: Error) {
+        super();
+        Error.captureStackTrace(this, ParseCancellationException);
     }
 }

@@ -54,7 +54,7 @@ import { RecognitionException } from "./RecognitionException.js";
 import { FailedPredicateException } from "./FailedPredicateException.js";
 import { NoViableAltException } from "./NoViableAltException.js";
 import { BailErrorStrategy } from "./BailErrorStrategy.js";
-import { ParseCancellationException } from "./ParseCancellationException.js";
+import { ParseCancellationException } from "./misc/ParseCancellationException.js";
 import { LexerNoViableAltException } from "./LexerNoViableAltException.js";
 import { DefaultErrorStrategy } from "./DefaultErrorStrategy.js";
 import { BaseErrorListener } from "./BaseErrorListener.js";
