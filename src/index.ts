@@ -16,8 +16,10 @@ export { LexerNoViableAltException } from "./LexerNoViableAltException.js";
 export { ParserATNSimulator } from "./atn/ParserATNSimulator.js";
 export { ParserRuleContext } from "./ParserRuleContext.js";
 export { PredictionContextCache } from "./atn/PredictionContextCache.js";
+export * from "./atn/PredictionMode.js";
 export { RuleContext } from "./atn/RuleContext.js";
 export { RuleTransition } from "./atn/RuleTransition.js";
+export * from "./atn/Transition.js";
 
 export * from "./InputStream.js";
 export * from "./CharStream.js";
@@ -59,3 +61,5 @@ export * from "./misc/IntervalSet.js";
 export * from "./misc/ParseCancellationException.js";
 
 export * from "./tree/index.js";
+
+export * from "./utils/helpers.js";

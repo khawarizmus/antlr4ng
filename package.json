@@ -46,7 +46,7 @@
         "run-benchmarks": "node --no-warnings --experimental-vm-modules --loader ts-node/esm tests/benchmarks/run-benchmarks.ts"
     },
     "exports": {
-        "types": "./src/index.d.ts",
+        "types": "./src/index.ts",
         "default": "./dist/antlr4.mjs"
     }
 }
