@@ -8,7 +8,7 @@ import { Recognizer } from "../../Recognizer.js";
 import { Token } from "../../Token.js";
 import { BaseErrorListener } from "../../BaseErrorListener.js";
 import { RecognitionException } from "../../RecognitionException.js";
-import { ATNSimulator } from "../../index.js";
+import { ATNSimulator } from "../../atn/ATNSimulator.js";
 
 export class XPathLexerErrorListener extends BaseErrorListener {
     public override syntaxError<S extends Token, T extends ATNSimulator>(

@@ -5,9 +5,17 @@
  */
 
 import { ATNState } from "./ATNState.js";
+import { ATNStateType } from "./ATNStateType.js";
 import { BlockStartState } from "./BlockStartState.js";
 
-/** Terminal node of a simple `(a|b|c)` block. */
+/**
+ * Terminal node of a simple {@code (a|b|c)} block
+ */
 export class BlockEndState extends ATNState {
-    public startState: BlockStartState;
+    public startState: BlockStartState | null = null;
+
+    public override get stateType(): number {
+        return ATNStateType.BLOCK_END;
+    }
+
 }

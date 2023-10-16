@@ -245,6 +245,7 @@ export class ATNDeserializer {
             const srcState = atn.states[src]!;
             srcState.addTransition(trans);
         }
+
         // edges for rule stop states can be derived, so they aren't serialized
         for (i = 0; i < atn.states.length; i++) {
             state = atn.states[i]!;

@@ -4,6 +4,7 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+/* eslint-disable @typescript-eslint/naming-convention */
 export const ATNStateType = {
     INVALID_TYPE: 0,
     BASIC: 1,

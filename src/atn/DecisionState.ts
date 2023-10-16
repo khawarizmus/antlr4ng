@@ -5,11 +5,8 @@
  */
 
 import { ATNState } from "./ATNState.js";
-import { ATNStateType } from "./ATNStateType.js";
 
-export class BasicState extends ATNState {
-    get stateType() {
-        return ATNStateType.BASIC;
-    }
-
+export class DecisionState extends ATNState {
+    public decision = -1;
+    public nonGreedy = false;
 }

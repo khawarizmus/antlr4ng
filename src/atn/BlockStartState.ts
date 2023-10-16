@@ -7,7 +7,14 @@
 import { BlockEndState } from "./BlockEndState.js";
 import { DecisionState } from "./DecisionState.js";
 
-/**  The start of a regular `(...)` block. */
-export abstract class BlockStartState extends DecisionState {
+/**
+ *  The start of a regular {@code (...)} block
+ */
+export class BlockStartState extends DecisionState {
     public endState: BlockEndState | null;
+
+    public constructor() {
+        super();
+        this.endState = null;
+    }
 }

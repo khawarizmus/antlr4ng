@@ -11,9 +11,9 @@ import { Parser } from "./Parser.js";
 import { RecognitionException } from "./RecognitionException.js";
 import { Recognizer } from "./Recognizer.js";
 import { Token } from "./Token.js";
+import { ATNConfigSet } from "./atn/ATNConfigSet.js";
 import { ATNSimulator } from "./atn/ATNSimulator.js";
 import { DFA } from "./dfa/DFA.js";
-import { ATNConfigSet } from "./index.js";
 import { BitSet } from "./misc/BitSet.js";
 
 /**
