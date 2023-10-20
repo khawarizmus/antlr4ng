@@ -6,11 +6,12 @@
 
 /* eslint-disable jsdoc/require-param */
 
-import type { LexerActionExecutor } from "./LexerActionExecutor.js";
-import type { CharStream } from "../CharStream.js";
 import { LexerAction } from "./LexerAction.js";
 import { Lexer } from "../Lexer.js";
 import { HashCode } from "../misc/HashCode.js";
+
+import type { LexerActionExecutor } from "./LexerActionExecutor.js";
+import type { CharStream } from "../CharStream.js";
 
 /**
  * This implementation of {@link LexerAction} is used for tracking input offsets
@@ -36,8 +37,8 @@ import { HashCode } from "../misc/HashCode.js";
  */
 
 export class LexerIndexedCustomAction extends LexerAction {
-    private readonly offset: number;
-    private readonly action: LexerAction;
+    public readonly offset: number;
+    public readonly action: LexerAction;
 
     public constructor(offset: number, action: LexerAction) {
         super(action.actionType);

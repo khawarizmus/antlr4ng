@@ -4,10 +4,22 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { LexerIndexedCustomAction } from './LexerIndexedCustomAction.js';
-import { HashCode } from "../misc/HashCode.js";
+/* eslint-disable jsdoc/require-param */
 
-export class LexerActionExecutor {
+import { LexerIndexedCustomAction } from "./LexerIndexedCustomAction.js";
+import { HashCode } from "../misc/HashCode.js";
+import { LexerAction } from "./LexerAction.js";
+import { CharStream } from "../CharStream.js";
+import { Lexer } from "../Lexer.js";
+
+// For jsdoc only.
+import { DFA } from "../dfa/DFA.js";
+import { LexerATNConfig } from "./LexerATNConfig.js";
+
+export class LexerActionExecutor /*implements*/ extends LexerAction {
+    private lexerActions: LexerAction[];
+    private cachedHashCode: number;
+
     /**
      * Represents an executor for a sequence of lexer actions which traversed during
      * the matching operation of a lexer rule (token).
@@ -16,15 +28,42 @@ export class LexerActionExecutor {
      * efficiently, ensuring that actions appearing only at the end of the rule do
      * not cause bloating of the {@link DFA} created for the lexer.</p>
      */
-    constructor(lexerActions) {
+    public constructor(lexerActions: LexerAction[]) {
+        super(-1);
+
         this.lexerActions = lexerActions === null ? [] : lexerActions;
         /**
          * Caches the result of {@link //hashCode} since the hash code is an element
          * of the performance-critical {@link LexerATNConfig//hashCode} operation
          */
         this.cachedHashCode = HashCode.hashStuff(lexerActions); // "".join([str(la) for la in
+
         // lexerActions]))
         return this;
+    }
+
+    /**
+     * Creates a {@link LexerActionExecutor} which executes the actions for
+     * the input {@code lexerActionExecutor} followed by a specified
+     * {@code lexerAction}.
+     *
+     * @param lexerActionExecutor The executor for actions already traversed by
+     * the lexer while matching a token within a particular
+     * {@link LexerATNConfig}. If this is {@code null}, the method behaves as
+     * though it were an empty executor.
+     * @param lexerAction The lexer action to execute after the actions
+     * specified in {@code lexerActionExecutor}.
+     *
+     * @returns {LexerActionExecutor} A {@link LexerActionExecutor} for executing the combine actions
+     * of {@code lexerActionExecutor} and {@code lexerAction}.
+     */
+    public static append(lexerActionExecutor: LexerActionExecutor, lexerAction: LexerAction): LexerActionExecutor {
+        if (lexerActionExecutor === null) {
+            return new LexerActionExecutor([lexerAction]);
+        }
+        const lexerActions = lexerActionExecutor.lexerActions.concat([lexerAction]);
+
+        return new LexerActionExecutor(lexerActions);
     }
 
     /**
@@ -53,10 +92,10 @@ export class LexerActionExecutor {
      * @param offset The current offset to assign to all position-dependent
      * lexer actions which do not already have offsets assigned.
      *
-     * @return {LexerActionExecutor} A {@link LexerActionExecutor} which stores input stream offsets
+     * @returns {LexerActionExecutor} A {@link LexerActionExecutor} which stores input stream offsets
      * for all position-dependent lexer actions.
      */
-    fixOffsetBeforeMatch(offset) {
+    public fixOffsetBeforeMatch(offset: number): LexerActionExecutor {
         let updatedLexerActions = null;
         for (let i = 0; i < this.lexerActions.length; i++) {
             if (this.lexerActions[i].isPositionDependent &&
@@ -94,22 +133,26 @@ export class LexerActionExecutor {
      * {@link IntStream//seek} to set the {@code input} position to the beginning
      * of the token.
      */
-    execute(lexer, input, startIndex) {
+    public execute(lexer: Lexer, input?: CharStream, startIndex?: number): void {
+        if (input === undefined || startIndex === undefined) {
+            return;
+        }
+
         let requiresSeek = false;
         const stopIndex = input.index;
         try {
-            for (let i = 0; i < this.lexerActions.length; i++) {
-                let lexerAction = this.lexerActions[i];
+            for (const lexerAction of this.lexerActions) {
+                let action = lexerAction;
                 if (lexerAction instanceof LexerIndexedCustomAction) {
                     const offset = lexerAction.offset;
                     input.seek(startIndex + offset);
-                    lexerAction = lexerAction.action;
+                    action = lexerAction.action;
                     requiresSeek = (startIndex + offset) !== stopIndex;
                 } else if (lexerAction.isPositionDependent) {
                     input.seek(stopIndex);
                     requiresSeek = false;
                 }
-                lexerAction.execute(lexer);
+                action.execute(lexer);
             }
         } finally {
             if (requiresSeek) {
@@ -118,22 +161,18 @@ export class LexerActionExecutor {
         }
     }
 
-    hashCode() {
+    public override hashCode(): number {
         return this.cachedHashCode;
     }
 
-    updateHashCode(hash) {
-        hash.update(this.cachedHashCode);
-    }
-
-    equals(other) {
+    public override equals(other: unknown): boolean {
         if (this === other) {
             return true;
         } else if (!(other instanceof LexerActionExecutor)) {
             return false;
-        } else if (this.cachedHashCode != other.cachedHashCode) {
+        } else if (this.cachedHashCode !== other.cachedHashCode) {
             return false;
-        } else if (this.lexerActions.length != other.lexerActions.length) {
+        } else if (this.lexerActions.length !== other.lexerActions.length) {
             return false;
         } else {
             const numActions = this.lexerActions.length;
@@ -142,30 +181,9 @@ export class LexerActionExecutor {
                     return false;
                 }
             }
+
             return true;
         }
     }
 
-    /**
-     * Creates a {@link LexerActionExecutor} which executes the actions for
-     * the input {@code lexerActionExecutor} followed by a specified
-     * {@code lexerAction}.
-     *
-     * @param lexerActionExecutor The executor for actions already traversed by
-     * the lexer while matching a token within a particular
-     * {@link LexerATNConfig}. If this is {@code null}, the method behaves as
-     * though it were an empty executor.
-     * @param lexerAction The lexer action to execute after the actions
-     * specified in {@code lexerActionExecutor}.
-     *
-     * @return {LexerActionExecutor} A {@link LexerActionExecutor} for executing the combine actions
-     * of {@code lexerActionExecutor} and {@code lexerAction}.
-     */
-    static append(lexerActionExecutor, lexerAction) {
-        if (lexerActionExecutor === null) {
-            return new LexerActionExecutor([lexerAction]);
-        }
-        const lexerActions = lexerActionExecutor.lexerActions.concat([lexerAction]);
-        return new LexerActionExecutor(lexerActions);
-    }
 }

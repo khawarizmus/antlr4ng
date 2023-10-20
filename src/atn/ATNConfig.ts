@@ -11,11 +11,11 @@ import { HashCode } from "../misc/HashCode.js";
 import { ATNState } from "./ATNState.js";
 import { PredictionContext } from "./PredictionContext.js";
 
-export interface IConfigParameters {
+export interface IATNConfigParameters {
     state: ATNState | null,
     alt: number | null,
     context: PredictionContext | null,
-    semanticContext: SemanticContext | null,
+    semanticContext?: SemanticContext | null,
     reachesIntoOuterContext?: number | null,
     precedenceFilterSuppressed?: number,
 };
@@ -29,7 +29,7 @@ export interface ICheckedConfigParameters {
     precedenceFilterSuppressed?: boolean,
 };
 
-const checkParams = (params: IConfigParameters | null): ICheckedConfigParameters => {
+const checkParams = (params: IATNConfigParameters | null): ICheckedConfigParameters => {
     if (params === null) {
         return {
             state: null,
@@ -111,7 +111,7 @@ export class ATNConfig {
      * the tree of semantic predicates encountered before reaching
      * an ATN state
      */
-    public constructor(params: IConfigParameters, config: ATNConfig | null) {
+    public constructor(params: IATNConfigParameters, config: ATNConfig | null) {
         this.checkContext(params, config);
         const checkedParams = checkParams(params);
         const checkedConfig = checkConfig(config);
@@ -184,7 +184,7 @@ export class ATNConfig {
                 : "") + ")";
     }
 
-    private checkContext(params: IConfigParameters, config: ATNConfig | null) {
+    private checkContext(params: IATNConfigParameters, config: ATNConfig | null) {
         if ((params.context === null || params.context === undefined) &&
             (config === null || config.context === null || config.context === undefined)) {
             this.context = null;
