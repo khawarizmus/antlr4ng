@@ -37,6 +37,7 @@
         "parentctx",
         "precpred",
         "recog",
+        "semctx",
         "sempred",
         "ttype"
     ],

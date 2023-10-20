@@ -8,7 +8,7 @@ import { ATNConfigSet } from "./ATNConfigSet.js";
 import { HashSet } from "../misc/HashSet.js";
 
 export class OrderedATNConfigSet extends ATNConfigSet {
-    constructor() {
+    public constructor() {
         super();
         this.configLookup = new HashSet();
     }

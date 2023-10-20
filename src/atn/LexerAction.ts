@@ -7,6 +7,7 @@
 import { Lexer } from "../Lexer.js";
 import { HashCode } from "../misc/HashCode.js";
 
+// TODO: make LexerAction an interface
 export abstract class LexerAction {
     public readonly actionType: number;
     public isPositionDependent: boolean;

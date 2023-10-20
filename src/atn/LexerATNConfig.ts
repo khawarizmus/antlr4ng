@@ -13,18 +13,18 @@ import { HashCode } from "../misc/HashCode.js";
 
 export interface ILexerATNConfigParameters {
     state: ATNState | null,
-    alt: number | null,
-    context: PredictionContext | null,
-    lexerActionExecutor: LexerActionExecutor | null,
+    alt?: number | null,
+    context?: PredictionContext | null,
+    lexerActionExecutor?: LexerActionExecutor | null,
 };
 
 export class LexerATNConfig extends ATNConfig {
     /**
      * This is the backing field for {@link #getLexerActionExecutor}.
      */
-    private readonly lexerActionExecutor: LexerActionExecutor | null;
+    public readonly lexerActionExecutor: LexerActionExecutor | null;
 
-    private readonly passedThroughNonGreedyDecision: boolean;
+    public readonly passedThroughNonGreedyDecision: boolean;
 
     public constructor(params: ILexerATNConfigParameters, config: LexerATNConfig | null) {
         super(params, config);

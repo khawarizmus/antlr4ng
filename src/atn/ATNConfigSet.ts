@@ -42,6 +42,13 @@ export class ATNConfigSet {
     public configs: ATNConfig[] = [];
 
     /**
+     * Used in parser and lexer. In lexer, it indicates we hit a pred
+     * while computing a closure operation. Don't make a DFA state from this
+     */
+    public hasSemanticContext = false;
+    public dipsIntoOuterContext = false;
+
+    /**
      * The reason that we need this is because we don't want the hash map to use
      * the standard hash code and equals. We need all configurations with the
      * same
@@ -49,11 +56,11 @@ export class ATNConfigSet {
      * doubles
      * the number of objects associated with ATNConfigs. The other solution is
      * to
-     * use a hash table that lets us specify the equals/hashcode operation.
+     * use a hash table that lets us specify the equals/hashCode operation.
      * All configs but hashed by (s, i, _, pi) not including context. Wiped out
      * when we go readonly as this set becomes a DFA state
      */
-    private configLookup = new HashSet<ATNConfig>(hashATNConfig, equalATNConfigs);
+    protected configLookup = new HashSet<ATNConfig>(hashATNConfig, equalATNConfigs);
 
     /**
      * Indicates that this configuration set is part of a full context
@@ -78,13 +85,6 @@ export class ATNConfigSet {
     private uniqueAlt = 0;
     private conflictingAlts: BitSet | null = null;
 
-    /**
-     * Used in parser and lexer. In lexer, it indicates we hit a pred
-     * while computing a closure operation. Don't make a DFA state from this
-     */
-    private hasSemanticContext = false;
-    private dipsIntoOuterContext = false;
-
     private cachedHashCode = -1;
 
     public constructor(fullCtx?: boolean) {
@@ -102,10 +102,11 @@ export class ATNConfigSet {
      * {@link //hasSemanticContext} when necessary.</p>
      */
     public add(config: ATNConfig,
-        mergeCache: DoubleDict<PredictionContext, PredictionContext, PredictionContext> | null): boolean {
+        mergeCache?: DoubleDict<PredictionContext, PredictionContext, PredictionContext> | null): boolean {
         if (mergeCache === undefined) {
             mergeCache = null;
         }
+
         if (this.readOnly) {
             throw new Error("This set is readonly");
         }

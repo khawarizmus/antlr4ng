@@ -10,11 +10,13 @@ import { SemanticContext } from "./SemanticContext.js";
 import { HashCode } from "../misc/HashCode.js";
 import { ATNState } from "./ATNState.js";
 import { PredictionContext } from "./PredictionContext.js";
+import { Recognizer } from "../Recognizer.js";
+import { ATNSimulator } from "../index.js";
 
 export interface IATNConfigParameters {
     state: ATNState | null,
-    alt: number | null,
-    context: PredictionContext | null,
+    alt?: number | null,
+    context?: PredictionContext | null,
     semanticContext?: SemanticContext | null,
     reachesIntoOuterContext?: number | null,
     precedenceFilterSuppressed?: number,
@@ -173,8 +175,13 @@ export class ATNConfig {
         }
     }
 
-    public toString(): string {
-        return "(" + this.state + "," + this.alt +
+    public toString(_recog?: Recognizer<ATNSimulator> | null, showAlt = true): string {
+        let alt = "";
+        if (showAlt) {
+            alt = "," + this.alt;
+        }
+
+        return "(" + this.state + alt +
             (this.context !== null ? ",[" + this.context.toString() + "]" : "") +
             (this.semanticContext !== SemanticContext.NONE ?
                 ("," + this.semanticContext.toString())
