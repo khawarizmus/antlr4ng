@@ -5,10 +5,16 @@
  */
 
 import { ATNState } from "./ATNState.js";
+import { ATNStateType } from "./ATNStateType.js";
 
 /**
  * Mark the end of a * or + loop
  */
 export class LoopEndState extends ATNState {
-    public loopBackState: ATNState | null;
+    public loopBackState: ATNState | null = null;
+
+    public override get stateType(): number {
+        return ATNStateType.LOOP_END;
+    }
+
 }

@@ -49,6 +49,15 @@ export class ATNConfigSet {
     public dipsIntoOuterContext = false;
 
     /**
+     * Indicates that this configuration set is part of a full context
+     * LL prediction. It will be used to determine how to merge $. With SLL
+     * it's a wildcard whereas it is not for LL context merge
+     */
+    public readonly fullCtx: boolean;
+
+    public uniqueAlt = 0;
+
+    /**
      * The reason that we need this is because we don't want the hash map to use
      * the standard hash code and equals. We need all configurations with the
      * same
@@ -60,14 +69,9 @@ export class ATNConfigSet {
      * All configs but hashed by (s, i, _, pi) not including context. Wiped out
      * when we go readonly as this set becomes a DFA state
      */
-    protected configLookup = new HashSet<ATNConfig>(hashATNConfig, equalATNConfigs);
+    public configLookup = new HashSet<ATNConfig>(hashATNConfig, equalATNConfigs);
 
-    /**
-     * Indicates that this configuration set is part of a full context
-     * LL prediction. It will be used to determine how to merge $. With SLL
-     * it's a wildcard whereas it is not for LL context merge
-     */
-    private readonly fullCtx: boolean;
+    public conflictingAlts: BitSet | null = null;
 
     /**
      * Indicates that the set of configurations is read-only. Do not
@@ -76,17 +80,11 @@ export class ATNConfigSet {
      * fields; in particular, conflictingAlts is set after
      * we've made this readonly
      */
-    private readOnly = false;
-
-    // TODO: these fields make me pretty uncomfortable but nice to pack up info
-    // together, saves recomputation
-    // TODO: can we track conflicts as they are added to save scanning configs
-    // later?
-    private uniqueAlt = 0;
-    private conflictingAlts: BitSet | null = null;
+    public readOnly = false;
 
     private cachedHashCode = -1;
 
+    // TODO: add iterator for configs.
     public constructor(fullCtx?: boolean) {
         this.fullCtx = fullCtx ?? true;
     }

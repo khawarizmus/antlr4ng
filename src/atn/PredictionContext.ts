@@ -6,7 +6,11 @@
 
 /* eslint-disable @typescript-eslint/naming-convention, jsdoc/require-returns, jsdoc/require-param */
 
+import { Recognizer } from "../Recognizer.js";
 import { HashCode } from "../misc/HashCode.js";
+import { ATNSimulator } from "./ATNSimulator.js";
+
+// Most of the implementation is located in PredictionContextUtils.ts, to avoid circular dependencies.
 
 export abstract class PredictionContext {
     /**
@@ -16,7 +20,7 @@ export abstract class PredictionContext {
      */
     public static readonly EMPTY_RETURN_STATE = 0x7FFFFFFF;
 
-    // Temporarily here. Should be moved to EmptyPredictionContext. It's initialized in that context class.
+    // TODO: Temporarily here. Should be moved to EmptyPredictionContext. It's initialized in that context class.
     public static EMPTY: PredictionContext;
 
     public static trace_atn_sim = false;
@@ -41,6 +45,10 @@ export abstract class PredictionContext {
 
     public updateHashCode(hash: HashCode): void {
         hash.update(this.cachedHashCode);
+    }
+
+    public toString(_recog?: Recognizer<ATNSimulator>): string {
+        return "";
     }
 
     public abstract getParent(index: number): PredictionContext | null;

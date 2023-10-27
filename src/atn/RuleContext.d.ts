@@ -66,6 +66,8 @@ export declare class RuleContext implements ParseTree {
 
     public accept<Result>(visitor: ParseTreeVisitor<Result>): Result;
 
+    public toString(ruleNames?: string[] | null, stop?: RuleContext | null): string;
+
     /**
      * Print out a whole tree, not just a node, in LISP format
      * (root child1 .. childN). Print just a node if this is a leaf.

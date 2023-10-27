@@ -151,7 +151,7 @@ export class BitSet implements Iterable<number>{
             }
         }
 
-        return undefined;
+        return undefined; // TODO: should be -1 according to JDK docs.
     }
 
     /**

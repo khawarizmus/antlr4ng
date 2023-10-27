@@ -23,7 +23,7 @@ const valueToString = (v: null | string): string => {
  *
  * @returns a human readable string of an array (usually for debugging and testing).
  */
-export const arrayToString = (value: unknown[]): string => {
+export const arrayToString = (value: unknown[] | null): string => {
     return Array.isArray(value) ? ("[" + value.map(valueToString).join(", ") + "]") : "null";
 };
 

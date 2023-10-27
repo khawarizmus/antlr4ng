@@ -12,6 +12,7 @@ import { ATNSimulator } from "./atn/ATNSimulator.js";
 import { RuleContext } from "./atn/RuleContext.js";
 import { BaseErrorListener } from "./BaseErrorListener.js";
 import { RecognitionException } from "./RecognitionException.js";
+import { ProxyErrorListener } from "./ProxyErrorListener.js";
 
 export declare abstract class Recognizer<ATNInterpreter extends ATNSimulator> {
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -28,6 +29,7 @@ export declare abstract class Recognizer<ATNInterpreter extends ATNSimulator> {
     public getTokenType(tokenName: string): number;
     public getErrorHeader(e: RecognitionException): string;
     public getTokenErrorDisplay(t: Token | null): string;
+    public getErrorListenerDispatch(): ProxyErrorListener;
 
     public sempred(_localctx: RuleContext | null, ruleIndex: number, actionIndex: number): boolean;
     public precpred(localctx: RuleContext | null, precedence: number): boolean;

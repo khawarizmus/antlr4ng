@@ -14,7 +14,7 @@ import { Recognizer } from "../Recognizer.js";
 import { ATNSimulator } from "../index.js";
 
 export interface IATNConfigParameters {
-    state: ATNState | null,
+    state?: ATNState | null,
     alt?: number | null,
     context?: PredictionContext | null,
     semanticContext?: SemanticContext | null,

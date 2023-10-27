@@ -4,24 +4,26 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+import { IntervalSet } from "../misc/IntervalSet.js";
+import { ATNState } from "./ATNState.js";
 import { SetTransition } from "./SetTransition.js";
 import { TransitionType } from "./TransitionType.js";
 
 export class NotSetTransition extends SetTransition {
-    constructor(target, set) {
+    public constructor(target: ATNState, set: IntervalSet) {
         super(target, set);
     }
 
-    getSerializationType() {
+    public override getSerializationType(): number {
         return TransitionType.NOT_SET;
     }
 
-    matches(symbol, minVocabSymbol, maxVocabSymbol) {
+    public override matches(symbol: number, minVocabSymbol: number, maxVocabSymbol: number): boolean {
         return symbol >= minVocabSymbol && symbol <= maxVocabSymbol &&
             !super.matches(symbol, minVocabSymbol, maxVocabSymbol);
     }
 
-    toString() {
-        return '~' + super.toString();
+    public override toString(): string {
+        return "~" + super.toString();
     }
 }

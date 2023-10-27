@@ -4,22 +4,39 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { Token } from '../Token.js';
-import { ATNConfig } from './ATNConfig.js';
-import { IntervalSet } from '../misc/IntervalSet.js';
-import { RuleStopState } from './RuleStopState.js';
-import { RuleTransition } from './RuleTransition.js';
-import { NotSetTransition } from './NotSetTransition.js';
-import { WildcardTransition } from './WildcardTransition.js';
-import { AbstractPredicateTransition } from './AbstractPredicateTransition.js';
-import { predictionContextFromRuleContext } from './PredictionContextUtils.js';
-import { PredictionContext } from './PredictionContext.js';
-import { SingletonPredictionContext } from './SingletonPredictionContext.js';
+/* eslint-disable no-underscore-dangle */
+
+import { Token } from "../Token.js";
+import { ATNConfig } from "./ATNConfig.js";
+import { IntervalSet } from "../misc/IntervalSet.js";
+import { RuleStopState } from "./RuleStopState.js";
+import { RuleTransition } from "./RuleTransition.js";
+import { NotSetTransition } from "./NotSetTransition.js";
+import { WildcardTransition } from "./WildcardTransition.js";
+import { AbstractPredicateTransition } from "./AbstractPredicateTransition.js";
+import { predictionContextFromRuleContext } from "./PredictionContextUtils.js";
+import { PredictionContext } from "./PredictionContext.js";
+import { SingletonPredictionContext } from "./SingletonPredictionContext.js";
 import { BitSet } from "../misc/BitSet.js";
 import { HashSet } from "../misc/HashSet.js";
+import { ATNState } from "./ATNState.js";
+import { ATN } from "./ATN.js";
+import { RuleContext } from "./RuleContext.js";
+
+// For jsdoc only.
+import type { BlockEndState } from "./BlockEndState.js";
 
 export class LL1Analyzer {
-    constructor(atn) {
+    /**
+     * Special value added to the lookahead sets to indicate that we hit
+     *  a predicate during analysis if {@code seeThruPreds==false}.
+     */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    public static readonly HIT_PRED = Token.INVALID_TYPE;
+
+    public readonly atn: ATN;
+
+    public constructor(atn: ATN) {
         this.atn = atn;
     }
 
@@ -31,26 +48,29 @@ export class LL1Analyzer {
      * element at index <em>i</em> of the result will be {@code null}.
      *
      * @param s the ATN state
-     * @return the expected symbols for each outgoing transition of {@code s}.
+     * @returns the expected symbols for each outgoing transition of {@code s}.
      */
-    getDecisionLookahead(s) {
+    public getDecisionLookahead(s: ATNState | null): Array<IntervalSet | null> | null {
         if (s === null) {
             return null;
         }
+
         const count = s.transitions.length;
-        const look = [];
+        const look = new Array<IntervalSet | null>(count);
+        look.fill(null);
         for (let alt = 0; alt < count; alt++) {
             look[alt] = new IntervalSet();
-            const lookBusy = new HashSet();
+            const lookBusy = new HashSet<ATNConfig>();
             const seeThruPreds = false; // fail to get lookahead upon pred
-            this._LOOK(s.transition(alt).target, null, PredictionContext.EMPTY,
-                look[alt], lookBusy, new BitSet(), seeThruPreds, false);
+            this._LOOK(s.transitions[alt].target, null, PredictionContext.EMPTY,
+                look[alt]!, lookBusy, new BitSet(), seeThruPreds, false);
             // Wipe out lookahead for this alternative if we found nothing
             // or we had a predicate when we !seeThruPreds
-            if (look[alt].length === 0 || look[alt].contains(LL1Analyzer.HIT_PRED)) {
+            if (look[alt]!.length === 0 || look[alt]!.contains(LL1Analyzer.HIT_PRED)) {
                 look[alt] = null;
             }
         }
+
         return look;
     }
 
@@ -69,15 +89,17 @@ export class LL1Analyzer {
      * @param ctx the complete parser context, or {@code null} if the context
      * should be ignored
      *
-     * @return The set of tokens that can follow {@code s} in the ATN in the
+     * @returns The set of tokens that can follow {@code s} in the ATN in the
      * specified {@code ctx}.
      */
-    LOOK(s, stopState, ctx) {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    public LOOK(s: ATNState, stopState: ATNState | null, ctx: RuleContext | null): IntervalSet {
         const r = new IntervalSet();
         const seeThruPreds = true; // ignore preds; get all lookahead
         ctx = ctx || null;
-        const lookContext = ctx !== null ? predictionContextFromRuleContext(s.atn, ctx) : null;
+        const lookContext = ctx !== null ? predictionContextFromRuleContext(s.atn!, ctx) : null;
         this._LOOK(s, stopState, lookContext, r, new HashSet(), new BitSet(), seeThruPreds, true);
+
         return r;
     }
 
@@ -111,7 +133,8 @@ export class LL1Analyzer {
      * outermost context is reached. This parameter has no effect if {@code ctx}
      * is {@code null}.
      */
-    _LOOK(s, stopState, ctx, look, lookBusy, calledRuleStack, seeThruPreds, addEOF) {
+    public _LOOK(s: ATNState, stopState: ATNState | null, ctx: PredictionContext | null, look: IntervalSet,
+        lookBusy: HashSet<ATNConfig>, calledRuleStack: BitSet, seeThruPreds: boolean, addEOF: boolean): void {
         const c = new ATNConfig({ state: s, alt: 0, context: ctx }, null);
         if (lookBusy.has(c)) {
             return;
@@ -120,18 +143,22 @@ export class LL1Analyzer {
         if (s === stopState) {
             if (ctx === null) {
                 look.addOne(Token.EPSILON);
+
                 return;
             } else if (ctx.isEmpty() && addEOF) {
                 look.addOne(Token.EOF);
+
                 return;
             }
         }
         if (s instanceof RuleStopState) {
             if (ctx === null) {
                 look.addOne(Token.EPSILON);
+
                 return;
             } else if (ctx.isEmpty() && addEOF) {
                 look.addOne(Token.EOF);
+
                 return;
             }
             if (ctx !== PredictionContext.EMPTY) {
@@ -140,20 +167,22 @@ export class LL1Analyzer {
                     calledRuleStack.clear(s.ruleIndex);
                     // run thru all possible stack tops in ctx
                     for (let i = 0; i < ctx.length; i++) {
-                        const returnState = this.atn.states[ctx.getReturnState(i)];
-                        this._LOOK(returnState, stopState, ctx.getParent(i), look, lookBusy, calledRuleStack, seeThruPreds, addEOF);
+                        const returnState = this.atn.states[ctx.getReturnState(i)]!;
+                        this._LOOK(returnState, stopState, ctx.getParent(i), look, lookBusy, calledRuleStack,
+                            seeThruPreds, addEOF);
                     }
                 } finally {
                     if (removed) {
                         calledRuleStack.set(s.ruleIndex);
                     }
                 }
+
                 return;
             }
         }
-        for (let j = 0; j < s.transitions.length; j++) {
-            const t = s.transitions[j];
-            if (t.constructor === RuleTransition) {
+
+        for (const t of s.transitions) {
+            if (t instanceof RuleTransition) {
                 if (calledRuleStack.get(t.target.ruleIndex)) {
                     continue;
                 }
@@ -186,9 +215,3 @@ export class LL1Analyzer {
         }
     }
 }
-
-/**
- * Special value added to the lookahead sets to indicate that we hit
- * a predicate during analysis if {@code seeThruPreds==false}.
- */
-LL1Analyzer.HIT_PRED = Token.INVALID_TYPE;

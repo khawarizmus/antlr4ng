@@ -32,7 +32,7 @@ export class DFA {
      * {@code true} if this DFA is for a precedence decision; otherwise,
      * {@code false}. This is the backing field for {@link #isPrecedenceDfa}.
      */
-    private readonly precedenceDfa: boolean;
+    public readonly precedenceDfa: boolean;
 
     public constructor(atnStartState: DecisionState | null, decision?: number) {
         this.atnStartState = atnStartState;

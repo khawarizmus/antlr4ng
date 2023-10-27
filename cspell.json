@@ -13,6 +13,7 @@
         "rdbms",
         "runtimes",
         "sakila",
+        "unpredicated",
         "whitespaces"
     ],
     "ignoreWords": [

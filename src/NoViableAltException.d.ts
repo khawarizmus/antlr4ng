@@ -5,14 +5,16 @@
  */
 
 import { ATNConfigSet } from "./atn/ATNConfigSet.js";
-import { ATNSimulator } from "./atn/ATNSimulator.js";
-import { Recognizer } from "./Recognizer.js";
 import { Token } from "./Token.js";
 import { RecognitionException } from "./RecognitionException.js";
+import { ParserRuleContext } from "./ParserRuleContext.js";
+import { TokenStream } from "./TokenStream.js";
+import { Parser } from "./index.ts";
 
 export declare class NoViableAltException extends RecognitionException {
     public deadEndConfigs: ATNConfigSet;
     public startToken: Token;
 
-    public constructor(recognizer: Recognizer<ATNSimulator>);
+    public constructor(recognizer: Parser, input?: TokenStream | null, startToken?: Token | null,
+        offendingToken?: Token | null, deadEndConfigs?: ATNConfigSet | null, ctx?: ParserRuleContext);
 }
