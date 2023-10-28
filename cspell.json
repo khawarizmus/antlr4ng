@@ -36,6 +36,7 @@
         "nbits",
         "outfile",
         "parentctx",
+        "prec",
         "precpred",
         "recog",
         "semctx",

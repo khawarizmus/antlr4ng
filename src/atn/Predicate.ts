@@ -4,27 +4,35 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+import { Recognizer } from "../Recognizer.js";
+import { HashCode } from "../misc/HashCode.js";
+import { ATNSimulator } from "./ATNSimulator.js";
+import { RuleContext } from "./RuleContext.js";
 import { SemanticContext } from "./SemanticContext.js";
 
 export class Predicate extends SemanticContext {
+    public readonly ruleIndex: number;
+    public readonly predIndex: number;
+    public readonly isCtxDependent: boolean;  // e.g., $i ref in pred
 
-    constructor(ruleIndex, predIndex, isCtxDependent) {
+    public constructor(ruleIndex?: number, predIndex?: number, isCtxDependent?: boolean) {
         super();
-        this.ruleIndex = ruleIndex === undefined ? -1 : ruleIndex;
-        this.predIndex = predIndex === undefined ? -1 : predIndex;
-        this.isCtxDependent = isCtxDependent === undefined ? false : isCtxDependent; // e.g., $i ref in pred
+        this.ruleIndex = ruleIndex ?? -1;
+        this.predIndex = predIndex ?? -1;
+        this.isCtxDependent = isCtxDependent ?? false;
     }
 
-    evaluate(parser, outerContext) {
+    public override evaluate<T extends ATNSimulator>(parser: Recognizer<T>, outerContext: RuleContext): boolean {
         const localctx = this.isCtxDependent ? outerContext : null;
+
         return parser.sempred(localctx, this.ruleIndex, this.predIndex);
     }
 
-    updateHashCode(hash) {
+    public override updateHashCode(hash: HashCode): void {
         hash.update(this.ruleIndex, this.predIndex, this.isCtxDependent);
     }
 
-    equals(other) {
+    public override equals(other: unknown): boolean {
         if (this === other) {
             return true;
         } else if (!(other instanceof Predicate)) {
@@ -36,7 +44,7 @@ export class Predicate extends SemanticContext {
         }
     }
 
-    toString() {
+    public override toString(): string {
         return "{" + this.ruleIndex + ":" + this.predIndex + "}?";
     }
 }
@@ -45,4 +53,5 @@ export class Predicate extends SemanticContext {
  * The default {@link SemanticContext}, which is semantically equivalent to
  * a predicate of the form {@code {true}?}
  */
+// @ts-ignore
 SemanticContext.NONE = new Predicate();

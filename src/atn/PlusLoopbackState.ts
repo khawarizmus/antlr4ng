@@ -12,7 +12,7 @@ import { ATNStateType } from "./ATNStateType.js";
  * one to the loop back to start of the block and one to exit.
  */
 export class PlusLoopbackState extends DecisionState {
-    get stateType() {
+    public override get stateType(): number {
         return ATNStateType.PLUS_LOOP_BACK;
     }
 

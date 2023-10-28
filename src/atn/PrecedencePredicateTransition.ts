@@ -4,33 +4,36 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { PrecedencePredicate } from "../atn/PrecedencePredicate.js";
-import { AbstractPredicateTransition } from "../atn/AbstractPredicateTransition.js";
+import { PrecedencePredicate } from "./PrecedencePredicate.js";
+import { AbstractPredicateTransition } from "./AbstractPredicateTransition.js";
 import { TransitionType } from "./TransitionType.js";
+import { ATNState } from "./ATNState.js";
 
 export class PrecedencePredicateTransition extends AbstractPredicateTransition {
-    constructor(target, precedence) {
+    public readonly precedence: number;
+
+    public constructor(target: ATNState, precedence: number) {
         super(target);
         this.precedence = precedence;
     }
 
-    get isEpsilon() {
+    public override get isEpsilon(): boolean {
         return true;
     }
 
-    matches(symbol, minVocabSymbol, maxVocabSymbol) {
+    public matches(_symbol: number, _minVocabSymbol: number, _maxVocabSymbol: number): boolean {
         return false;
     }
 
-    getPredicate() {
+    public getPredicate(): PrecedencePredicate {
         return new PrecedencePredicate(this.precedence);
     }
 
-    getSerializationType() {
+    public getSerializationType(): number {
         return TransitionType.PRECEDENCE;
     }
 
-    toString() {
+    public override toString(): string {
         return this.precedence + " >= _p";
     }
 }

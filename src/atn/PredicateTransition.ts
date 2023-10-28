@@ -4,35 +4,40 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { Predicate } from "../atn/Predicate.js";
-import { AbstractPredicateTransition } from "../atn/AbstractPredicateTransition.js";
+import { Predicate } from "./Predicate.js";
+import { AbstractPredicateTransition } from "./AbstractPredicateTransition.js";
 import { TransitionType } from "./TransitionType.js";
+import { ATNState } from "./ATNState.js";
 
 export class PredicateTransition extends AbstractPredicateTransition {
-    constructor(target, ruleIndex, predIndex, isCtxDependent) {
+    public readonly ruleIndex: number;
+    public readonly predIndex: number;
+    public readonly isCtxDependent: boolean;  // e.g., $i ref in pred
+
+    public constructor(target: ATNState, ruleIndex: number, predIndex: number, isCtxDependent: boolean) {
         super(target);
         this.ruleIndex = ruleIndex;
         this.predIndex = predIndex;
         this.isCtxDependent = isCtxDependent; // e.g., $i ref in pred
     }
 
-    get isEpsilon() {
+    public override get isEpsilon(): boolean {
         return true;
     }
 
-    matches(symbol, minVocabSymbol, maxVocabSymbol) {
+    public matches(_symbol: number, _minVocabSymbol: number, _maxVocabSymbol: number): boolean {
         return false;
     }
 
-    getSerializationType() {
+    public getSerializationType(): number {
         return TransitionType.PREDICATE;
     }
 
-    getPredicate() {
+    public getPredicate(): Predicate {
         return new Predicate(this.ruleIndex, this.predIndex, this.isCtxDependent);
     }
 
-    toString() {
+    public override toString(): string {
         return "pred_" + this.ruleIndex + ":" + this.predIndex;
     }
 }

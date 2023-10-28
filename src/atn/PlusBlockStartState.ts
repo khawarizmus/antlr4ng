@@ -7,6 +7,9 @@
 import { ATNStateType } from "./ATNStateType.js";
 import { BlockStartState } from "./BlockStartState.js";
 
+// For jsdoc only.
+import type { PlusLoopbackState } from "./PlusLoopbackState.js";
+
 /**
  * Start of {@code (A|B|...)+} loop. Technically a decision state, but
  * we don't use for code generation; somebody might need it, so I'm defining
@@ -14,7 +17,9 @@ import { BlockStartState } from "./BlockStartState.js";
  * real decision-making note for {@code A+}
  */
 export class PlusBlockStartState extends BlockStartState {
-    get stateType() {
+    public loopBackState: PlusLoopbackState;
+
+    public override get stateType(): number {
         return ATNStateType.PLUS_BLOCK_START;
     }
 
