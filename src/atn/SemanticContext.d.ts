@@ -18,8 +18,8 @@ export declare class SemanticContext implements IHashUpdatable {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     public static PrecedencePredicate: typeof PrecedencePredicate;
 
-    public static andContext(a: SemanticContext, b: SemanticContext): SemanticContext;
-    public static orContext(a: SemanticContext, b: SemanticContext): SemanticContext;
+    public static andContext(a: SemanticContext | null, b: SemanticContext | null): SemanticContext;
+    public static orContext(a: SemanticContext | null, b: SemanticContext | null): SemanticContext;
 
     public equals(other: unknown): boolean;
     public hashCode(): number;

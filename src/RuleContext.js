@@ -5,10 +5,9 @@
  */
 
 import { Interval } from './misc/Interval.js';
-import { ParseTree } from "./tree/ParseTree.js";
 import { Trees } from './tree/Trees.js';
 
-export class RuleContext extends ParseTree {
+export class RuleContext {
     /** A rule context is a record of a single rule invocation. It knows
      * which context invoked it, if any. If there is no parent context, then
      * naturally the invoking state is not valid.  The parent link
@@ -30,7 +29,6 @@ export class RuleContext extends ParseTree {
      * @see ParserRuleContext
      */
     constructor(parent, invokingState) {
-        super();
         this._parent = parent ?? null;
         this.children = null;
 

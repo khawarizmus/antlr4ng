@@ -669,7 +669,7 @@ export class ParserATNSimulator extends ATNSimulator {
                     trans = "Atom " + this.getTokenName(t.labelValue);
                 } else if (t instanceof SetTransition) {
                     const neg = (t instanceof NotSetTransition);
-                    trans = (neg ? "~" : "") + "Set " + t.set;
+                    trans = (neg ? "~" : "") + "Set " + t.label;
                 }
             }
             console.error(c.toString(this.parser, true) + ":" + trans);
@@ -1107,7 +1107,7 @@ export class ParserATNSimulator extends ATNSimulator {
     }
 
     protected getPredsForAmbigAlts(ambigAlts: BitSet, configs: ATNConfigSet,
-        altCount: number): SemanticContext[] | null {
+        altCount: number): Array<SemanticContext | null> | null {
         // REACH=[1|1|[]|0:0, 1|2|[]|0:1]
         // altToPred starts as an array of all null contexts. The entry at index i
         // corresponds to alternative i. altToPred[i] may have one of three values:
@@ -1120,7 +1120,7 @@ export class ParserATNSimulator extends ATNSimulator {
         //
         // From this, it is clear that NONE||anything==NONE.
         //
-        let altToPred: SemanticContext[] | null = [];
+        let altToPred: Array<SemanticContext | null> | null = [];
         for (const c of configs.items) {
             if (ambigAlts.get(c.alt)) {
                 altToPred[c.alt] = SemanticContext.orContext(altToPred[c.alt] ?? null, c.semanticContext);
@@ -1128,7 +1128,7 @@ export class ParserATNSimulator extends ATNSimulator {
         }
         let nPredAlts = 0;
         for (let i = 1; i < altCount + 1; i++) {
-            const pred = altToPred[i] || null;
+            const pred = altToPred[i] ?? null;
             if (pred === null) {
                 altToPred[i] = SemanticContext.NONE;
             } else if (pred !== SemanticContext.NONE) {
@@ -1149,11 +1149,11 @@ export class ParserATNSimulator extends ATNSimulator {
     }
 
     protected getPredicatePredictions(ambigAlts: BitSet,
-        altToPred: SemanticContext[]): DFAState.PredPrediction[] | null {
+        altToPred: Array<SemanticContext | null>): DFAState.PredPrediction[] | null {
         const pairs = [];
         let containsPredicate = false;
         for (let i = 1; i < altToPred.length; i++) {
-            const pred = altToPred[i];
+            const pred = altToPred[i]!;
             // un-predicated is indicated by SemanticContext.NONE
             if (ambigAlts !== null && ambigAlts.get(i)) {
                 pairs.push(new DFAState.PredPrediction(pred, i));

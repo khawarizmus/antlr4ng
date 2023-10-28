@@ -8,6 +8,7 @@ import { RuleContext } from "../RuleContext.js";
 import { Interval } from "../misc/Interval.js";
 import { Token } from "../Token.js";
 import { TokenStream } from "../TokenStream.js";
+import { Parser } from "../Parser.js";
 
 /**
  * The basic notion of a tree has a parent, a payload, and a list of children.
@@ -16,7 +17,7 @@ import { TokenStream } from "../TokenStream.js";
  * Note: this interface is a combination of 3 Java interfaces: ParseTree, SyntaxTree and Tree.
  */
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export declare interface ParseTree {
+export interface ParseTree {
     /**
      * The parent of this node. If the return value is null, then this
      *  node is the root of the tree.
@@ -52,7 +53,7 @@ export declare interface ParseTree {
      * Print out a whole tree, not just a node, in LISP format
      *  {@code (root child1 .. childN)}. Print just a node if this is a leaf.
      */
-    toStringTree(): string;
+    toStringTree(ruleNames: string[], recog: Parser): string;
 
     /**
      * Return an {@link Interval} indicating the index in the
