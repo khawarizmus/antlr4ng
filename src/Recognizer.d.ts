@@ -9,7 +9,7 @@ import { Token } from "./Token.js";
 import { Vocabulary } from "./Vocabulary.js";
 import { ATN } from "./atn/ATN.js";
 import { ATNSimulator } from "./atn/ATNSimulator.js";
-import { RuleContext } from "./atn/RuleContext.js";
+import { RuleContext } from "./RuleContext.js";
 import { BaseErrorListener } from "./BaseErrorListener.js";
 import { RecognitionException } from "./RecognitionException.js";
 import { ProxyErrorListener } from "./ProxyErrorListener.js";

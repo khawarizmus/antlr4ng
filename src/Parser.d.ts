@@ -16,7 +16,7 @@ import { IntervalSet } from "./misc/IntervalSet.js";
 import { ParseTreeListener } from "./tree/ParseTreeListener.js";
 import { TerminalNode } from "./tree/TerminalNode.js";
 import { ErrorNode } from "./tree/ErrorNode.js";
-import { RuleContext } from "./atn/RuleContext.ts";
+import { RuleContext } from "./RuleContext.js";
 
 export declare abstract class Parser extends Recognizer<ParserATNSimulator> {
     public errorHandler: ANTLRErrorStrategy;

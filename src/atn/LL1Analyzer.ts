@@ -21,7 +21,7 @@ import { BitSet } from "../misc/BitSet.js";
 import { HashSet } from "../misc/HashSet.js";
 import { ATNState } from "./ATNState.js";
 import { ATN } from "./ATN.js";
-import { RuleContext } from "./RuleContext.js";
+import { RuleContext } from "../RuleContext.js";
 
 // For jsdoc only.
 import type { BlockEndState } from "./BlockEndState.js";

@@ -17,7 +17,7 @@ export { ParserATNSimulator } from "./atn/ParserATNSimulator.js";
 export { ParserRuleContext } from "./ParserRuleContext.js";
 export { PredictionContextCache } from "./atn/PredictionContextCache.js";
 export * from "./atn/PredictionMode.js";
-export { RuleContext } from "./atn/RuleContext.js";
+export { RuleContext } from "./RuleContext.js";
 export { RuleTransition } from "./atn/RuleTransition.js";
 export * from "./atn/Transition.js";
 

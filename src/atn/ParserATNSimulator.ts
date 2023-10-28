@@ -40,7 +40,7 @@ import { PredictionContextCache } from "./PredictionContextCache.js";
 import { TokenStream } from "../TokenStream.js";
 import { ParserRuleContext } from "../ParserRuleContext.js";
 import { DecisionState } from "./DecisionState.js";
-import { RuleContext } from "./RuleContext.js";
+import { RuleContext } from "../RuleContext.js";
 import { ATNState } from "./ATNState.js";
 import { Transition } from "./Transition.js";
 

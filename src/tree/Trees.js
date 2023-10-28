@@ -7,7 +7,7 @@
 import { Token } from '../Token.js';
 import { ErrorNode } from './ErrorNode.js';
 import { TerminalNode } from './TerminalNode.js';
-import { RuleContext } from "../atn/RuleContext.js";
+import { RuleContext } from "../RuleContext.js";
 
 import { escapeWhitespace } from "../utils/helpers.js";
 

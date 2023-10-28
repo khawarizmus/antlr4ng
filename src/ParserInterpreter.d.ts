@@ -15,7 +15,7 @@ import { Token } from "./Token.js";
 import { TokenStream } from "./TokenStream.js";
 import { Vocabulary } from "./Vocabulary.js";
 import { ParserRuleContext } from "./ParserRuleContext.js";
-import { RuleContext } from "./atn/RuleContext.js";
+import { RuleContext } from "./RuleContext.js";
 
 /**
  * A parser simulator that mimics what ANTLR's generated

@@ -7,7 +7,7 @@
 import { Recognizer } from "../Recognizer.js";
 import { HashCode } from "../misc/HashCode.js";
 import { ATNSimulator } from "./ATNSimulator.js";
-import { RuleContext } from "./RuleContext.js";
+import { RuleContext } from "../RuleContext.js";
 import { SemanticContext } from "./SemanticContext.js";
 
 export class Predicate extends SemanticContext {

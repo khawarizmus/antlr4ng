@@ -9,7 +9,7 @@ import { Recognizer } from "../Recognizer.js";
 import { HashCode, IHashUpdatable } from "../misc/HashCode.ts";
 import { ATNSimulator } from "./ATNSimulator.ts";
 import { PrecedencePredicate } from "./PrecedencePredicate.ts";
-import { RuleContext } from "./RuleContext.js";
+import { RuleContext } from "../RuleContext.js";
 
 export declare class SemanticContext implements IHashUpdatable {
     // eslint-disable-next-line @typescript-eslint/naming-convention

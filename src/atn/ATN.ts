@@ -6,7 +6,7 @@
 
 import { LL1Analyzer } from "./LL1Analyzer.js";
 import { IntervalSet } from "../misc/IntervalSet.js";
-import { RuleContext } from "./RuleContext.js";
+import { RuleContext } from "../RuleContext.js";
 import { ATNState } from "./ATNState.js";
 import { DecisionState } from "./DecisionState.js";
 import { RuleStartState } from "./RuleStartState.js";

@@ -5,7 +5,7 @@
  */
 
 import { ATN } from "./atn/ATN.js";
-import { RuleContext } from "./atn/RuleContext.js";
+import { RuleContext } from "./RuleContext.js";
 import { CharStream } from "./CharStream.js";
 import { Lexer } from "./Lexer.js";
 import { Vocabulary } from "./Vocabulary.js";

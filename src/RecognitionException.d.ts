@@ -10,7 +10,7 @@ import { Token } from "./Token.js";
 import { TokenStream } from "./TokenStream.js";
 import { ATNSimulator } from "./atn/ATNSimulator.js";
 import { ParserRuleContext } from "./ParserRuleContext.js";
-import { RuleContext } from "./atn/RuleContext.js";
+import { RuleContext } from "./RuleContext.js";
 import { IntervalSet } from "./misc/IntervalSet.js";
 
 export interface IExceptionParams {

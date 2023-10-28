@@ -6,7 +6,7 @@
 
 /* eslint-disable jsdoc/require-returns, jsdoc/require-param */
 
-import { RuleContext } from "./RuleContext.js";
+import { RuleContext } from "../RuleContext.js";
 import { PredictionContext } from "./PredictionContext.js";
 import { ArrayPredictionContext } from "./ArrayPredictionContext.js";
 import { SingletonPredictionContext } from "./SingletonPredictionContext.js";

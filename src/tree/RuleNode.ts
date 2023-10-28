@@ -5,7 +5,7 @@
  */
 
 import { ParseTree } from "./ParseTree.js";
-import { RuleContext } from "../atn/RuleContext.js";
+import { RuleContext } from "../RuleContext.js";
 
 export interface RuleNode extends ParseTree {
     getRuleContext: () => RuleContext | null;

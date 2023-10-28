@@ -4,9 +4,9 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { Interval } from '../misc/Interval.js';
-import { ParseTree } from "../tree/ParseTree.js";
-import { Trees } from '../tree/Trees.js';
+import { Interval } from './misc/Interval.js';
+import { ParseTree } from "./tree/ParseTree.js";
+import { Trees } from './tree/Trees.js';
 
 export class RuleContext extends ParseTree {
     /** A rule context is a record of a single rule invocation. It knows
