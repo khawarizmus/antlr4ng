@@ -5,6 +5,7 @@
  */
 
 import { IntStream } from "./IntStream.js";
+import { RuleContext } from "./RuleContext.js";
 import { Token } from "./Token.js";
 import { TokenSource } from "./TokenSource.js";
 import { Interval } from "./misc/Interval.js";
@@ -88,4 +89,55 @@ export interface TokenStream extends IntStream {
      * @returns The text of all tokens in the stream.
      */
     getText(): string;
+
+    /**
+     * Return the text of all tokens in the source interval of the specified
+     * context. This method behaves like the following code, including potential
+     * exceptions from the call to {@link #getText(Interval)}, but may be
+     * optimized by the specific implementation.
+     *
+     * <p>If {@code ctx.getSourceInterval()} does not return a valid interval of
+     * tokens provided by this stream, the behavior is unspecified.</p>
+     *
+     * <pre>
+     * TokenStream stream = ...;
+     * String text = stream.getText(ctx.getSourceInterval());
+     * </pre>
+     *
+     * @param ctx The context providing the source interval of tokens to get
+     * text for.
+     * @returns The text of all tokens within the source interval of {@code ctx}.
+     */
+    getText(ctx: RuleContext): string;
+
+    /**
+     * Return the text of all tokens in this stream between {@code start} and
+     * {@code stop} (inclusive).
+     *
+     * <p>If the specified {@code start} or {@code stop} token was not provided by
+     * this stream, or if the {@code stop} occurred before the {@code start}
+     * token, the behavior is unspecified.</p>
+     *
+     * <p>For streams which ensure that the {@link Token#getTokenIndex} method is
+     * accurate for all of its provided tokens, this method behaves like the
+     * following code. Other streams may implement this method in other ways
+     * provided the behavior is consistent with this at a high level.</p>
+     *
+     * <pre>
+     * TokenStream stream = ...;
+     * String text = "";
+     * for (int i = start.getTokenIndex(); i &lt;= stop.getTokenIndex(); i++) {
+     *   text += stream.get(i).getText();
+     * }
+     * </pre>
+     *
+     * @param start The first token in the interval to get text for.
+     * @param stop The last token in the interval to get text for (inclusive).
+     * @returns The text of all tokens lying between the specified {@code start}
+     * and {@code stop} tokens.
+     *
+     * @throws UnsupportedOperationException if this stream does not support
+     * this method for the specified tokens
+     */
+    getText(start: Token | null, stop: Token | null): string;
 }
