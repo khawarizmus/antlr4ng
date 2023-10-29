@@ -29,7 +29,7 @@ export class LexerATNConfig extends ATNConfig {
     public constructor(params: ILexerATNConfigParameters, config: LexerATNConfig | null) {
         super(params, config);
 
-        // This is the backing field for {@link //getLexerActionExecutor}.
+        // This is the backing field for {@link getLexerActionExecutor}.
         this.lexerActionExecutor = params.lexerActionExecutor ?? config?.lexerActionExecutor ?? null;
         this.passedThroughNonGreedyDecision = config !== null ? this.checkNonGreedyDecision(config, this.state) : false;
 

@@ -12,7 +12,7 @@ import { Interval } from "./misc/Interval.js";
 /**
  * An IntStream whose symbols are {@link Token} instances.
  */
-export declare interface TokenStream extends IntStream {
+export interface TokenStream extends IntStream {
     /**
      * Get the {@link Token} instance associated with the value returned by
      * {@link #LA LA(k)}. This method has the same pre- and post-conditions as

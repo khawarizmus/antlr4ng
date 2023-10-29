@@ -48,7 +48,7 @@ export class LexerIndexedCustomAction extends LexerAction {
     }
 
     /**
-     * <p>This method calls {@link //execute} on the result of {@link //getAction}
+     * <p>This method calls {@link execute} on the result of {@link getAction}
      * using the provided {@code lexer}.</p>
      */
     public execute(lexer: Lexer): void {

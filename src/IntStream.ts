@@ -22,7 +22,7 @@ import type { CommonTokenStream } from "./CommonTokenStream.js";
  *   <li>{@link #size}</li>
  * </ul>
  */
-export declare interface IntStream {
+export interface IntStream {
     /**
      * Consumes the current symbol in the stream. This method has the following
      * effects:
@@ -203,7 +203,8 @@ export declare interface IntStream {
     getSourceName(): string;
 }
 
-export declare namespace IntStream {
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace IntStream {
     /**
      * The value returned by {@link IntStream.LA} when the end of the stream is
      * reached.

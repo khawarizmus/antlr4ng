@@ -198,7 +198,7 @@ import type { BailErrorStrategy } from "../BailErrorStrategy.js";
  * <p>
  * All instances of the same parser share the same decision DFAs through a
  * static field. Each instance gets its own ATN simulator but they share the
- * same {@link //decisionToDFA} field. They also share a
+ * same {@link decisionToDFA} field. They also share a
  * {@link PredictionContextCache} object that makes sure that all
  * {@link PredictionContext} objects are shared among the DFA states. This makes
  * a big size difference.</p>
@@ -207,15 +207,15 @@ import type { BailErrorStrategy } from "../BailErrorStrategy.js";
  * <strong>THREAD SAFETY</strong></p>
  *
  * <p>
- * The {@link ParserATNSimulator} locks on the {@link //decisionToDFA} field when
- * it adds a new DFA object to that array. {@link //addDFAEdge}
+ * The {@link ParserATNSimulator} locks on the {@link decisionToDFA} field when
+ * it adds a new DFA object to that array. {@link addDFAEdge}
  * locks on the DFA for the current decision when setting the
- * {@link DFAState//edges} field. {@link //addDFAState} locks on
+ * {@link DFAState//edges} field. {@link addDFAState} locks on
  * the DFA for the current decision when looking up a DFA state to see if it
  * already exists. We must make sure that all requests to add DFA states that
  * are equivalent result in the same shared DFA object. This is because lots of
  * threads will be trying to update the DFA at once. The
- * {@link //addDFAState} method also locks inside the DFA lock
+ * {@link addDFAState} method also locks inside the DFA lock
  * but this time on the shared context cache when it rebuilds the
  * configurations' {@link PredictionContext} objects using cached
  * subgraphs/nodes. No other locking occurs, even during DFA simulation. This is
@@ -226,7 +226,7 @@ import type { BailErrorStrategy } from "../BailErrorStrategy.js";
  * targets. The DFA simulator will either find {@link DFAState//edges} to be
  * {@code null}, to be non-{@code null} and {@code dfa.edges[t]} null, or
  * {@code dfa.edges[t]} to be non-null. The
- * {@link //addDFAEdge} method could be racing to set the field
+ * {@link addDFAEdge} method could be racing to set the field
  * but in either case the DFA simulator works; if {@code null}, and requests ATN
  * simulation. It could also race trying to get {@code dfa.edges[t]}, but either
  * way it will work because it's not doing a test and set operation.</p>
@@ -242,7 +242,7 @@ import type { BailErrorStrategy } from "../BailErrorStrategy.js";
  * mode with the {@link BailErrorStrategy}:</p>
  *
  * <pre>
- * parser.{@link Parser//getInterpreter() getInterpreter()}.{@link //setPredictionMode setPredictionMode}{@code (}
+ * parser.{@link Parser//getInterpreter() getInterpreter()}.{@link setPredictionMode setPredictionMode}{@code (}
  * {@link PredictionMode//SLL}{@code )};
  * parser.{@link Parser//setErrorHandler setErrorHandler}(new {@link BailErrorStrategy}());
  * </pre>
@@ -577,7 +577,7 @@ export class ParserATNSimulator extends ATNSimulator {
      *
      * @returns The computed target DFA state for the given input symbol
      * {@code t}. If {@code t} does not lead to a valid DFA state, this method
-     * returns {@link //ERROR
+     * returns {@link ERROR
      */
     public computeTargetState(dfa: DFA, previousD: DFAState, t: number): DFAState {
         const reach = this.computeReachSet(previousD.configs, t, false);
@@ -1002,7 +1002,7 @@ export class ParserATNSimulator extends ATNSimulator {
 
     /**
      * This method transforms the start state computed by
-     * {@link //computeStartState} to the special start state used by a
+     * {@link computeStartState} to the special start state used by a
      * precedence DFA for a particular precedence value. The transformation
      * process applies the following changes to the start state's configuration
      * set.
@@ -1051,7 +1051,7 @@ export class ParserATNSimulator extends ATNSimulator {
      * </p>
      *
      * @param configs The configuration set computed by
-     * {@link //computeStartState} as the start state for the DFA.
+     * {@link computeStartState} as the start state for the DFA.
      * @returns The transformed configuration set representing the start state
      * for a precedence DFA at a particular precedence level (determined by
      * calling {@link Parser//getPrecedence})
@@ -1174,7 +1174,7 @@ export class ParserATNSimulator extends ATNSimulator {
      * This method is used to improve the localization of error messages by
      * choosing an alternative rather than throwing a
      * {@link NoViableAltException} in particular prediction scenarios where the
-     * {@link //ERROR} state was reached during ATN simulation.
+     * {@link ERROR} state was reached during ATN simulation.
      *
      * <p>
      * The default implementation of this method uses the following
@@ -1199,7 +1199,7 @@ export class ParserATNSimulator extends ATNSimulator {
      * the parser. Specifically, this could occur if the <em>only</em> configuration
      * capable of successfully parsing to the end of the decision rule is
      * blocked by a semantic predicate. By choosing this alternative within
-     * {@link //adaptivePredict} instead of throwing a
+     * {@link adaptivePredict} instead of throwing a
      * {@link NoViableAltException}, the resulting
      * {@link FailedPredicateException} in the parser will identify the specific
      * predicate which is preventing the parser from successfully parsing the
@@ -1208,13 +1208,13 @@ export class ParserATNSimulator extends ATNSimulator {
      * </p>
      *
      * @param configs The ATN configurations which were valid immediately before
-     * the {@link //ERROR} state was reached
+     * the {@link ERROR} state was reached
      * @param outerContext The is the \gamma_0 initial parser context from the paper
      * or the parser stack at the instant before prediction commences.
      *
-     * @returns The value to return from {@link //adaptivePredict}, or
+     * @returns The value to return from {@link adaptivePredict}, or
      * {@link ATN//INVALID_ALT_NUMBER} if a suitable alternative was not
-     * identified and {@link //adaptivePredict} should report an error instead
+     * identified and {@link adaptivePredict} should report an error instead
      */
     protected getSynValidOrSemInvalidAltThatFinishedDecisionEntryRule(configs: ATNConfigSet,
         outerContext: ParserRuleContext): number {
@@ -1707,14 +1707,14 @@ export class ParserATNSimulator extends ATNSimulator {
 
     /**
      * Add an edge to the DFA, if possible. This method calls
-     * {@link //addDFAState} to ensure the {@code to} state is present in the
+     * {@link addDFAState} to ensure the {@code to} state is present in the
      * DFA. If {@code from} is {@code null}, or if {@code t} is outside the
      * range of edges that can be represented in the DFA tables, this method
      * returns without adding the edge to the DFA.
      *
      * <p>If {@code to} is {@code null}, this method returns {@code null}.
      * Otherwise, this method returns the {@link DFAState} returned by calling
-     * {@link //addDFAState} for the {@code to} state.</p>
+     * {@link addDFAState} for the {@code to} state.</p>
      *
      * @param dfa The DFA
      * @param from_ The source state for the edge
@@ -1722,7 +1722,7 @@ export class ParserATNSimulator extends ATNSimulator {
      * @param to The target state for the edge
      *
      * @returns If {@code to} is {@code null}, this method returns {@code null};
-     * otherwise this method returns the result of calling {@link //addDFAState}
+     * otherwise this method returns the result of calling {@link addDFAState}
      * on {@code to}
      */
     protected addDFAEdge(dfa: DFA, from_: DFAState, t: number, to: DFAState): DFAState | null {
@@ -1759,7 +1759,7 @@ export class ParserATNSimulator extends ATNSimulator {
      * is already in the DFA, the existing state is returned. Otherwise this
      * method returns {@code D} after adding it to the DFA.
      *
-     * <p>If {@code D} is {@link //ERROR}, this method returns {@link //ERROR} and
+     * <p>If {@code D} is {@link ERROR}, this method returns {@link ERROR} and
      * does not change the DFA.</p>
      *
      * @param dfa The dfa

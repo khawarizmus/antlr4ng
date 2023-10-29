@@ -16,9 +16,9 @@ export class ArrayPredictionContext extends PredictionContext {
     public constructor(parents: Array<PredictionContext | null>, returnStates: number[]) {
         /**
          * Parent can be null only if full ctx mode and we make an array
-         * from {@link //EMPTY} and non-empty. We merge {@link //EMPTY} by using
+         * from {@link EMPTY} and non-empty. We merge {@link EMPTY} by using
          * null parent and
-         * returnState == {@link //EMPTY_RETURN_STATE}.
+         * returnState == {@link EMPTY_RETURN_STATE}.
          */
         const h = new HashCode();
         h.update(parents, returnStates);

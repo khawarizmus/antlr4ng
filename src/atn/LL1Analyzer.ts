@@ -127,7 +127,7 @@ export class LL1Analyzer {
      * {@code new BitSet()} for this argument.
      * @param seeThruPreds {@code true} to true semantic predicates as
      * implicitly {@code true} and "see through them", otherwise {@code false}
-     * to treat semantic predicates as opaque and add {@link //HIT_PRED} to the
+     * to treat semantic predicates as opaque and add {@link HIT_PRED} to the
      * result if one is encountered.
      * @param addEOF Add {@link Token//EOF} to the result if the end of the
      * outermost context is reached. This parameter has no effect if {@code ctx}

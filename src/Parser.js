@@ -42,9 +42,9 @@ export class Parser extends Recognizer {
          */
         this.buildParseTrees = true;
         /**
-         * When {@link //setTrace}{@code (true)} is called, a reference to the
+         * When {@link setTrace}{@code (true)} is called, a reference to the
          * {@link TraceListener} is stored here so it can be easily removed in a
-         * later call to {@link //setTrace}{@code (false)}. The listener itself is
+         * later call to {@link setTrace}{@code (false)}. The listener itself is
          * implemented as a parser listener so this field is not directly used by
          * other parser methods.
          */
@@ -56,7 +56,7 @@ export class Parser extends Recognizer {
         this._parseListeners = null;
         /**
          * The number of syntax errors reported during parsing. this value is
-         * incremented each time {@link //notifyErrorListeners} is called.
+         * incremented each time {@link notifyErrorListeners} is called.
          */
         this._syntaxErrors = 0;
         this.tokenStream = input;
@@ -84,12 +84,12 @@ export class Parser extends Recognizer {
 
     /**
      * Match current input symbol against {@code ttype}. If the symbol type
-     * matches, {@link ANTLRErrorStrategy//reportMatch} and {@link //consume} are
+     * matches, {@link ANTLRErrorStrategy//reportMatch} and {@link consume} are
      * called to complete the match process.
      *
      * <p>If the symbol type does not match,
      * {@link ANTLRErrorStrategy//recoverInline} is called on the current error
-     * strategy to attempt recovery. If {@link //buildParseTree} is
+     * strategy to attempt recovery. If {@link buildParseTree} is
      * {@code true} and the token index of the symbol returned by
      * {@link ANTLRErrorStrategy//recoverInline} is -1, the symbol is added to
      * the parse tree by calling {@link ParserRuleContext//addErrorNode}.</p>
@@ -120,11 +120,11 @@ export class Parser extends Recognizer {
     /**
      * Match current input symbol as a wildcard. If the symbol type matches
      * (i.e. has a value greater than 0), {@link ANTLRErrorStrategy//reportMatch}
-     * and {@link //consume} are called to complete the match process.
+     * and {@link consume} are called to complete the match process.
      *
      * <p>If the symbol type does not match,
      * {@link ANTLRErrorStrategy//recoverInline} is called on the current error
-     * strategy to attempt recovery. If {@link //buildParseTree} is
+     * strategy to attempt recovery. If {@link buildParseTree} is
      * {@code true} and the token index of the symbol returned by
      * {@link ANTLRErrorStrategy//recoverInline} is -1, the symbol is added to
      * the parse tree by calling {@link ParserRuleContext//addErrorNode}.</p>
@@ -258,7 +258,7 @@ export class Parser extends Recognizer {
      * lazily.
      *
      * @throws UnsupportedOperationException if the current parser does not
-     * implement the {@link //getSerializedATN()} method.
+     * implement the {@link getSerializedATN()} method.
      */
     getATNWithBypassAlts() {
         const serializedAtn = this.getSerializedATN();
@@ -326,7 +326,7 @@ export class Parser extends Recognizer {
     }
 
     /**
-     * Consume and return the {@link //getCurrentToken current symbol}.
+     * Consume and return the {@link getCurrentToken current symbol}.
      *
      * <p>E.g., given the following input with {@code A} being the current
      * lookahead symbol, this function moves the cursor to {@code B} and returns
@@ -382,7 +382,7 @@ export class Parser extends Recognizer {
 
     /**
      * Always called by generated parsers upon entry to a rule. Access field
-     * {@link //_ctx} get the current context.
+     * {@link _ctx} get the current context.
      */
     enterRule(localctx, state, ruleIndex) {
         this.state = state;
@@ -437,7 +437,7 @@ export class Parser extends Recognizer {
         this.triggerEnterRuleEvent(); // simulates rule entry for left-recursive rules
     }
 
-    // Like {@link //enterRule} but for recursive rules.
+    // Like {@link enterRule} but for recursive rules.
     pushNewRecursionContext(localctx, state, ruleIndex) {
         const previous = this._ctx;
         previous.parent = localctx;
@@ -537,7 +537,7 @@ export class Parser extends Recognizer {
 
     /**
      * Computes the set of input symbols which could follow the current parser
-     * state and context, as given by {@link //getState} and {@link //getContext},
+     * state and context, as given by {@link getState} and {@link getContext},
      * respectively.
      *
      * @see ATN//getExpectedTokens(int, RuleContext)

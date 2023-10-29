@@ -82,7 +82,7 @@ export abstract class SemanticContext implements IComparable {
      * @returns The simplified semantic context after precedence predicates are
      * evaluated, which will be one of the following values.
      * <ul>
-     * <li>{@link //NONE}: if the predicate simplifies to {@code true} after
+     * <li>{@link NONE}: if the predicate simplifies to {@code true} after
      * precedence predicates are evaluated.</li>
      * <li>{@code null}: if the predicate simplifies to {@code false} after
      * precedence predicates are evaluated.</li>

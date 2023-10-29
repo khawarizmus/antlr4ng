@@ -274,7 +274,7 @@ export class LexerATNSimulator extends ATNSimulator {
      *
      * @returns The computed target DFA state for the given input symbol
      * {@code t}. If {@code t} does not lead to a valid DFA state, this method
-     * returns {@link //ERROR}.
+     * returns {@link ERROR}.
      */
     protected computeTargetState(input: CharStream, s: DFAState, t: number): DFAState {
         const reach = new OrderedATNConfigSet();
@@ -532,13 +532,13 @@ export class LexerATNSimulator extends ATNSimulator {
      * Evaluate a predicate specified in the lexer.
      *
      * <p>If {@code speculative} is {@code true}, this method was called before
-     * {@link //consume} for the matched character. This method should call
-     * {@link //consume} before evaluating the predicate to ensure position
+     * {@link consume} for the matched character. This method should call
+     * {@link consume} before evaluating the predicate to ensure position
      * sensitive values, including {@link Lexer//getText}, {@link Lexer//getLine},
      * and {@link Lexer}, properly reflect the current
      * lexer state. This method should restore {@code input} and the simulator
      * to the original state before returning (i.e. undo the actions made by the
-     * call to {@link //consume}.</p>
+     * call to {@link consume}.</p>
      *
      * @param input The input stream.
      * @param ruleIndex The rule containing the predicate.

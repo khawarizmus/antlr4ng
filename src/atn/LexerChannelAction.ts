@@ -28,7 +28,7 @@ export class LexerChannelAction extends LexerAction {
 
     /**
      * <p>This action is implemented by calling {@link Lexer//setChannel} with the
-     * value provided by {@link //getChannel}.</p>
+     * value provided by {@link getChannel}.</p>
      */
     public execute(lexer: Lexer): void {
         // eslint-disable-next-line no-underscore-dangle

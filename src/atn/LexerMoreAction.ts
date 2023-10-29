@@ -14,7 +14,7 @@ import { Lexer } from "../Lexer.js";
  * Implements the {@code more} lexer action by calling {@link Lexer//more}.
  *
  * <p>The {@code more} command does not have any parameters, so this action is
- * implemented as a singleton instance exposed by {@link //INSTANCE}.</p>
+ * implemented as a singleton instance exposed by {@link INSTANCE}.</p>
  */
 export class LexerMoreAction extends LexerAction {
     // eslint-disable-next-line @typescript-eslint/naming-convention

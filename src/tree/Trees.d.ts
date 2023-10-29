@@ -10,7 +10,7 @@ import { Parser } from "../Parser.js";
 /** A set of utility routines useful for all kinds of ANTLR trees. */
 export declare class Trees {
     /**
-     * Print out a whole tree in LISP form. {@link //getNodeText} is used on the
+     * Print out a whole tree in LISP form. {@link getNodeText} is used on the
      *  node payloads to get the text for the nodes.  Detect
      *  parse trees and extract data appropriately.
      */

@@ -42,7 +42,7 @@ export class DefaultErrorStrategy {
     }
 
     /**
-     * <p>The default implementation simply calls {@link //endErrorCondition} to
+     * <p>The default implementation simply calls {@link endErrorCondition} to
      * ensure that the handler is not in error recovery mode.</p>
      */
     reset(recognizer) {
@@ -76,7 +76,7 @@ export class DefaultErrorStrategy {
 
     /**
      * {@inheritDoc}
-     * <p>The default implementation simply calls {@link //endErrorCondition}.</p>
+     * <p>The default implementation simply calls {@link endErrorCondition}.</p>
      */
     reportMatch(recognizer) {
         this.endErrorCondition(recognizer);
@@ -86,17 +86,17 @@ export class DefaultErrorStrategy {
      * {@inheritDoc}
      *
      * <p>The default implementation returns immediately if the handler is already
-     * in error recovery mode. Otherwise, it calls {@link //beginErrorCondition}
+     * in error recovery mode. Otherwise, it calls {@link beginErrorCondition}
      * and dispatches the reporting task based on the runtime type of {@code e}
      * according to the following table.</p>
      *
      * <ul>
      * <li>{@link NoViableAltException}: Dispatches the call to
-     * {@link //reportNoViableAlternative}</li>
+     * {@link reportNoViableAlternative}</li>
      * <li>{@link InputMismatchException}: Dispatches the call to
-     * {@link //reportInputMismatch}</li>
+     * {@link reportInputMismatch}</li>
      * <li>{@link FailedPredicateException}: Dispatches the call to
-     * {@link //reportFailedPredicate}</li>
+     * {@link reportFailedPredicate}</li>
      * <li>All other types: calls {@link Parser//notifyErrorListeners} to report
      * the exception</li>
      * </ul>
@@ -162,7 +162,7 @@ export class DefaultErrorStrategy {
      * sync : {consume to what can follow sync} ;
      * </pre>
      *
-     * At the start of a sub rule upon error, {@link //sync} performs single
+     * At the start of a sub rule upon error, {@link sync} performs single
      * token deletion, if possible. If it can't do that, it bails on the current
      * rule and uses the default error recovery, which consumes until the
      * resynchronization set of the current rule.
@@ -244,7 +244,7 @@ export class DefaultErrorStrategy {
     }
 
     /**
-     * This is called by {@link //reportError} when the exception is a
+     * This is called by {@link reportError} when the exception is a
      * {@link NoViableAltException}.
      *
      * @see //reportError
@@ -269,7 +269,7 @@ export class DefaultErrorStrategy {
     }
 
     /**
-     * This is called by {@link //reportError} when the exception is an
+     * This is called by {@link reportError} when the exception is an
      * {@link InputMismatchException}.
      *
      * @see //reportError
@@ -284,7 +284,7 @@ export class DefaultErrorStrategy {
     }
 
     /**
-     * This is called by {@link //reportError} when the exception is a
+     * This is called by {@link reportError} when the exception is a
      * {@link FailedPredicateException}.
      *
      * @see //reportError
@@ -305,12 +305,12 @@ export class DefaultErrorStrategy {
      * removed from the input stream. When this method returns,
      * {@code recognizer} is in error recovery mode.
      *
-     * <p>This method is called when {@link //singleTokenDeletion} identifies
+     * <p>This method is called when {@link singleTokenDeletion} identifies
      * single-token deletion as a viable recovery strategy for a mismatched
      * input error.</p>
      *
      * <p>The default implementation simply returns if the handler is already in
-     * error recovery mode. Otherwise, it calls {@link //beginErrorCondition} to
+     * error recovery mode. Otherwise, it calls {@link beginErrorCondition} to
      * enter error recovery mode, followed by calling
      * {@link Parser//notifyErrorListeners}.</p>
      *
@@ -335,12 +335,12 @@ export class DefaultErrorStrategy {
      * method is called, the missing token has not yet been inserted. When this
      * method returns, {@code recognizer} is in error recovery mode.
      *
-     * <p>This method is called when {@link //singleTokenInsertion} identifies
+     * <p>This method is called when {@link singleTokenInsertion} identifies
      * single-token insertion as a viable recovery strategy for a mismatched
      * input error.</p>
      *
      * <p>The default implementation simply returns if the handler is already in
-     * error recovery mode. Otherwise, it calls {@link //beginErrorCondition} to
+     * error recovery mode. Otherwise, it calls {@link beginErrorCondition} to
      * enter error recovery mode, followed by calling
      * {@link Parser//notifyErrorListeners}.</p>
      *
@@ -405,7 +405,7 @@ export class DefaultErrorStrategy {
      * </pre>
      *
      * The attempt to match {@code ')'} will fail when it sees {@code ';'} and
-     * call {@link //recoverInline}. To recover, it sees that {@code LA(1)==';'}
+     * call {@link recoverInline}. To recover, it sees that {@code LA(1)==';'}
      * is in the set of tokens that can follow the {@code ')'} token reference
      * in rule {@code atom}. It can assume that you forgot the {@code ')'}.
      */
@@ -428,7 +428,7 @@ export class DefaultErrorStrategy {
 
     /**
      * This method implements the single-token insertion inline error recovery
-     * strategy. It is called by {@link //recoverInline} if the single-token
+     * strategy. It is called by {@link recoverInline} if the single-token
      * deletion strategy fails to recover from the mismatched input. If this
      * method returns {@code true}, {@code recognizer} will be in error recovery
      * mode.
@@ -462,16 +462,16 @@ export class DefaultErrorStrategy {
 
     /**
      * This method implements the single-token deletion inline error recovery
-     * strategy. It is called by {@link //recoverInline} to attempt to recover
+     * strategy. It is called by {@link recoverInline} to attempt to recover
      * from mismatched input. If this method returns null, the parser and error
      * handler state will not have changed. If this method returns non-null,
      * {@code recognizer} will <em>not</em> be in error recovery mode since the
      * returned token was a successful match.
      *
      * <p>If the single-token deletion is successful, this method calls
-     * {@link //reportUnwantedToken} to report the error, followed by
+     * {@link reportUnwantedToken} to report the error, followed by
      * {@link Parser//consume} to actually "delete" the extraneous token. Then,
-     * before returning {@link //reportMatch} is called to signal a successful
+     * before returning {@link reportMatch} is called to signal a successful
      * match.</p>
      *
      * @param recognizer the parser instance

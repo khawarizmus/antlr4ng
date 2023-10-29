@@ -20,7 +20,7 @@ import { RuleTransition } from "./RuleTransition.js";
 
 /**
  * Convert a {@link RuleContext} tree to a {@link PredictionContext} graph.
- * Return {@link //EMPTY} if {@code outerContext} is empty or null.
+ * Return {@link EMPTY} if {@code outerContext} is empty or null.
  */
 export const predictionContextFromRuleContext = (atn: ATN, outerContext: RuleContext): PredictionContext => {
     if (outerContext === undefined || outerContext === null) {
@@ -393,18 +393,18 @@ export const mergeSingletons = (a: SingletonPredictionContext, b: SingletonPredi
 
 /**
  * Handle case where at least one of {@code a} or {@code b} is
- * {@link //EMPTY}. In the following diagrams, the symbol {@code $} is used
- * to represent {@link //EMPTY}.
+ * {@link EMPTY}. In the following diagrams, the symbol {@code $} is used
+ * to represent {@link EMPTY}.
  *
  * <h2>Local-Context Merges</h2>
  *
  * <p>These local-context merge operations are used when {@code rootIsWildcard}
  * is true.</p>
  *
- * <p>{@link //EMPTY} is superset of any graph; return {@link //EMPTY}.<br>
+ * <p>{@link EMPTY} is superset of any graph; return {@link EMPTY}.<br>
  * <embed src="images/LocalMerge_EmptyRoot.svg" type="image/svg+xml"/></p>
  *
- * <p>{@link //EMPTY} and anything is {@code //EMPTY}, so merged parent is
+ * <p>{@link EMPTY} and anything is {@code //EMPTY}, so merged parent is
  * {@code //EMPTY}; return left graph.<br>
  * <embed src="images/LocalMerge_EmptyParent.svg" type="image/svg+xml"/></p>
  *
@@ -418,7 +418,7 @@ export const mergeSingletons = (a: SingletonPredictionContext, b: SingletonPredi
  *
  * <p><embed src="images/FullMerge_EmptyRoots.svg" type="image/svg+xml"/></p>
  *
- * <p>Must keep all contexts; {@link //EMPTY} in array is a special value (and
+ * <p>Must keep all contexts; {@link EMPTY} in array is a special value (and
  * null parent).<br>
  * <embed src="images/FullMerge_EmptyRoot.svg" type="image/svg+xml"/></p>
  *

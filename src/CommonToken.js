@@ -28,9 +28,9 @@ export class CommonToken extends Token {
      *
      * <p>
      * If {@code oldToken} is also a {@link CommonToken} instance, the newly
-     * constructed token will share a reference to the {@link //text} field and
-     * the {@link Pair} stored in {@link //source}. Otherwise, {@link //text} will
-     * be assigned the result of calling {@link //getText}, and {@link //source}
+     * constructed token will share a reference to the {@link text} field and
+     * the {@link Pair} stored in {@link source}. Otherwise, {@link text} will
+     * be assigned the result of calling {@link getText}, and {@link source}
      * will be constructed from the result of {@link Token//getTokenSource} and
      * {@link Token//getInputStream}.</p>
      *
@@ -102,6 +102,6 @@ export class CommonToken extends Token {
 
 /**
  * An empty {@link Pair} which is used as the default value of
- * {@link //source} for tokens that do not have a source.
+ * {@link source} for tokens that do not have a source.
  */
 CommonToken.EMPTY_SOURCE = [null, null];

@@ -33,7 +33,7 @@ export class LexerActionExecutor /*implements*/ extends LexerAction {
 
         this.lexerActions = lexerActions === null ? [] : lexerActions;
         /**
-         * Caches the result of {@link //hashCode} since the hash code is an element
+         * Caches the result of {@link hashCode} since the hash code is an element
          * of the performance-critical {@link LexerATNConfig//hashCode} operation
          */
         this.cachedHashCode = HashCode.hashStuff(lexerActions); // "".join([str(la) for la in

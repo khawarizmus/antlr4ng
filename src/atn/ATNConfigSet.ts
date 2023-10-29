@@ -96,8 +96,8 @@ export class ATNConfigSet {
      * {@code pi} is the {@link ATNConfig//semanticContext}. We use
      * {@code (s,i,pi)} as key.
      *
-     * <p>This method updates {@link //dipsIntoOuterContext} and
-     * {@link //hasSemanticContext} when necessary.</p>
+     * <p>This method updates {@link dipsIntoOuterContext} and
+     * {@link hasSemanticContext} when necessary.</p>
      */
     public add(config: ATNConfig,
         mergeCache?: DoubleDict<PredictionContext, PredictionContext, PredictionContext> | null): boolean {

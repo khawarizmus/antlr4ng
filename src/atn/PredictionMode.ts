@@ -33,11 +33,11 @@ export class PredictionMode {
      * <p>
      * When using this prediction mode, the parser will either return a correct
      * parse tree (i.e. the same parse tree that would be returned with the
-     * {@link //LL} prediction mode), or it will report a syntax error. If a
-     * syntax error is encountered when using the {@link //SLL} prediction mode,
+     * {@link LL} prediction mode), or it will report a syntax error. If a
+     * syntax error is encountered when using the {@link SLL} prediction mode,
      * it may be due to either an actual syntax error in the input or indicate
      * that the particular combination of grammar and input requires the more
-     * powerful {@link //LL} prediction abilities to complete successfully.</p>
+     * powerful {@link LL} prediction abilities to complete successfully.</p>
      *
      * <p>
      * This prediction mode does not provide any guarantees for prediction
@@ -68,7 +68,7 @@ export class PredictionMode {
     /**
      *
      * The LL(*) prediction mode with exact ambiguity detection. In addition to
-     * the correctness guarantees provided by the {@link //LL} prediction mode,
+     * the correctness guarantees provided by the {@link LL} prediction mode,
      * this prediction mode instructs the prediction algorithm to determine the
      * complete and exact set of ambiguous alternatives for every ambiguous
      * decision encountered while parsing.

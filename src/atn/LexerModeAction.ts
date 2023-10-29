@@ -25,7 +25,7 @@ export class LexerModeAction extends LexerAction {
 
     /**
      * <p>This action is implemented by calling {@link Lexer//mode} with the
-     * value provided by {@link //getMode}.</p>
+     * value provided by {@link getMode}.</p>
      */
     public override execute(lexer: Lexer): void {
         lexer.mode(this.mode);

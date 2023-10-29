@@ -7,7 +7,6 @@
 import { Token } from './Token.js';
 import { Lexer } from './Lexer.js';
 import { Interval } from './misc/Interval.js';
-import { TokenStream } from "./TokenStream.js";
 
 /**
  * This implementation of {@link TokenStream} loads tokens from a
@@ -21,10 +20,9 @@ import { TokenStream } from "./TokenStream.js";
  * {@link Token//HIDDEN_CHANNEL}, use a filtering token stream such a
  * {@link CommonTokenStream}.</p>
  */
-export class BufferedTokenStream extends TokenStream {
+export class BufferedTokenStream {
     constructor(tokenSource) {
 
-        super();
         // The {@link TokenSource} from which tokens for this stream are fetched.
         this.tokenSource = tokenSource;
         /**

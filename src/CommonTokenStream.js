@@ -14,9 +14,9 @@ import { BufferedTokenStream } from './BufferedTokenStream.js';
  *
  * <p>
  * This token stream provides access to all tokens by index or when calling
- * methods like {@link //getText}. The channel filtering is only used for code
- * accessing tokens via the lookahead methods {@link //LA}, {@link //LT}, and
- * {@link //LB}.</p>
+ * methods like {@link getText}. The channel filtering is only used for code
+ * accessing tokens via the lookahead methods {@link LA}, {@link LT}, and
+ * {@link LB}.</p>
  *
  * <p>
  * By default, tokens are placed on the default channel
