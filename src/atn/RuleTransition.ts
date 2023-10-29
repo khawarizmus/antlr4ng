@@ -4,11 +4,16 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+import { ATNState } from "./ATNState.js";
 import { Transition } from "./Transition.js";
 import { TransitionType } from "./TransitionType.js";
 
 export class RuleTransition extends Transition {
-    constructor(ruleStart, ruleIndex, precedence, followState) {
+    public ruleIndex: number;
+    public precedence: number;
+    public followState: ATNState;
+
+    public constructor(ruleStart: ATNState, ruleIndex: number, precedence: number, followState: ATNState) {
         super(ruleStart);
         // ptr to the rule definition object for this rule ref
         this.ruleIndex = ruleIndex;
@@ -17,15 +22,15 @@ export class RuleTransition extends Transition {
         this.followState = followState;
     }
 
-    get isEpsilon() {
+    public override get isEpsilon(): boolean {
         return true;
     }
 
-    getSerializationType() {
+    public override getSerializationType(): number {
         return TransitionType.RULE;
     }
 
-    matches(symbol, minVocabSymbol, maxVocabSymbol) {
+    public override matches(_symbol: number, _minVocabSymbol: number, _maxVocabSymbol: number): boolean {
         return false;
     }
 }

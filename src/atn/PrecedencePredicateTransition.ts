@@ -4,7 +4,7 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { PrecedencePredicate } from "./PrecedencePredicate.js";
+import { SemanticContext } from "./SemanticContext.js";
 import { AbstractPredicateTransition } from "./AbstractPredicateTransition.js";
 import { TransitionType } from "./TransitionType.js";
 import { ATNState } from "./ATNState.js";
@@ -25,8 +25,8 @@ export class PrecedencePredicateTransition extends AbstractPredicateTransition {
         return false;
     }
 
-    public getPredicate(): PrecedencePredicate {
-        return new PrecedencePredicate(this.precedence);
+    public getPredicate(): SemanticContext.PrecedencePredicate {
+        return new SemanticContext.PrecedencePredicate(this.precedence);
     }
 
     public getSerializationType(): number {

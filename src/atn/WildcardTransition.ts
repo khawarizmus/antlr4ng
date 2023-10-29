@@ -4,23 +4,24 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+import { ATNState } from "./ATNState.js";
 import { Transition } from "./Transition.js";
 import { TransitionType } from "./TransitionType.js";
 
 export class WildcardTransition extends Transition {
-    constructor(target) {
+    public constructor(target: ATNState) {
         super(target);
     }
 
-    getSerializationType() {
+    public override getSerializationType(): number {
         return TransitionType.WILDCARD;
     }
 
-    matches(symbol, minVocabSymbol, maxVocabSymbol) {
+    public override matches(symbol: number, minVocabSymbol: number, maxVocabSymbol: number): boolean {
         return symbol >= minVocabSymbol && symbol <= maxVocabSymbol;
     }
 
-    toString() {
+    public override toString(): string {
         return ".";
     }
 }

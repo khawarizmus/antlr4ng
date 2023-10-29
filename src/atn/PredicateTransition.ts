@@ -4,7 +4,7 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { Predicate } from "./Predicate.js";
+import { SemanticContext } from "./SemanticContext.js";
 import { AbstractPredicateTransition } from "./AbstractPredicateTransition.js";
 import { TransitionType } from "./TransitionType.js";
 import { ATNState } from "./ATNState.js";
@@ -33,8 +33,8 @@ export class PredicateTransition extends AbstractPredicateTransition {
         return TransitionType.PREDICATE;
     }
 
-    public getPredicate(): Predicate {
-        return new Predicate(this.ruleIndex, this.predIndex, this.isCtxDependent);
+    public getPredicate(): SemanticContext.Predicate {
+        return new SemanticContext.Predicate(this.ruleIndex, this.predIndex, this.isCtxDependent);
     }
 
     public override toString(): string {

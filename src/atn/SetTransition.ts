@@ -6,14 +6,15 @@
 
 // A transition containing a set of values.
 import { IntervalSet } from "../misc/IntervalSet.js";
-import { Token } from '../Token.js';
+import { Token } from "../Token.js";
+import { ATNState } from "./ATNState.js";
 import { Transition } from "./Transition.js";
 import { TransitionType } from "./TransitionType.js";
 
 export class SetTransition extends Transition {
     #label;
 
-    constructor(target, set) {
+    public constructor(target: ATNState, set: IntervalSet) {
         super(target);
         if (set !== undefined && set !== null) {
             this.#label = set;
@@ -23,19 +24,19 @@ export class SetTransition extends Transition {
         }
     }
 
-    get label() {
+    public override get label(): IntervalSet {
         return this.#label;
     }
 
-    getSerializationType() {
+    public override getSerializationType(): number {
         return TransitionType.SET;
     }
 
-    matches(symbol, minVocabSymbol, maxVocabSymbol) {
+    public override matches(symbol: number, _minVocabSymbol: number, _maxVocabSymbol: number): boolean {
         return this.label.contains(symbol);
     }
 
-    toString() {
-        return this.label.toString();
+    public override toString(): string {
+        return this.#label.toString();
     }
 }

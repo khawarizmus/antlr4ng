@@ -5,38 +5,36 @@
  */
 
 import { IntervalSet } from "../misc/IntervalSet.js";
+import { ATNState } from "./ATNState.js";
 import { Transition } from "./Transition.js";
-import { TransitionType } from './TransitionType.js';
+import { TransitionType } from "./TransitionType.js";
 
 export class RangeTransition extends Transition {
-    #label;
+    public readonly start: number;
+    public readonly stop: number;
 
-    constructor(target, start, stop) {
+    readonly #label = new IntervalSet();
+
+    public constructor(target: ATNState, start: number, stop: number) {
         super(target);
         this.start = start;
         this.stop = stop;
-        this.#label = this.makeLabel();
+        this.#label.addRange(start, stop);
     }
 
-    get label() {
+    public override get label(): IntervalSet {
         return this.#label;
     }
 
-    makeLabel() {
-        const s = new IntervalSet();
-        s.addRange(this.start, this.stop);
-        return s;
-    }
-
-    getSerializationType() {
+    public getSerializationType(): number {
         return TransitionType.RANGE;
     }
 
-    matches(symbol, minVocabSymbol, maxVocabSymbol) {
+    public matches(symbol: number, _minVocabSymbol: number, _maxVocabSymbol: number): boolean {
         return symbol >= this.start && symbol <= this.stop;
     }
 
-    toString() {
+    public override toString(): string {
         return "'" + String.fromCharCode(this.start) + "'..'" + String.fromCharCode(this.stop) + "'";
     }
 }

@@ -5,6 +5,7 @@
  */
 
 import { DecisionState } from "./DecisionState.js";
+import { ATNStateType } from "./ATNStateType.js";
 import { StarLoopbackState } from "./StarLoopbackState.js";
 
 import type { ParserATNSimulator } from "./ParserATNSimulator.js";
@@ -25,5 +26,14 @@ export class StarLoopEntryState extends DecisionState {
      * @see `DFA.isPrecedenceDfa`
      */
     public precedenceRuleDecision: boolean;
+
+    public constructor() {
+        super();
+        this.precedenceRuleDecision = false;
+    }
+
+    public override get stateType(): number {
+        return ATNStateType.STAR_LOOP_ENTRY;
+    }
 
 }

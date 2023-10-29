@@ -11,7 +11,7 @@ import { ATNStateType } from "./ATNStateType.js";
  * The block that begins a closure loop
  */
 export class StarBlockStartState extends BlockStartState {
-    get stateType() {
+    public override get stateType(): number {
         return ATNStateType.STAR_BLOCK_START;
     }
 

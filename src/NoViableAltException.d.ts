@@ -9,7 +9,7 @@ import { Token } from "./Token.js";
 import { RecognitionException } from "./RecognitionException.js";
 import { ParserRuleContext } from "./ParserRuleContext.js";
 import { TokenStream } from "./TokenStream.js";
-import { Parser } from "./index.ts";
+import { Parser } from "./Parser.js";
 
 export declare class NoViableAltException extends RecognitionException {
     public deadEndConfigs: ATNConfigSet;

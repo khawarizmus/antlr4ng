@@ -8,8 +8,7 @@ import { ATNState } from "./ATNState.js";
 import { ATNStateType } from "./ATNStateType.js";
 
 export class StarLoopbackState extends ATNState {
-    get stateType() {
+    public override get stateType(): number {
         return ATNStateType.STAR_LOOP_BACK;
     }
-
 }
