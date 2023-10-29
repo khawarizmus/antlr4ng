@@ -58,7 +58,7 @@ export class ParserRuleContext extends RuleContext {
     // COPY a ctx (I'm deliberately not using copy constructor)
     copyFrom(ctx) {
         // from RuleContext
-        this._parent = ctx._parent;
+        this.parent = ctx.parent;
         this.invokingState = ctx.invokingState;
         this.children = null;
         this.start = ctx.start;

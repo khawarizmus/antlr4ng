@@ -440,7 +440,7 @@ export class Parser extends Recognizer {
     // Like {@link //enterRule} but for recursive rules.
     pushNewRecursionContext(localctx, state, ruleIndex) {
         const previous = this._ctx;
-        previous._parent = localctx;
+        previous.parent = localctx;
         previous.invokingState = state;
         previous.stop = this._input.LT(-1);
 
@@ -467,7 +467,7 @@ export class Parser extends Recognizer {
             this._ctx = parent;
         }
         // hook into tree
-        retCtx._parent = parent;
+        retCtx.parent = parent;
         if (this.buildParseTrees && parent !== null) {
             // add return ctx into invoking rule's tree
             parent.addChild(retCtx);

@@ -4,11 +4,30 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { Interval } from './misc/Interval.js';
-import { Trees } from './tree/Trees.js';
+/* eslint-disable jsdoc/require-param, jsdoc/require-returns */
 
-export class RuleContext {
-    /** A rule context is a record of a single rule invocation. It knows
+import { Parser } from "./Parser.js";
+import { Interval } from "./misc/Interval.js";
+import { ParseTree } from "./tree/ParseTree.js";
+import { ParseTreeVisitor } from "./tree/ParseTreeVisitor.js";
+import { Trees } from "./tree/Trees.js";
+import { ATN } from "./atn/ATN.js";
+
+export class RuleContext implements ParseTree {
+    public children: ParseTree[] | null;
+
+    /**
+     * What state invoked the rule associated with this context?
+     *  The "return address" is the followState of invokingState
+     *  If parent is null, this should be -1 this context object represents
+     *  the start rule.
+     */
+    public invokingState: number;
+
+    public parent: RuleContext | null;
+
+    /**
+     * A rule context is a record of a single rule invocation. It knows
      * which context invoked it, if any. If there is no parent context, then
      * naturally the invoking state is not valid.  The parent link
      * provides a chain upwards from the current rule invocation to the root
@@ -28,33 +47,22 @@ export class RuleContext {
      *
      * @see ParserRuleContext
      */
-    constructor(parent, invokingState) {
-        this._parent = parent ?? null;
+    public constructor(parent?: RuleContext | null, invokingState?: number) {
+        this.parent = parent ?? null;
         this.children = null;
-
-        /**
-         * What state invoked the rule associated with this context?
-         * The "return address" is the followState of invokingState
-         * If parent is null, this should be -1.
-         */
         this.invokingState = invokingState ?? -1;
     }
 
-    get parent() {
-        return this._parent;
-    }
-
-    set parent(value) {
-        this._parent = value;
-    }
-
-    depth() {
+    public depth(): number {
         let n = 0;
-        let p = this;
+
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        let p: RuleContext | null = this;
         while (p !== null) {
             p = p.parent;
             n += 1;
         }
+
         return n;
     }
 
@@ -62,24 +70,24 @@ export class RuleContext {
      * A context is empty if there is no invoking state; meaning nobody call
      * current context.
      */
-    isEmpty() {
+    public isEmpty(): boolean {
         return this.invokingState === -1;
     }
 
     // satisfy the ParseTree / SyntaxTree interface
-    getSourceInterval() {
+    public getSourceInterval(): Interval {
         return Interval.INVALID_INTERVAL;
     }
 
-    get ruleContext() {
+    public get ruleContext(): RuleContext {
         return this;
     }
 
-    get ruleIndex() {
+    public get ruleIndex(): number {
         return -1;
     }
 
-    getPayload() {
+    public getPayload(): RuleContext {
         return this;
     }
 
@@ -91,11 +99,11 @@ export class RuleContext {
      * added to the parse trees, they will not appear in the output of this
      * method.
      */
-    getText() {
-        if (this.getChildCount() === 0) {
+    public getText(): string {
+        if (!this.children || this.getChildCount() === 0) {
             return "";
         } else {
-            return this.children.map(function (child) {
+            return this.children.map((child) => {
                 return child.getText();
             }).join("");
         }
@@ -109,9 +117,8 @@ export class RuleContext {
      * option contextSuperClass.
      * to set it.
      */
-    getAltNumber() {
-        // use constant value of ATN.INVALID_ALT_NUMBER to avoid circular dependency
-        return 0;
+    public getAltNumber(): number {
+        return ATN.INVALID_ALT_NUMBER;
     }
 
     /**
@@ -121,22 +128,18 @@ export class RuleContext {
      * a subclass of ParserRuleContext with backing field and set
      * option contextSuperClass.
      */
-    setAltNumber(altNumber) {
+    public setAltNumber(_altNumber: number): void {
     }
 
-    setParent(parent) {
-        this.parent = parent;
-    }
-
-    getChild(i) {
+    public getChild(_i: number): ParseTree | null {
         return null;
     }
 
-    getChildCount() {
+    public getChildCount(): number {
         return 0;
     }
 
-    accept(visitor) {
+    public accept<T>(visitor: ParseTreeVisitor<T>): T {
         return visitor.visitChildren(this);
     }
 
@@ -144,14 +147,16 @@ export class RuleContext {
      * Print out a whole tree, not just a node, in LISP format
      * (root child1 .. childN). Print just a node if this is a leaf.
      */
-    toStringTree(ruleNames, recog) {
+    public toStringTree(ruleNames: string[], recog: Parser): string {
         return Trees.toStringTree(this, ruleNames, recog);
     }
 
-    toString(ruleNames, stop) {
-        ruleNames = ruleNames || null;
-        stop = stop || null;
-        let p = this;
+    public toString(ruleNames?: string[] | null, stop?: RuleContext | null): string {
+        ruleNames = ruleNames ?? null;
+        stop = stop ?? null;
+
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        let p: RuleContext | null = this;
         let s = "[";
         while (p !== null && p !== stop) {
             if (ruleNames === null) {
@@ -170,6 +175,7 @@ export class RuleContext {
             p = p.parent;
         }
         s += "]";
+
         return s;
     }
 }

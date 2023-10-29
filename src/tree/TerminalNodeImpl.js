@@ -9,9 +9,10 @@ import { Token } from '../Token.js';
 import { TerminalNode } from "./TerminalNode.js";
 
 export class TerminalNodeImpl extends TerminalNode {
+    parent = null;
+
     constructor(symbol) {
         super();
-        this._parent = null;
         this.symbol = symbol;
     }
 
@@ -21,14 +22,6 @@ export class TerminalNodeImpl extends TerminalNode {
 
     getSymbol() {
         return this.symbol;
-    }
-
-    get parent() {
-        return this._parent;
-    }
-
-    set parent(parent) {
-        this._parent = parent;
     }
 
     getPayload() {

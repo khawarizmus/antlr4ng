@@ -10,7 +10,7 @@ import { Interval } from "../misc/Interval.js";
 
 export declare class TerminalNode implements ParseTree {
     public symbol: Token;
-    public get parent(): ParseTree | null;
+    public parent: ParseTree | null;
 
     public constructor(symbol: Token);
 

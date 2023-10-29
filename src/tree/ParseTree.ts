@@ -22,7 +22,7 @@ export interface ParseTree {
      * The parent of this node. If the return value is null, then this
      *  node is the root of the tree.
      */
-    get parent(): ParseTree | null;
+    parent: ParseTree | null;
 
     /**
      * This method returns whatever object represents the data at this node. For
