@@ -21,7 +21,6 @@ export { RuleContext } from "./RuleContext.js";
 export { RuleTransition } from "./atn/RuleTransition.js";
 export * from "./atn/Transition.js";
 
-export * from "./InputStream.js";
 export * from "./CharStream.js";
 export * from "./CharStreams.js";
 export * from "./TokenStream.js";

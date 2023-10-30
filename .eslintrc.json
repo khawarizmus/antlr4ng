@@ -621,6 +621,7 @@
             {
                 "startLines": 1
             }
-        ]
+        ],
+        "jsdoc/no-undefined-types": "off"
     }
 }

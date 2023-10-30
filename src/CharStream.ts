@@ -4,7 +4,9 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { Token } from './Token.js';
+/* eslint-disable jsdoc/require-param, @typescript-eslint/naming-convention */
+
+import { Token } from "./Token.js";
 import { Interval } from "./misc/Interval.js";
 import { IntStream } from "./IntStream.js";
 
@@ -15,17 +17,23 @@ import { IntStream } from "./IntStream.js";
  * Otherwise, the input is treated as a series of 16-bit UTF-16 code
  * units.
  */
-export class CharStream {
-    constructor(data, decodeToUnicodeCodePoints) {
-        this.name = "";
-        this.stringData = data;
-        this.decodeToUnicodeCodePoints = decodeToUnicodeCodePoints ?? false;
+// TODO: CharStream should be an interface, not a class.
+export class CharStream implements IntStream {
+    public name = "";
+    public index = 0;
 
-        this._index = 0;
+    private stringData: string;
+    private data: number[];
+    private decodeToUnicodeCodePoints: boolean;
+
+    public constructor(data: string, decodeToUnicodeCodePoints = false) {
+        this.stringData = data;
+        this.decodeToUnicodeCodePoints = decodeToUnicodeCodePoints;
+
         this.data = [];
         if (this.decodeToUnicodeCodePoints) {
             for (let i = 0; i < this.stringData.length;) {
-                const codePoint = this.stringData.codePointAt(i);
+                const codePoint = this.stringData.codePointAt(i)!;
                 this.data.push(codePoint);
                 i += codePoint <= 0xFFFF ? 1 : 2;
             }
@@ -35,7 +43,6 @@ export class CharStream {
                 this.data[i] = this.stringData.charCodeAt(i);
             }
         }
-        this._size = this.data.length;
     }
 
     /**
@@ -43,55 +50,56 @@ export class CharStream {
      * when the object was created *except* the data array is not
      * touched.
      */
-    reset() {
-        this._index = 0;
+    public reset(): void {
+        this.index = 0;
     }
 
-    consume() {
-        if (this._index >= this._size) {
-            // assert this.LA(1) == Token.EOF
-            throw ("cannot consume EOF");
+    public consume(): void {
+        if (this.index >= this.data.length) {
+            throw new Error("cannot consume EOF");
         }
-        this._index += 1;
+        this.index += 1;
     }
 
-    LA(offset) {
+    public LA(offset: number): number {
         if (offset === 0) {
             return 0; // undefined
         }
         if (offset < 0) {
             offset += 1; // e.g., translate LA(-1) to use offset=0
         }
-        const pos = this._index + offset - 1;
-        if (pos < 0 || pos >= this._size) { // invalid
+        const pos = this.index + offset - 1;
+        if (pos < 0 || pos >= this.data.length) { // invalid
             return Token.EOF;
         }
+
         return this.data[pos];
     }
 
     // mark/release do nothing; we have entire buffer
-    mark() {
+    public mark(): number {
         return -1;
     }
 
-    release(marker) {
+    public release(_marker: number): void {
     }
 
     /**
      * consume() ahead until p==_index; can't just set p=_index as we must
      * update line and column. If we seek backwards, just set p
      */
-    seek(_index) {
-        if (_index <= this._index) {
-            this._index = _index; // just jump; don't update stream state (line,
+    public seek(index: number): void {
+        if (index <= this.index) {
+            this.index = index; // just jump; don't update stream state (line,
+
             // ...)
             return;
         }
         // seek forward
-        this._index = Math.min(_index, this._size);
+        this.index = Math.min(index, this.data.length);
     }
 
-    getText(intervalOrStart, stop) {
+    public getText(intervalOrStart: Interval | number, stop: number): string {
         let start;
         if (intervalOrStart instanceof Interval) {
             start = intervalOrStart.start;
@@ -100,10 +108,10 @@ export class CharStream {
             start = intervalOrStart;
         }
 
-        if (stop >= this._size) {
-            stop = this._size - 1;
+        if (stop >= this.data.length) {
+            stop = this.data.length - 1;
         }
-        if (start >= this._size) {
+        if (start >= this.data.length) {
             return "";
         } else {
             if (this.decodeToUnicodeCodePoints) {
@@ -111,6 +119,7 @@ export class CharStream {
                 for (let i = start; i <= stop; i++) {
                     result += String.fromCodePoint(this.data[i]);
                 }
+
                 return result;
             } else {
                 return this.stringData.slice(start, stop + 1);
@@ -118,19 +127,15 @@ export class CharStream {
         }
     }
 
-    toString() {
+    public toString(): string {
         return this.stringData;
     }
 
-    get index() {
-        return this._index;
+    public get size(): number {
+        return this.data.length;
     }
 
-    get size() {
-        return this._size;
-    }
-
-    getSourceName() {
+    public getSourceName(): string {
         if (this.name) {
             return this.name;
         } else {

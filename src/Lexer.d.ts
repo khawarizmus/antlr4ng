@@ -10,7 +10,6 @@ import { CharStream } from "./CharStream.js";
 import { Token } from "./Token.js";
 import { TokenSource } from "./TokenSource.js";
 import { TokenFactory } from "./TokenFactory.js";
-import { InputStream } from "./InputStream.js";
 
 export declare abstract class Lexer extends Recognizer<LexerATNSimulator> implements TokenSource {
     /* eslint-disable @typescript-eslint/naming-convention */
@@ -25,12 +24,11 @@ export declare abstract class Lexer extends Recognizer<LexerATNSimulator> implem
     public static HIDDEN: number;
 
     public _factory: TokenFactory<Token>;
-    public _tokenFactorySourcePair: [TokenSource | null, InputStream | null];
+    public _tokenFactorySourcePair: [TokenSource | null, CharStream | null];
     /* eslint-enable @typescript-eslint/naming-convention */
 
     public text: string;
     public line: number;
-    public column: number;
 
     public _channel: number;
     public _token: Token | null;
