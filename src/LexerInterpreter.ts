@@ -9,22 +9,25 @@ import { Lexer } from "./Lexer.js";
 import { LexerATNSimulator } from "./atn/LexerATNSimulator.js";
 import { PredictionContextCache } from "./atn/PredictionContextCache.js";
 import { DFA } from "./dfa/DFA.js";
+import { ATN } from "./atn/ATN.js";
+import { Vocabulary } from "./Vocabulary.js";
+import { CharStream } from "./CharStream.js";
 
 export class LexerInterpreter extends Lexer {
-    #grammarFileName;
-    #atn;
+    #grammarFileName: string;
+    #atn: ATN;
 
-    #ruleNames;
-    #channelNames;
-    #modeNames;
+    #ruleNames: string[];
+    #channelNames: string[];
+    #modeNames: string[];
 
-    #vocabulary;
-    #decisionToDFA;
+    #vocabulary: Vocabulary;
+    #decisionToDFA: DFA[];
 
     #sharedContextCache = new PredictionContextCache();
 
-    constructor(grammarFileName, vocabulary, ruleNames, channelNames, modeNames, atn,
-        input) {
+    public constructor(grammarFileName: string, vocabulary: Vocabulary, ruleNames: string[], channelNames: string[],
+        modeNames: string[], atn: ATN, input: CharStream) {
         super(input);
 
         if (atn.grammarType !== ATNType.LEXER) {
@@ -39,34 +42,34 @@ export class LexerInterpreter extends Lexer {
         this.#modeNames = modeNames.slice(0);
         this.#vocabulary = vocabulary;
 
-        this.#decisionToDFA = atn.decisionToState.map(function (ds, i) {
+        this.#decisionToDFA = atn.decisionToState.map((ds, i) => {
             return new DFA(ds, i);
         });
 
         this.interpreter = new LexerATNSimulator(this, atn, this.#decisionToDFA, this.#sharedContextCache);
     }
 
-    get atn() {
+    public override get atn(): ATN {
         return this.#atn;
     }
 
-    get grammarFileName() {
+    public get grammarFileName(): string {
         return this.#grammarFileName;
     }
 
-    get ruleNames() {
+    public get ruleNames(): string[] {
         return this.#ruleNames;
     }
 
-    get channelNames() {
+    public get channelNames(): string[] {
         return this.#channelNames;
     }
 
-    get modeNames() {
+    public get modeNames(): string[] {
         return this.#modeNames;
     }
 
-    get vocabulary() {
+    public get vocabulary(): Vocabulary {
         return this.#vocabulary;
     }
 }
