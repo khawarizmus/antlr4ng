@@ -13,9 +13,6 @@ import { Parser } from "./Parser.js";
 import { RecognitionException } from "./RecognitionException.js";
 import { ParserRuleContext } from "./ParserRuleContext.js";
 
-// For jsdoc only.
-import type { ANTLRErrorStrategy } from "./ANTLRErrorStrategy.js";
-
 /**
  * This implementation of {@link ANTLRErrorStrategy} responds to syntax errors
  * by immediately canceling the parse operation with a

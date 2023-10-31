@@ -4,48 +4,67 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+/* eslint-disable jsdoc/require-returns, jsdoc/require-param */
+
 import { FailedPredicateException } from "./FailedPredicateException.js";
 import { InputMismatchException } from "./InputMismatchException.js";
 import { NoViableAltException } from "./NoViableAltException.js";
 import { ATNState } from "./atn/ATNState.js";
-import { Token } from './Token.js';
+import { Token } from "./Token.js";
 import { Interval } from "./misc/Interval.js";
 import { IntervalSet } from "./misc/IntervalSet.js";
 import { ATNStateType } from "./atn/ATNStateType.js";
+import { ParserRuleContext } from "./ParserRuleContext.js";
+import { Parser } from "./Parser.js";
+import { RecognitionException } from "./RecognitionException.js";
+import { CommonToken } from "./CommonToken.js";
+import { RuleTransition } from "./atn/RuleTransition.js";
 
 /**
  * This is the default implementation of {@link ANTLRErrorStrategy} used for
  * error reporting and recovery in ANTLR parsers.
  */
 export class DefaultErrorStrategy {
-    constructor() {
-        /**
-         * Indicates whether the error strategy is currently "recovering from an
-         * error". This is used to suppress reporting multiple error messages while
-         * attempting to recover from a detected syntax error.
-         *
-         * @see //inErrorRecoveryMode
-         */
-        this.errorRecoveryMode = false;
+    /**
+     * Indicates whether the error strategy is currently "recovering from an
+     * error". This is used to suppress reporting multiple error messages while
+     * attempting to recover from a detected syntax error.
+     *
+     * @see #inErrorRecoveryMode
+     */
+    protected errorRecoveryMode = false;
 
-        /**
-         * The index into the input stream where the last error occurred.
-         * This is used to prevent infinite loops where an error is found
-         * but no token is consumed during recovery...another error is found,
-         * ad nauseam. This is a failsafe mechanism to guarantee that at least
-         * one token/tree node is consumed for two errors.
-         */
-        this.lastErrorIndex = -1;
-        this.lastErrorStates = null;
-        this.nextTokensContext = null;
-        this.nextTokenState = 0;
-    }
+    /**
+     * The index into the input stream where the last error occurred.
+     * 	This is used to prevent infinite loops where an error is found
+     *  but no token is consumed during recovery...another error is found,
+     *  ad nauseam.  This is a failsafe mechanism to guarantee that at least
+     *  one token/tree node is consumed for two errors.
+     */
+    protected lastErrorIndex = -1;
+
+    protected lastErrorStates = new IntervalSet();
+
+    /**
+     * This field is used to propagate information about the lookahead following
+     * the previous match. Since prediction prefers completing the current rule
+     * to error recovery efforts, error reporting may occur later than the
+     * original point where it was discoverable. The original context is used to
+     * compute the true expected sets as though the reporting occurred as early
+     * as possible.
+     */
+    protected nextTokensContext: ParserRuleContext | null = null;
+
+    /**
+     * @see #nextTokensContext
+     */
+    protected nextTokenState = 0;
 
     /**
      * <p>The default implementation simply calls {@link endErrorCondition} to
      * ensure that the handler is not in error recovery mode.</p>
      */
-    reset(recognizer) {
+    public reset(recognizer: Parser): void {
         this.endErrorCondition(recognizer);
     }
 
@@ -53,24 +72,23 @@ export class DefaultErrorStrategy {
      * This method is called to enter error recovery mode when a recognition
      * exception is reported.
      *
-     * @param recognizer the parser instance
+     * @param _recognizer the parser instance
      */
-    beginErrorCondition(recognizer) {
+    public beginErrorCondition(_recognizer: Parser): void {
         this.errorRecoveryMode = true;
     }
 
-    inErrorRecoveryMode(recognizer) {
+    public inErrorRecoveryMode(_recognizer: Parser): boolean {
         return this.errorRecoveryMode;
     }
 
     /**
      * This method is called to leave error recovery mode after recovering from
      * a recognition exception.
-     * @param recognizer
      */
-    endErrorCondition(recognizer) {
+    public endErrorCondition(_recognizer: Parser): void {
         this.errorRecoveryMode = false;
-        this.lastErrorStates = null;
+        this.lastErrorStates = new IntervalSet();
         this.lastErrorIndex = -1;
     }
 
@@ -78,7 +96,7 @@ export class DefaultErrorStrategy {
      * {@inheritDoc}
      * <p>The default implementation simply calls {@link endErrorCondition}.</p>
      */
-    reportMatch(recognizer) {
+    public reportMatch(recognizer: Parser): void {
         this.endErrorCondition(recognizer);
     }
 
@@ -101,7 +119,7 @@ export class DefaultErrorStrategy {
      * the exception</li>
      * </ul>
      */
-    reportError(recognizer, e) {
+    public reportError(recognizer: Parser, e: RecognitionException): void {
         // if we've already reported an error and have not matched a token
         // yet successfully, don't report any errors.
         if (this.inErrorRecoveryMode(recognizer)) {
@@ -116,8 +134,7 @@ export class DefaultErrorStrategy {
             this.reportFailedPredicate(recognizer, e);
         } else {
             console.log("unknown recognition error type: " + e.constructor.name);
-            console.log(e.stack);
-            recognizer.notifyErrorListeners(e.offendingToken, e.getMessage(), e);
+            recognizer.notifyErrorListeners(e.message, e.offendingToken, e);
         }
     }
 
@@ -130,20 +147,18 @@ export class DefaultErrorStrategy {
      * that can follow the current rule.</p>
      *
      */
-    recover(recognizer, e) {
-        if (this.lastErrorIndex === recognizer.inputStream.index &&
-            this.lastErrorStates !== null && this.lastErrorStates.indexOf(recognizer.state) >= 0) {
+    public recover(recognizer: Parser, _e: RecognitionException): void {
+        if (this.lastErrorIndex === recognizer.inputStream.index && this.lastErrorStates.contains(recognizer.state)) {
             // uh oh, another error at same token index and previously-visited
             // state in ATN; must be a case where LT(1) is in the recovery
             // token set so nothing got consumed. Consume a single token
             // at least to prevent an infinite loop; this is a failsafe.
             recognizer.consume();
         }
-        this.lastErrorIndex = recognizer._input.index;
-        if (this.lastErrorStates === null) {
-            this.lastErrorStates = [];
-        }
-        this.lastErrorStates.push(recognizer.state);
+
+        this.lastErrorIndex = recognizer.inputStream.index;
+
+        this.lastErrorStates.addOne(recognizer.state);
         const followSet = this.getErrorRecoverySet(recognizer);
         this.consumeUntil(recognizer, followSet);
     }
@@ -195,26 +210,28 @@ export class DefaultErrorStrategy {
      * functionality by simply overriding this method as a blank { }.</p>
      *
      */
-    sync(recognizer) {
+    public sync(recognizer: Parser): void {
         // If already recovering, don't try to sync
         if (this.inErrorRecoveryMode(recognizer)) {
             return;
         }
-        const s = recognizer.interpreter.atn.states[recognizer.state];
+        const s = recognizer.interpreter.atn.states[recognizer.state]!;
         const la = recognizer.tokenStream.LA(1);
         // try cheaper subset first; might get lucky. seems to shave a wee bit off
         const nextTokens = recognizer.atn.nextTokens(s);
         if (nextTokens.contains(la)) {
             this.nextTokensContext = null;
             this.nextTokenState = ATNState.INVALID_STATE_NUMBER;
+
             return;
         } else if (nextTokens.contains(Token.EPSILON)) {
             if (this.nextTokensContext === null) {
                 // It's possible the next token won't match information tracked
                 // by sync is restricted for performance.
-                this.nextTokensContext = recognizer._ctx;
-                this.nextTokensState = recognizer._stateNumber;
+                this.nextTokensContext = recognizer.context;
+                this.nextTokenState = recognizer.state;
             }
+
             return;
         }
         switch (s.stateType) {
@@ -252,14 +269,14 @@ export class DefaultErrorStrategy {
      * @param recognizer the parser instance
      * @param e the recognition exception
      */
-    reportNoViableAlternative(recognizer, e) {
+    public reportNoViableAlternative(recognizer: Parser, e: NoViableAltException): void {
         const tokens = recognizer.tokenStream;
         let input;
         if (tokens !== null) {
             if (e.startToken.type === Token.EOF) {
                 input = "<EOF>";
             } else {
-                input = tokens.getText(new Interval(e.startToken.tokenIndex, e.offendingToken.tokenIndex));
+                input = tokens.getText(new Interval(e.startToken.tokenIndex, e.offendingToken!.tokenIndex));
             }
         } else {
             input = "<unknown input>";
@@ -277,9 +294,9 @@ export class DefaultErrorStrategy {
      * @param recognizer the parser instance
      * @param e the recognition exception
      */
-    reportInputMismatch(recognizer, e) {
+    public reportInputMismatch(recognizer: Parser, e: RecognitionException): void {
         const msg = "mismatched input " + this.getTokenErrorDisplay(e.offendingToken) +
-            " expecting " + e.getExpectedTokens().toString(recognizer.vocabulary);
+            " expecting " + e.getExpectedTokens()!.toString(recognizer.vocabulary);
         recognizer.notifyErrorListeners(msg, e.offendingToken, e);
     }
 
@@ -292,8 +309,8 @@ export class DefaultErrorStrategy {
      * @param recognizer the parser instance
      * @param e the recognition exception
      */
-    reportFailedPredicate(recognizer, e) {
-        const ruleName = recognizer.ruleNames[recognizer._ctx.ruleIndex];
+    public reportFailedPredicate(recognizer: Parser, e: RecognitionException): void {
+        const ruleName = recognizer.ruleNames[recognizer.context.ruleIndex];
         const msg = "rule " + ruleName + " " + e.message;
         recognizer.notifyErrorListeners(msg, e.offendingToken, e);
     }
@@ -315,9 +332,8 @@ export class DefaultErrorStrategy {
      * {@link Parser//notifyErrorListeners}.</p>
      *
      * @param recognizer the parser instance
-     *
      */
-    reportUnwantedToken(recognizer) {
+    public reportUnwantedToken(recognizer: Parser): void {
         if (this.inErrorRecoveryMode(recognizer)) {
             return;
         }
@@ -346,7 +362,7 @@ export class DefaultErrorStrategy {
      *
      * @param recognizer the parser instance
      */
-    reportMissingToken(recognizer) {
+    public reportMissingToken(recognizer: Parser): void {
         if (this.inErrorRecoveryMode(recognizer)) {
             return;
         }
@@ -372,8 +388,7 @@ export class DefaultErrorStrategy {
      * token and delete it. Then consume and return the next token (which was
      * the {@code LA(2)} token) as the successful result of the match operation.</p>
      *
-     * <p>This recovery strategy is implemented by {@link
-        * //singleTokenDeletion}.</p>
+     * <p>This recovery strategy is implemented by {@link singleTokenDeletion}.</p>
      *
      * <p><strong>MISSING TOKEN</strong> (single token insertion)</p>
      *
@@ -383,8 +398,7 @@ export class DefaultErrorStrategy {
      * "insertion" is performed by returning the created token as the successful
      * result of the match operation.</p>
      *
-     * <p>This recovery strategy is implemented by {@link
-        * //singleTokenInsertion}.</p>
+     * <p>This recovery strategy is implemented by {@link singleTokenInsertion}.</p>
      *
      * <p><strong>EXAMPLE</strong></p>
      *
@@ -409,13 +423,14 @@ export class DefaultErrorStrategy {
      * is in the set of tokens that can follow the {@code ')'} token reference
      * in rule {@code atom}. It can assume that you forgot the {@code ')'}.
      */
-    recoverInline(recognizer) {
+    public recoverInline(recognizer: Parser): Token {
         // SINGLE TOKEN DELETION
         const matchedSymbol = this.singleTokenDeletion(recognizer);
         if (matchedSymbol !== null) {
             // we have deleted the extra token.
             // now, move past ttype token as if all were ok
             recognizer.consume();
+
             return matchedSymbol;
         }
         // SINGLE TOKEN INSERTION
@@ -440,20 +455,21 @@ export class DefaultErrorStrategy {
      * token with the correct type to produce this behavior.</p>
      *
      * @param recognizer the parser instance
-     * @return {@code true} if single-token insertion is a viable recovery
+     * @returns `true` if single-token insertion is a viable recovery
      * strategy for the current mismatched input, otherwise {@code false}
      */
-    singleTokenInsertion(recognizer) {
+    public singleTokenInsertion(recognizer: Parser): boolean {
         const currentSymbolType = recognizer.tokenStream.LA(1);
         // if current token is consistent with what could come after current
         // ATN state, then we know we're missing a token; error recovery
         // is free to conjure up and insert the missing token
         const atn = recognizer.interpreter.atn;
         const currentState = atn.states[recognizer.state];
-        const next = currentState.transitions[0].target;
-        const expectingAtLL2 = atn.nextTokens(next, recognizer._ctx);
+        const next = currentState!.transitions[0].target;
+        const expectingAtLL2 = atn.nextTokens(next, recognizer.context);
         if (expectingAtLL2.contains(currentSymbolType)) {
             this.reportMissingToken(recognizer);
+
             return true;
         } else {
             return false;
@@ -475,11 +491,11 @@ export class DefaultErrorStrategy {
      * match.</p>
      *
      * @param recognizer the parser instance
-     * @return the successfully matched {@link Token} instance if single-token
+     * @returns the successfully matched {@link Token} instance if single-token
      * deletion successfully recovers from the mismatched input, otherwise
      * {@code null}
      */
-    singleTokenDeletion(recognizer) {
+    public singleTokenDeletion(recognizer: Parser): Token | null {
         const nextTokenType = recognizer.tokenStream.LA(2);
         const expecting = this.getExpectedTokens(recognizer);
         if (expecting.contains(nextTokenType)) {
@@ -492,6 +508,7 @@ export class DefaultErrorStrategy {
             // we want to return the token we're actually matching
             const matchedSymbol = recognizer.getCurrentToken();
             this.reportMatch(recognizer); // we know current token is correct
+
             return matchedSymbol;
         } else {
             return null;
@@ -519,8 +536,8 @@ export class DefaultErrorStrategy {
      * override this method to create the appropriate tokens.
      *
      */
-    getMissingSymbol(recognizer) {
-        const currentSymbol = recognizer.getCurrentToken();
+    public getMissingSymbol(recognizer: Parser): Token {
+        const currentSymbol = recognizer.getCurrentToken() as CommonToken;
         const expecting = this.getExpectedTokens(recognizer);
         let expectedTokenType = Token.INVALID_TYPE;
         if (!expecting.isNil) {
@@ -535,7 +552,7 @@ export class DefaultErrorStrategy {
         }
 
         let current = currentSymbol;
-        const lookBack = recognizer.tokenStream.LT(-1);
+        const lookBack = recognizer.tokenStream.LT(-1) as CommonToken;
         if (current.type === Token.EOF && lookBack !== null) {
             current = lookBack;
         }
@@ -545,7 +562,7 @@ export class DefaultErrorStrategy {
             -1, -1, current.line, current.column);
     }
 
-    getExpectedTokens(recognizer) {
+    public getExpectedTokens(recognizer: Parser): IntervalSet {
         return recognizer.getExpectedTokens();
     }
 
@@ -558,7 +575,7 @@ export class DefaultErrorStrategy {
      * your token objects because you don't have to go modify your lexer
      * so that it creates a new Java type.
      */
-    getTokenErrorDisplay(t) {
+    public getTokenErrorDisplay(t: Token | null): string {
         if (t === null) {
             return "<no token>";
         }
@@ -570,13 +587,15 @@ export class DefaultErrorStrategy {
                 s = "<" + t.type + ">";
             }
         }
+
         return this.escapeWSAndQuote(s);
     }
 
-    escapeWSAndQuote(s) {
+    public escapeWSAndQuote(s: string): string {
         s = s.replace(/\n/g, "\\n");
         s = s.replace(/\r/g, "\\r");
         s = s.replace(/\t/g, "\\t");
+
         return "'" + s + "'";
     }
 
@@ -673,24 +692,25 @@ export class DefaultErrorStrategy {
      * Like Grosch I implement context-sensitive FOLLOW sets that are combined
      * at run-time upon error to avoid overhead during parsing.
      */
-    getErrorRecoverySet(recognizer) {
+    public getErrorRecoverySet(recognizer: Parser): IntervalSet {
         const atn = recognizer.interpreter.atn;
-        let ctx = recognizer._ctx;
+        let ctx: ParserRuleContext | null = recognizer.context;
         const recoverSet = new IntervalSet();
         while (ctx !== null && ctx.invokingState >= 0) {
             // compute what follows who invoked us
-            const invokingState = atn.states[ctx.invokingState];
-            const rt = invokingState.transitions[0];
+            const invokingState = atn.states[ctx.invokingState]!;
+            const rt = invokingState.transitions[0] as RuleTransition;
             const follow = atn.nextTokens(rt.followState);
             recoverSet.addSet(follow);
             ctx = ctx.parent;
         }
         recoverSet.removeOne(Token.EPSILON);
+
         return recoverSet;
     }
 
     // Consume tokens until one matches the given token set.//
-    consumeUntil(recognizer, set) {
+    public consumeUntil(recognizer: Parser, set: IntervalSet): void {
         let ttype = recognizer.tokenStream.LA(1);
         while (ttype !== Token.EOF && !set.contains(ttype)) {
             recognizer.consume();

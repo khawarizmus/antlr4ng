@@ -14,10 +14,6 @@ import { TokenStream } from "./TokenStream.js";
 import { TokenSource } from "./TokenSource.js";
 import { RuleContext } from "./RuleContext.js";
 
-// For jsdoc only.
-import type { IntStream } from "./IntStream.js";
-import type { CommonTokenStream } from "./CommonTokenStream.js";
-
 /**
  * This implementation of {@link TokenStream} loads tokens from a
  * {@link TokenSource} on-demand, and places the tokens in a buffer to provide

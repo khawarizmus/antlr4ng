@@ -4,8 +4,11 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { Token } from './Token.js';
-import { BufferedTokenStream } from './BufferedTokenStream.js';
+/* eslint-disable @typescript-eslint/naming-convention */
+
+import { Token } from "./Token.js";
+import { BufferedTokenStream } from "./BufferedTokenStream.js";
+import { TokenSource } from "./index.js";
 
 /**
  * This class extends {@link BufferedTokenStream} with functionality to filter
@@ -32,16 +35,25 @@ import { BufferedTokenStream } from './BufferedTokenStream.js';
  * channel.</p>
  */
 export class CommonTokenStream extends BufferedTokenStream {
-    constructor(lexer, channel) {
+    /**
+     * Specifies the channel to use for filtering tokens.
+     *
+     * <p>
+     * The default value is {@link Token#DEFAULT_CHANNEL}, which matches the
+     * default channel assigned to tokens created by the lexer.</p>
+     */
+    protected channel = Token.DEFAULT_CHANNEL;
+
+    public constructor(lexer: TokenSource, channel?: number) {
         super(lexer);
-        this.channel = channel === undefined ? Token.DEFAULT_CHANNEL : channel;
+        this.channel = channel ?? Token.DEFAULT_CHANNEL;
     }
 
-    adjustSeekIndex(i) {
+    public override adjustSeekIndex(i: number): number {
         return this.nextTokenOnChannel(i, this.channel);
     }
 
-    LB(k) {
+    public override LB(k: number): Token | null {
         if (k === 0 || this.index - k < 0) {
             return null;
         }
@@ -56,10 +68,11 @@ export class CommonTokenStream extends BufferedTokenStream {
         if (i < 0) {
             return null;
         }
+
         return this.tokens[i];
     }
 
-    LT(k) {
+    public override LT(k: number): Token | null {
         this.lazyInit();
         if (k === 0) {
             return null;
@@ -77,15 +90,15 @@ export class CommonTokenStream extends BufferedTokenStream {
             }
             n += 1;
         }
+
         return this.tokens[i];
     }
 
     // Count EOF just once.
-    getNumberOfOnChannelTokens() {
+    public getNumberOfOnChannelTokens(): number {
         let n = 0;
         this.fill();
-        for (let i = 0; i < this.tokens.length; i++) {
-            const t = this.tokens[i];
+        for (const t of this.tokens) {
             if (t.channel === this.channel) {
                 n += 1;
             }
@@ -93,6 +106,7 @@ export class CommonTokenStream extends BufferedTokenStream {
                 break;
             }
         }
+
         return n;
     }
 }

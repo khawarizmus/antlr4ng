@@ -9,6 +9,7 @@
  * (so we can ignore tabs), token channel, index, and source from which
  * we obtained this token.
  */
+// TODO: make Token an interface.
 export class Token {
 
     constructor() {

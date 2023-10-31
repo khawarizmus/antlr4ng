@@ -13,10 +13,6 @@ import { ATNSimulator } from "./atn/ATNSimulator.js";
 import { Token } from "./Token.js";
 import { BitSet } from "./misc/BitSet.js";
 
-// For jsdoc only.
-import type { ANTLRErrorStrategy } from "./ANTLRErrorStrategy.js";
-import type { ParserATNSimulator } from "./atn/ParserATNSimulator.js";
-
 /** How to emit recognition errors. */
 export interface ANTLRErrorListener {
     /**

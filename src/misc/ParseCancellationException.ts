@@ -4,10 +4,6 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-// For jsdoc only.
-import type { RecognitionException } from "../RecognitionException.js";
-import type { BailErrorStrategy } from "../BailErrorStrategy.js";
-
 /**
  * This exception is thrown to cancel a parsing operation. This exception does
  * not extend {@link RecognitionException}, allowing it to bypass the standard

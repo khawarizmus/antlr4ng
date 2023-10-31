@@ -11,9 +11,6 @@ import { DFA } from "./dfa/DFA.js";
 import { BitSet } from "./misc/BitSet.js";
 import { Interval } from "./misc/Interval.js";
 
-// For jsdoc only.
-import type { ANTLRErrorListener } from "./ANTLRErrorListener.js";
-
 /**
  * This implementation of {@link ANTLRErrorListener} can be used to identify
  * certain potential correctness and performance problems in grammars. "Reports"

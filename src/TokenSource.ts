@@ -8,10 +8,6 @@ import { CharStream } from "./CharStream.js";
 import { Token } from "./Token.js";
 import { TokenFactory } from "./TokenFactory.js";
 
-// For jsdoc only.
-import type { CommonToken } from "./CommonToken.js";
-import type { RecognitionException } from "./RecognitionException.js";
-
 /**
  * A source of tokens must provide a sequence of tokens via {@link #nextToken()}
  * and also must reveal it's source of characters; {@link CommonToken}'s text is

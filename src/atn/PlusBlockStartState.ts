@@ -6,9 +6,7 @@
 
 import { ATNStateType } from "./ATNStateType.js";
 import { BlockStartState } from "./BlockStartState.js";
-
-// For jsdoc only.
-import type { PlusLoopbackState } from "./PlusLoopbackState.js";
+import { PlusLoopbackState } from "./PlusLoopbackState.js";
 
 /**
  * Start of {@code (A|B|...)+} loop. Technically a decision state, but

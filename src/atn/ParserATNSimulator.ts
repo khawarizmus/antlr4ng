@@ -44,14 +44,11 @@ import { RuleContext } from "../RuleContext.js";
 import { ATNState } from "./ATNState.js";
 import { Transition } from "./Transition.js";
 
-// For jsdoc only.
-import type { FailedPredicateException } from "../FailedPredicateException.js";
 import type { EpsilonTransition } from "./EpsilonTransition.js";
 import type { StarLoopEntryState } from "./StarLoopEntryState.js";
 import type { BlockStartState } from "./BlockStartState.js";
 import type { PrecedencePredicateTransition } from "./PrecedencePredicateTransition.js";
 import type { PredicateTransition } from "./PredicateTransition.js";
-import type { BailErrorStrategy } from "../BailErrorStrategy.js";
 
 /**
  * The embodiment of the adaptive LL(*), ALL(*), parsing strategy.

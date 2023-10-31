@@ -12,10 +12,6 @@ import { LexerAction } from "./LexerAction.js";
 import { CharStream } from "../CharStream.js";
 import { Lexer } from "../Lexer.js";
 
-// For jsdoc only.
-import { DFA } from "../dfa/DFA.js";
-import { LexerATNConfig } from "./LexerATNConfig.js";
-
 export class LexerActionExecutor /*implements*/ extends LexerAction {
     private lexerActions: LexerAction[];
     private cachedHashCode: number;

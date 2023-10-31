@@ -31,7 +31,7 @@ export class CommonToken extends Token {
      * the same source and input stream share a reference to the same
      * {@link Pair} containing these values.</p>
      */
-    protected source: [TokenSource | null, CharStream | null];
+    public source: [TokenSource | null, CharStream | null];
 
     /**
      * This is the backing field for {@link #getText} when the token text is
