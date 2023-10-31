@@ -5,6 +5,7 @@
  */
 
 import { PredicateTransition } from "./atn/PredicateTransition.js";
+import { Parser } from "./Parser.js";
 import { RecognitionException } from "./RecognitionException.js";
 
 /**
@@ -14,14 +15,17 @@ import { RecognitionException } from "./RecognitionException.js";
  * prediction.
  */
 export class FailedPredicateException extends RecognitionException {
+    private readonly ruleIndex: number = 0;
+    private readonly predicateIndex: number = 0;
+    private readonly predicate?: string;
 
-    constructor(recognizer, predicate, message) {
+    public constructor(recognizer: Parser, predicate?: string, message: string | null = null) {
         super({
-            message: formatMessage(predicate, message || null),
-            recognizer: recognizer,
-            input: recognizer.inputStream, ctx: recognizer._ctx
+            message: formatMessage(predicate ?? "no predicate", message ?? null),
+            recognizer,
+            input: recognizer.inputStream, ctx: recognizer.context,
         });
-        const s = recognizer.interpreter.atn.states[recognizer.state];
+        const s = recognizer.interpreter.atn.states[recognizer.state]!;
         const trans = s.transitions[0];
         if (trans instanceof PredicateTransition) {
             this.ruleIndex = trans.ruleIndex;
@@ -35,11 +39,10 @@ export class FailedPredicateException extends RecognitionException {
     }
 }
 
-
-function formatMessage(predicate, message) {
+const formatMessage = (predicate: string | null, message: string | null) => {
     if (message !== null) {
         return message;
     } else {
         return "failed predicate: {" + predicate + "}?";
     }
-}
+};

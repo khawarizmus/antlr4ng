@@ -5,14 +5,15 @@
  */
 
 import { RecognitionException } from "./RecognitionException.js";
+import { Parser } from "./Parser.js";
 
 /**
  * This signifies any kind of mismatched input exceptions such as
  * when the current input does not match the expected token.
  */
 export class InputMismatchException extends RecognitionException {
-    constructor(recognizer) {
-        super({ message: "", recognizer: recognizer, input: recognizer.inputStream, ctx: recognizer._ctx });
+    public constructor(recognizer: Parser) {
+        super({ message: "", recognizer, input: recognizer.inputStream, ctx: recognizer.context });
         this.offendingToken = recognizer.getCurrentToken();
     }
 }

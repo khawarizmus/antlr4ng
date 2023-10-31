@@ -20,7 +20,7 @@ export declare class ParserRuleContext extends RuleContext {
 
     public parent: ParserRuleContext | null;
 
-    public constructor(parent: ParserRuleContext | null, invokingStateNumber: number);
+    public constructor(parent?: ParserRuleContext | null, invokingStateNumber?: number);
 
     public copyFrom(ctx: ParserRuleContext): void;
     public addChild(child: RuleContext): void;
@@ -35,6 +35,4 @@ export declare class ParserRuleContext extends RuleContext {
         index: number, ctxType: new (parent: ParserRuleContext | null, invokingStateNumber: number) => T): T | null;
     public getRuleContexts<T extends ParserRuleContext>(
         ctxType: new (parent: ParserRuleContext | null, invokingStateNumber: number) => T): T[];
-
-    public get ruleIndex(): number;
 }

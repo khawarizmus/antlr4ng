@@ -4,8 +4,6 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import type { CommonTokenStream } from "./CommonTokenStream.js";
-
 /**
  * A simple stream of symbols whose values are represented as integers. This
  * interface provides <em>marked ranges</em> with support for a minimum level

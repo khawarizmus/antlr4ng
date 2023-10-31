@@ -34,7 +34,8 @@ export class LexerATNSimulator extends ATNSimulator {
     public static readonly MIN_DFA_EDGE = 0;
     public static readonly MAX_DFA_EDGE = 127; // forces unicode to stay in ATN
 
-    private static debug = false;
+    public static debug = false;
+
     private static dfa_debug = false;
 
     public readonly decisionToDFA: DFA[];
@@ -47,15 +48,15 @@ export class LexerATNSimulator extends ATNSimulator {
      *  DFA did not have a previous accept state. In this case, we use the
      *  ATN-generated exception object.
      */
-    protected startIndex = -1;
+    public startIndex = -1;
 
     /** line number 1..n within the input */
-    protected line = 1;
+    public line = 1;
 
     /** The index of the character relative to the beginning of the line 0..n-1 */
-    protected column = 0;
+    public column = 0;
 
-    protected mode: number = Lexer.DEFAULT_MODE;
+    public mode: number = Lexer.DEFAULT_MODE;
 
     /** Used during DFA/ATN exec to record the most recent accept configuration info */
     protected readonly prevAccept = new LexerATNSimulator.SimState();
