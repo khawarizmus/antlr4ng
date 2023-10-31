@@ -41,10 +41,12 @@ export declare class Token {
     public line: number;
     public column: number;
     public channel: number;
-    public text: string;
     public type: number;
     public start: number;
     public stop: number;
+
+    public get text(): string | null;
+    public set text(value: string | null);
 
     public clone(): Token;
     public cloneWithType(type: number): Token;

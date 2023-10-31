@@ -4,24 +4,61 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { Token } from "./Token.js";
+/* eslint-disable jsdoc/require-returns, no-underscore-dangle */
 
+import { CharStream } from "./CharStream.js";
+import { Recognizer } from "./Recognizer.js";
+import { Token } from "./Token.js";
+import { TokenSource } from "./TokenSource.js";
+import { ATNSimulator } from "./atn/ATNSimulator.js";
+
+// TODO: this has to implement WritableToken (which requires Token to be an interface).
 export class CommonToken extends Token {
-    constructor(source, type, channel, start, stop) {
+    /**
+     * An empty tuple which is used as the default value of
+     * {@link source} for tokens that do not have a source.
+     */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    public static readonly EMPTY_SOURCE: [TokenSource | null, CharStream | null] = [null, null];
+
+    /**
+     * This is the backing field for {@link #getTokenSource} and
+     * {@link #getInputStream}.
+     *
+     * <p>
+     * These properties share a field to reduce the memory footprint of
+     * {@link CommonToken}. Tokens created by a {@link CommonTokenFactory} from
+     * the same source and input stream share a reference to the same
+     * {@link Pair} containing these values.</p>
+     */
+    protected source: [TokenSource | null, CharStream | null];
+
+    /**
+     * This is the backing field for {@link #getText} when the token text is
+     * explicitly set in the constructor or via {@link #setText}.
+     *
+     * @see #getText()
+     */
+    protected _text: string | null = null;
+
+    public constructor(source: [TokenSource | null, CharStream | null], type: number, channel: number, start: number,
+        stop: number) {
         super();
-        this.source = source !== undefined ? source : CommonToken.EMPTY_SOURCE;
-        this.type = type !== undefined ? type : null;
+
+        this.source = source ?? CommonToken.EMPTY_SOURCE;
+        this.type = type ?? 0;
         this.channel = channel !== undefined ? channel : Token.DEFAULT_CHANNEL;
         this.start = start !== undefined ? start : -1;
         this.stop = stop !== undefined ? stop : -1;
         this.tokenIndex = -1;
         if (this.source[0] !== null) {
-            this.line = source[0].line;
-            this.column = source[0].column;
+            this.line = source[0]!.line;
+            // eslint-disable-next-line no-underscore-dangle
+            this.column = source[0]!._tokenStartColumn;
         } else {
             this.column = -1;
         }
-    }
+    };
 
     /**
      * Constructs a new {@link CommonToken} as a copy of another {@link Token}.
@@ -33,29 +70,28 @@ export class CommonToken extends Token {
      * be assigned the result of calling {@link getText}, and {@link source}
      * will be constructed from the result of {@link Token//getTokenSource} and
      * {@link Token//getInputStream}.</p>
-     *
-     * @param oldToken The token to copy.
      */
-    clone() {
+    public override clone(): CommonToken {
         const t = new CommonToken(this.source, this.type, this.channel, this.start, this.stop);
         t.tokenIndex = this.tokenIndex;
         t.line = this.line;
         t.column = this.column;
         t.text = this.text;
+
         return t;
     }
 
-    cloneWithType(type) {
+    public override cloneWithType(type: number): CommonToken {
         const t = new CommonToken(this.source, type, this.channel, this.start, this.stop);
         t.tokenIndex = this.tokenIndex;
         t.line = this.line;
         t.column = this.column;
-        if (type === Token.EOF)
-            t.text = "";
+        if (type === Token.EOF) { t.text = ""; }
+
         return t;
     }
 
-    toString(recognizer) {
+    public override toString(recognizer?: Recognizer<ATNSimulator>): string {
         let channelStr = "";
         if (this.channel > 0) {
             channelStr = ",channel=" + this.channel;
@@ -72,14 +108,14 @@ export class CommonToken extends Token {
 
         let typeString = String(this.type);
         if (recognizer) {
-            typeString = recognizer.vocabulary.getDisplayName(this.type);
+            typeString = recognizer.vocabulary.getDisplayName(this.type) ?? "<unknown>";
         }
 
         return "[@" + this.tokenIndex + "," + this.start + ":" + this.stop + "='" + text + "',<" + typeString + ">" +
             channelStr + "," + this.line + ":" + this.column + "]";
     }
 
-    get text() {
+    public override get text(): string | null {
         if (this._text !== null) {
             return this._text;
         }
@@ -95,13 +131,7 @@ export class CommonToken extends Token {
         }
     }
 
-    set text(text) {
+    public override set text(text: string | null) {
         this._text = text;
     }
 }
-
-/**
- * An empty {@link Pair} which is used as the default value of
- * {@link source} for tokens that do not have a source.
- */
-CommonToken.EMPTY_SOURCE = [null, null];
