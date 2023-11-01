@@ -5,19 +5,22 @@
  */
 
 import { ParserRuleContext } from "../../ParserRuleContext.js";
+import { ParseTree } from "../ParseTree.js";
 import { Trees } from "../Trees.js";
 import { XPathElement } from "./XPathElement.js";
 
 export class XPathRuleElement extends XPathElement {
-    constructor(ruleName, ruleIndex) {
+    protected ruleIndex: number;
+
+    public constructor(ruleName: string, ruleIndex: number) {
         super(ruleName);
         this.ruleIndex = ruleIndex;
     }
 
-    evaluate(t) {
+    public evaluate(t: ParseTree): ParseTree[] {
         // return all children of t that match nodeName
-        let nodes = [];
-        for (let c of Trees.getChildren(t)) {
+        const nodes: ParseTree[] = [];
+        for (const c of Trees.getChildren(t)) {
             if (c instanceof ParserRuleContext) {
                 if ((c.ruleIndex === this.ruleIndex && !this.invert) ||
                     (c.ruleIndex !== this.ruleIndex && this.invert)) {
@@ -25,6 +28,7 @@ export class XPathRuleElement extends XPathElement {
                 }
             }
         }
+
         return nodes;
     }
 }

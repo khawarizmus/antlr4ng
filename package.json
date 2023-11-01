@@ -43,6 +43,7 @@
         "full-test": "npm run test && npm run run-benchmarks",
         "test": "node --no-warnings --experimental-vm-modules node_modules/jest/bin/jest.js --no-coverage",
         "generate-test-parser": "cli/index.js -Dlanguage=TypeScript -o tests/benchmarks/generated -visitor -listener -Xexact-output-dir tests/benchmarks/MySQLLexer.g4 tests/benchmarks/MySQLParser.g4",
+        "generate-xpath-parser": "cli/index.js -Dlanguage=TypeScript -o src/tree/xpath/generated -no-visitor -no-listener -Xexact-output-dir src/tree/xpath/XPathLexer.g4",
         "run-benchmarks": "node --no-warnings --experimental-vm-modules --loader ts-node/esm tests/benchmarks/run-benchmarks.ts"
     },
     "exports": {

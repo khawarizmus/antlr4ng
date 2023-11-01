@@ -1,88 +1,88 @@
-// Generated from XPathLexer.g4 by ANTLR 4.13.0
+// Generated from src/tree/xpath/XPathLexer.g4 by ANTLR 4.13.1
 
+import { CharStream } from "../../CharStream.js";
 import { Lexer } from "../../Lexer.js";
-import { Token } from "../../Token.js";
+import { RuleContext } from "../../RuleContext.js";
 import { Vocabulary } from "../../Vocabulary.js";
+import { ATN } from "../../atn/ATN.js";
 import { ATNDeserializer } from "../../atn/ATNDeserializer.js";
+import { DecisionState } from "../../atn/DecisionState.js";
 import { LexerATNSimulator } from "../../atn/LexerATNSimulator.js";
 import { PredictionContextCache } from "../../atn/PredictionContextCache.js";
 import { DFA } from "../../dfa/DFA.js";
 
 export class XPathLexer extends Lexer {
-    static TOKEN_REF = 1;
-    static RULE_REF = 2;
-    static ANYWHERE = 3;
-    static ROOT = 4;
-    static WILDCARD = 5;
-    static BANG = 6;
-    static ID = 7;
-    static STRING = 8;
-    static EOF = Token.EOF;
+    public static readonly TOKEN_REF = 1;
+    public static readonly RULE_REF = 2;
+    public static readonly ANYWHERE = 3;
+    public static readonly ROOT = 4;
+    public static readonly WILDCARD = 5;
+    public static readonly BANG = 6;
+    public static readonly ID = 7;
+    public static readonly STRING = 8;
 
-    static channelNames = [
+    public static readonly channelNames = [
         "DEFAULT_TOKEN_CHANNEL", "HIDDEN",
     ];
 
-    static literalNames = [
+    public static readonly literalNames = [
         null, null, null, "'//'", "'/'", "'*'", "'!'",
     ];
 
-    static symbolicNames = [
+    public static readonly symbolicNames = [
         null, "TOKEN_REF", "RULE_REF", "ANYWHERE", "ROOT", "WILDCARD", "BANG",
         "ID", "STRING",
     ];
 
-    static modeNames = [
+    public static readonly modeNames = [
         "DEFAULT_MODE",
     ];
 
-    static ruleNames = [
+    public static readonly ruleNames = [
         "ANYWHERE", "ROOT", "WILDCARD", "BANG", "ID", "NameChar", "NameStartChar",
         "STRING",
     ];
 
-    constructor(input) {
+    public constructor(input: CharStream) {
         super(input);
         this.interpreter = new LexerATNSimulator(this, XPathLexer._ATN, XPathLexer.decisionsToDFA, new PredictionContextCache());
     }
 
-    get grammarFileName() { return "XPathLexer.g4"; }
+    public get grammarFileName(): string { return "XPathLexer.g4"; }
 
-    get literalNames() { return XPathLexer.literalNames; }
-    get symbolicNames() { return XPathLexer.symbolicNames; }
-    get ruleNames() { return XPathLexer.ruleNames; }
+    public get literalNames(): Array<string | null> { return XPathLexer.literalNames; }
+    public get symbolicNames(): Array<string | null> { return XPathLexer.symbolicNames; }
+    public get ruleNames(): string[] { return XPathLexer.ruleNames; }
 
-    get serializedATN() { return XPathLexer._serializedATN; }
+    public get serializedATN(): number[] { return XPathLexer._serializedATN; }
 
-    get channelNames() { return XPathLexer.channelNames; }
+    public get channelNames(): string[] { return XPathLexer.channelNames; }
 
-    get modeNames() { return XPathLexer.modeNames; }
+    public get modeNames(): string[] { return XPathLexer.modeNames; }
 
-    // @Override
-    action(localctx, ruleIndex, actionIndex) {
+    public override action(localContext: RuleContext, ruleIndex: number, actionIndex: number): void {
         switch (ruleIndex) {
             case 4:
-                this.ID_action(localctx, actionIndex);
+                this.ID_action(localContext, actionIndex);
                 break;
         }
     }
-
-    ID_action(localctx, actionIndex) {
+    private ID_action(localContext: RuleContext, actionIndex: number): void {
         switch (actionIndex) {
-            case 0: {
-                let text = this.text;
+            case 0:
+
+                const text = this.text;
                 if (text.charAt(0) === text.charAt(0).toUpperCase()) {
-                    this._type = XPathLexer.TOKEN_REF;
+                    this.type = XPathLexer.TOKEN_REF;
                 } else {
-                    this._type = XPathLexer.RULE_REF;
+                    this.type = XPathLexer.RULE_REF;
                 }
 
                 break;
-            }
         }
     }
 
-    static _serializedATN = [
+    public static readonly _serializedATN: number[] = [
         4, 0, 8, 48, 6, -1, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7, 4, 2, 5, 7, 5, 2,
         6, 7, 6, 2, 7, 7, 7, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 2, 1, 2, 1, 3, 1, 3, 1, 4, 1, 4, 5, 4, 29,
         8, 4, 10, 4, 12, 4, 32, 9, 4, 1, 4, 1, 4, 1, 5, 1, 5, 1, 6, 1, 6, 1, 7, 1, 7, 5, 7, 42, 8, 7,
@@ -349,8 +349,8 @@ export class XPathLexer extends Lexer {
         16, 1, 0, 0, 0, 3, 0, 30, 43, 1, 1, 4, 0,
     ];
 
-    static __ATN;
-    static get _ATN() {
+    private static __ATN: ATN;
+    public static get _ATN(): ATN {
         if (!XPathLexer.__ATN) {
             XPathLexer.__ATN = new ATNDeserializer().deserialize(XPathLexer._serializedATN);
         }
@@ -358,11 +358,11 @@ export class XPathLexer extends Lexer {
         return XPathLexer.__ATN;
     }
 
-    static vocabulary = new Vocabulary(XPathLexer.literalNames, XPathLexer.symbolicNames, []);
+    private static readonly vocabulary = new Vocabulary(XPathLexer.literalNames, XPathLexer.symbolicNames, []);
 
-    get vocabulary() {
+    public override get vocabulary(): Vocabulary {
         return XPathLexer.vocabulary;
     }
 
-    static decisionsToDFA = XPathLexer._ATN.decisionToState.map((ds, index) => { return new DFA(ds, index); });
+    private static readonly decisionsToDFA = XPathLexer._ATN.decisionToState.map((ds: DecisionState, index: number) => { return new DFA(ds, index); });
 }

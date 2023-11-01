@@ -4,24 +4,26 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+import { ParseTree } from "../ParseTree.js";
+import { Trees } from "../Trees.js";
 import { XPath } from "./XPath.js";
 import { XPathElement } from "./XPathElement.js";
 
 export class XPathWildcardElement extends XPathElement {
-    constructor() {
+    public constructor() {
         super(XPath.WILDCARD);
     }
 
-    evaluate(t) {
-        let kids = [];
+    public evaluate(t: ParseTree): ParseTree[] {
+        const kids: ParseTree[] = [];
         if (this.invert) {
             // !* is weird but valid (empty)
             return kids;
         }
-
-        for (let i = 0; i < t.getChildCount(); i++) {
-            kids.push(t.getChild(i));
+        for (const c of Trees.getChildren(t)) {
+            kids.push(c);
         }
+
         return kids;
     }
 }

@@ -13,6 +13,7 @@
     ],
     "ignorePatterns": [
         "src/**/*.js",
+        "src/tree/xpath/XPathLexer.ts",
         "spec/**/*.*js",
         "dist/**/*",
         "cli/index.js",

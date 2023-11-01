@@ -5,15 +5,18 @@
  */
 
 import { Recognizer } from "../../Recognizer.js";
-import { Token } from "../../Token.js";
-import { BaseErrorListener } from "../../BaseErrorListener.js";
 import { RecognitionException } from "../../RecognitionException.js";
+import { Token } from "../../Token.js";
 import { ATNSimulator } from "../../atn/ATNSimulator.js";
+import { BaseErrorListener } from "../../BaseErrorListener.js";
 
 export class XPathLexerErrorListener extends BaseErrorListener {
-    public override syntaxError<S extends Token, T extends ATNSimulator>(
-        _recognizer: Recognizer<T>, _offendingSymbol: S | null, _line: number, _charPositionInLine: number,
-        _msg: string, _e: RecognitionException | null): void {
-        //
-    };
+    public override syntaxError<S extends Token, T extends ATNSimulator>(_recognizer: Recognizer<T>,
+        _offendingSymbol: S | null,
+        _line: number,
+        _charPositionInLine: number,
+        _msg: string,
+        _e: RecognitionException | null): void {
+        // intentionally empty
+    }
 }

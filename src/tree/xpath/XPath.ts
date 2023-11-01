@@ -4,9 +4,16 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+/* eslint-disable @typescript-eslint/naming-convention, jsdoc/require-returns, jsdoc/require-param */
+
 import { CharStreams } from "../../CharStreams.js";
 import { CommonTokenStream } from "../../CommonTokenStream.js";
+import { LexerNoViableAltException } from "../../LexerNoViableAltException.js";
+import { Parser } from "../../Parser.js";
+import { ParserRuleContext } from "../../ParserRuleContext.js";
+import { ParseTree } from "../ParseTree.js";
 import { Token } from "../../Token.js";
+import { XPathElement } from "./XPathElement.js";
 import { XPathLexer } from "./XPathLexer.js";
 import { XPathLexerErrorListener } from "./XPathLexerErrorListener.js";
 import { XPathRuleAnywhereElement } from "./XPathRuleAnywhereElement.js";
@@ -15,8 +22,6 @@ import { XPathTokenAnywhereElement } from "./XPathTokenAnywhereElement.js";
 import { XPathTokenElement } from "./XPathTokenElement.js";
 import { XPathWildcardAnywhereElement } from "./XPathWildcardAnywhereElement.js";
 import { XPathWildcardElement } from "./XPathWildcardElement.js";
-import { ParserRuleContext } from "../../ParserRuleContext.js";
-import { LexerNoViableAltException } from "../../LexerNoViableAltException.js";
 
 /**
  * Represent a subset of XPath XML path syntax for use in identifying nodes in
@@ -56,88 +61,117 @@ import { LexerNoViableAltException } from "../../LexerNoViableAltException.js";
  * Whitespace is not allowed.
  */
 export class XPath {
-    static WILDCARD = "*"; // word not operator/separator
-    static NOT = "!"; 	   // word for invert operator
+    public static readonly WILDCARD: string = "*"; // word not operator/separator
+    public static readonly NOT: string = "!"; 	   // word for invert operator
 
-    constructor(parser, path) {
+    protected path: string;
+    protected elements: XPathElement[];
+    protected parser: Parser;
+
+    public constructor(parser: Parser, path: string) {
         this.parser = parser;
         this.path = path;
         this.elements = this.split(path);
         // console.log(this.elements.toString());
     }
 
+    public static findAll(tree: ParseTree, xpath: string, parser: Parser): Set<ParseTree> {
+        const p: XPath = new XPath(parser, xpath);
+
+        return p.evaluate(tree);
+    }
+
     // TODO: check for invalid token/rule names, bad syntax
 
-    split(path) {
-        let lexer = new class extends XPathLexer {
-            constructor(stream) {
-                super(stream);
-            }
-
-            recover(e) { throw e; }
-        }(CharStreams.fromString(path));
+    public split(path: string): XPathElement[] {
+        const lexer = new XPathLexer(CharStreams.fromString(path));
+        lexer.recover = (e: LexerNoViableAltException) => { throw e; };
 
         lexer.removeErrorListeners();
         lexer.addErrorListener(new XPathLexerErrorListener());
-        let tokenStream = new CommonTokenStream(lexer);
+        const tokenStream = new CommonTokenStream(lexer);
         try {
             tokenStream.fill();
-        }
-        catch (e) {
+        } catch (e) {
             if (e instanceof LexerNoViableAltException) {
-                let pos = lexer.column;
-                let msg = "Invalid tokens or characters at index " + pos + " in path '" + path + "' -- " + e.message;
+                const pos = lexer.column;
+                const msg = "Invalid tokens or characters at index " + pos + " in path '" + path + "' -- " + e.message;
                 throw new RangeError(msg);
             }
             throw e;
         }
 
-        let tokens = tokenStream.getTokens();
+        const tokens: Token[] = tokenStream.getTokens();
         // console.log("path=" + path + "=>" + tokens);
-        let elements = [];
-        let n = tokens.length;
-        let i = 0;
-
+        const elements: XPathElement[] = [];
+        const n: number = tokens.length;
+        let i: number = 0;
         loop:
         while (i < n) {
-            let el = tokens[i];
-            let next;
+            const el: Token = tokens[i];
+            let next: Token | undefined;
             switch (el.type) {
                 case XPathLexer.ROOT:
-                case XPathLexer.ANYWHERE: {
-                    const anywhere = (el.type === XPathLexer.ANYWHERE);
+                case XPathLexer.ANYWHERE:
+                    const anywhere: boolean = el.type === XPathLexer.ANYWHERE;
                     i++;
                     next = tokens[i];
-                    const invert = next.type === XPathLexer.BANG;
+                    const invert: boolean = next.type === XPathLexer.BANG;
                     if (invert) {
                         i++;
                         next = tokens[i];
                     }
-                    let pathElement = this.getXPathElement(next, anywhere);
+                    const pathElement: XPathElement = this.getXPathElement(next, anywhere);
                     pathElement.invert = invert;
                     elements.push(pathElement);
                     i++;
                     break;
-                }
 
                 case XPathLexer.TOKEN_REF:
                 case XPathLexer.RULE_REF:
-                case XPathLexer.WILDCARD: {
+                case XPathLexer.WILDCARD:
                     elements.push(this.getXPathElement(el, false));
                     i++;
                     break;
-                }
 
-                case Token.EOF: {
+                case Token.EOF:
                     break loop;
-                }
 
-                default: {
+                default:
                     throw new Error("Unknown path element " + el);
-                }
             }
         }
+
         return elements;
+    }
+
+    /**
+     * Return a list of all nodes starting at `t` as root that satisfy the
+     * path. The root `/` is relative to the node passed to {@link evaluate}.
+     */
+    public evaluate(t: ParseTree): Set<ParseTree> {
+        const dummyRoot = new ParserRuleContext();
+        dummyRoot.addChild(t as ParserRuleContext);
+
+        let work = new Set<ParseTree>([dummyRoot]);
+
+        let i: number = 0;
+        while (i < this.elements.length) {
+            const next = new Set<ParseTree>();
+            for (const node of work) {
+                if (node.getChildCount() > 0) {
+                    // only try to match next element if it has children
+                    // e.g., //func/*/stat might have a token node for which
+                    // we can't go looking for stat nodes.
+                    const matching = this.elements[i].evaluate(node);
+                    matching.forEach((tree) => { next.add(tree); }, next);
+                }
+            }
+            i++;
+            work = next;
+        }
+
+        return work;
     }
 
     /**
@@ -145,18 +179,18 @@ export class XPath {
      * element. `anywhere` is `true` if `//` precedes the
      * word.
      */
-    getXPathElement(wordToken, anywhere) {
+    protected getXPathElement(wordToken: Token, anywhere: boolean): XPathElement {
         if (wordToken.type === Token.EOF) {
             throw new Error("Missing path element at end of path");
         }
 
-        let word = wordToken.text;
+        const word = wordToken.text;
         if (word == null) {
             throw new Error("Expected wordToken to have text content.");
         }
 
-        let ttype = this.parser.getTokenType(word);
-        let ruleIndex = this.parser.getRuleIndex(word);
+        const ttype: number = this.parser.getTokenType(word);
+        const ruleIndex: number = this.parser.getRuleIndex(word);
         switch (wordToken.type) {
             case XPathLexer.WILDCARD:
                 return anywhere ?
@@ -169,6 +203,7 @@ export class XPath {
                         wordToken.start +
                         " isn't a valid token name");
                 }
+
                 return anywhere ?
                     new XPathTokenAnywhereElement(word, ttype) :
                     new XPathTokenElement(word, ttype);
@@ -178,43 +213,10 @@ export class XPath {
                         wordToken.start +
                         " isn't a valid rule name");
                 }
+
                 return anywhere ?
                     new XPathRuleAnywhereElement(word, ruleIndex) :
                     new XPathRuleElement(word, ruleIndex);
         }
-    }
-
-    static findAll(tree, xpath, parser) {
-        let p = new XPath(parser, xpath);
-        return p.evaluate(tree);
-    }
-
-    /**
-     * Return a list of all nodes starting at `t` as root that satisfy the
-     * path. The root `/` is relative to the node passed to {@link evaluate}.
-     */
-    evaluate(t) {
-        let dummyRoot = new ParserRuleContext();
-        dummyRoot.addChild(t);
-
-        let work = new Set([dummyRoot]);
-
-        let i = 0;
-        while (i < this.elements.length) {
-            let next = new Set();
-            for (let node of work) {
-                if (node.getChildCount() > 0) {
-                    // only try to match next element if it has children
-                    // e.g., //func/*/stat might have a token node for which
-                    // we can't go looking for stat nodes.
-                    let matching = this.elements[i].evaluate(node);
-                    matching.forEach(next.add, next);
-                }
-            }
-            i++;
-            work = next;
-        }
-
-        return work;
     }
 }

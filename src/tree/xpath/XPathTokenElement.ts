@@ -4,20 +4,23 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+import { ParseTree } from "../ParseTree.js";
 import { TerminalNode } from "../TerminalNode.js";
 import { Trees } from "../Trees.js";
 import { XPathElement } from "./XPathElement.js";
 
 export class XPathTokenElement extends XPathElement {
-    constructor(tokenName, tokenType) {
+    protected tokenType: number;
+
+    public constructor(tokenName: string, tokenType: number) {
         super(tokenName);
         this.tokenType = tokenType;
     }
 
-    evaluate(t) {
+    public evaluate(t: ParseTree): ParseTree[] {
         // return all children of t that match nodeName
-        let nodes = [];
-        for (let c of Trees.getChildren(t)) {
+        const nodes: ParseTree[] = [];
+        for (const c of Trees.getChildren(t)) {
             if (c instanceof TerminalNode) {
                 if ((c.symbol.type === this.tokenType && !this.invert) ||
                     (c.symbol.type !== this.tokenType && this.invert)) {
@@ -25,6 +28,7 @@ export class XPathTokenElement extends XPathElement {
                 }
             }
         }
+
         return nodes;
     }
 }

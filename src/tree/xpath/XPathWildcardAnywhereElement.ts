@@ -5,10 +5,21 @@
  */
 
 import { ParseTree } from "../ParseTree.js";
+import { Trees } from "../Trees.js";
+import { XPath } from "./XPath.js";
 import { XPathElement } from "./XPathElement.js";
 
 export class XPathWildcardAnywhereElement extends XPathElement {
-    public constructor();
+    public constructor() {
+        super(XPath.WILDCARD);
+    }
 
-    public evaluate(t: ParseTree): ParseTree[];
+    public evaluate(t: ParseTree): ParseTree[] {
+        if (this.invert) {
+            // !* is weird but valid (empty)
+            return [];
+        }
+
+        return Trees.descendants(t);
+    }
 }

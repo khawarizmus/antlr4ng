@@ -4,7 +4,6 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { ANTLRErrorListener } from "./ANTLRErrorListener.js";
 import { BaseErrorListener } from "./BaseErrorListener.js";
 import { Parser } from "./Parser.js";
 import { RecognitionException } from "./RecognitionException.js";
@@ -16,7 +15,7 @@ import { DFA } from "./dfa/DFA.js";
 import { BitSet } from "./misc/BitSet.js";
 
 export class ProxyErrorListener extends BaseErrorListener {
-    public constructor(private delegates: ANTLRErrorListener[]) {
+    public constructor(private delegates: BaseErrorListener[]) {
         super();
 
         return this;
