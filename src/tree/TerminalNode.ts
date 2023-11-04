@@ -4,8 +4,9 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { TerminalNode } from "./TerminalNode.js";
+import { Token } from "../Token.js";
+import { ParseTree } from "./ParseTree.js";
 
-export declare class ErrorNode extends TerminalNode {
-
+export interface TerminalNode extends ParseTree {
+    getSymbol(): Token | null;
 }

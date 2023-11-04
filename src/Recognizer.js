@@ -151,4 +151,8 @@ export class Recognizer {
     set state(state) {
         this._stateNumber = state;
     }
+
+    getSerializedATN() {
+        throw new Error("there is no serialized ATN");
+    }
 }

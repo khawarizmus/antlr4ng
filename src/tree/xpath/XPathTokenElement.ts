@@ -5,7 +5,7 @@
  */
 
 import { ParseTree } from "../ParseTree.js";
-import { TerminalNode } from "../TerminalNode.js";
+import { TerminalNodeImpl } from "../TerminalNodeImpl.js";
 import { Trees } from "../Trees.js";
 import { XPathElement } from "./XPathElement.js";
 
@@ -21,7 +21,7 @@ export class XPathTokenElement extends XPathElement {
         // return all children of t that match nodeName
         const nodes: ParseTree[] = [];
         for (const c of Trees.getChildren(t)) {
-            if (c instanceof TerminalNode) {
+            if (c instanceof TerminalNodeImpl && c.symbol) {
                 if ((c.symbol.type === this.tokenType && !this.invert) ||
                     (c.symbol.type !== this.tokenType && this.invert)) {
                     nodes.push(c);

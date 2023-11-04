@@ -335,7 +335,7 @@ export class ParserATNSimulator extends ATNSimulator {
 
     public reset(): void { }
 
-    public adaptivePredict(input: TokenStream, decision: number, outerContext: ParserRuleContext): number {
+    public adaptivePredict(input: TokenStream, decision: number, outerContext: ParserRuleContext | null): number {
         if (ParserATNSimulator.debug || ParserATNSimulator.trace_atn_sim) {
             console.log("adaptivePredict decision " + decision +
                 " exec LA(1)==" + this.getLookaheadName(input) +
@@ -393,7 +393,7 @@ export class ParserATNSimulator extends ATNSimulator {
                     dfa.s0 = s0;
                 }
             }
-            const alt = this.execATN(dfa, s0, input, index, outerContext);
+            const alt = this.execATN(dfa, s0, input, index, outerContext!);
             if (ParserATNSimulator.debug) {
                 console.log("DFA after predictATN: " + dfa.toString(this.parser.vocabulary));
             }
@@ -657,7 +657,7 @@ export class ParserATNSimulator extends ATNSimulator {
      */
     public dumpDeadEndConfigs(e: NoViableAltException): void {
         console.log("dead end configs: ");
-        const decs = e.deadEndConfigs.items;
+        const decs = e.deadEndConfigs!.items;
         for (const c of decs) {
             let trans = "no edges";
             if (c.state.transitions.length > 0) {

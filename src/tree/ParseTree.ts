@@ -4,10 +4,7 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { RuleContext } from "../RuleContext.js";
 import { Interval } from "../misc/Interval.js";
-import { Token } from "../Token.js";
-import { TokenStream } from "../TokenStream.js";
 import { Parser } from "../Parser.js";
 
 /**

@@ -9,6 +9,7 @@ import { RecognitionException } from "./RecognitionException.js";
 import { ErrorNode } from "./tree/ErrorNode.js";
 import { TerminalNode } from "./tree/TerminalNode.js";
 import { RuleContext } from "./RuleContext.js";
+import { ParseTreeListener } from "./tree/ParseTreeListener.js";
 
 export declare class ParserRuleContext extends RuleContext {
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -21,6 +22,9 @@ export declare class ParserRuleContext extends RuleContext {
     public parent: ParserRuleContext | null;
 
     public constructor(parent?: ParserRuleContext | null, invokingStateNumber?: number);
+
+    public enterRule(listener: ParseTreeListener): void;
+    public exitRule(listener: ParseTreeListener): void;
 
     public copyFrom(ctx: ParserRuleContext): void;
     public addChild(child: RuleContext): void;

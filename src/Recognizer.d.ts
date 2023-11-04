@@ -24,7 +24,7 @@ export declare abstract class Recognizer<ATNInterpreter extends ATNSimulator> {
     public removeErrorListeners(): void;
 
     public getTokenTypeMap(): Map<Vocabulary, Map<string, number>>;
-    public getRuleIndexMap(): Map<string[], Map<string, number>>;
+    public getRuleIndexMap(): Map<string, number>;
 
     public getTokenType(tokenName: string): number;
     public getErrorHeader(e: RecognitionException): string;
@@ -39,6 +39,8 @@ export declare abstract class Recognizer<ATNInterpreter extends ATNSimulator> {
 
     public get state(): number;
     public set state(newState: number);
+
+    public getSerializedATN(): number[];
 
     protected checkVersion(toolVersion: string): void;
 

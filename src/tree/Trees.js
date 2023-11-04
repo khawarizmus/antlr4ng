@@ -5,11 +5,11 @@
  */
 
 import { Token } from '../Token.js';
-import { ErrorNode } from './ErrorNode.js';
-import { TerminalNode } from './TerminalNode.js';
 import { RuleContext } from "../RuleContext.js";
 
 import { escapeWhitespace } from "../utils/helpers.js";
+import { ErrorNodeImpl } from "./ErrorNodeImpl.js";
+import { TerminalNodeImpl } from "./TerminalNodeImpl.js";
 
 /** A set of utility routines useful for all kinds of ANTLR trees. */
 export const Trees = {
@@ -58,9 +58,9 @@ export const Trees = {
                     return ruleNames[t.ruleIndex] + ":" + altNumber;
                 }
                 return ruleNames[t.ruleIndex];
-            } else if (t instanceof ErrorNode) {
+            } else if (t instanceof ErrorNodeImpl) {
                 return t.toString();
-            } else if (t instanceof TerminalNode) {
+            } else if (t instanceof TerminalNodeImpl) {
                 if (t.symbol !== null) {
                     return t.symbol.text;
                 }
@@ -115,7 +115,7 @@ export const Trees = {
 
     _findAllNodes: function (t, index, findTokens, nodes) {
         // check this node (the root) first
-        if (findTokens && (t instanceof TerminalNode)) {
+        if (findTokens && (t instanceof TerminalNodeImpl)) {
             if (t.symbol.type === index) {
                 nodes.push(t);
             }

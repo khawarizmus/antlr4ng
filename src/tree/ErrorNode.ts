@@ -4,5 +4,7 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-export class TerminalNode {
+import { TerminalNode } from "./TerminalNode.js";
+
+export interface ErrorNode extends TerminalNode {
 }

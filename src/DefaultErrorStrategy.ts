@@ -272,7 +272,7 @@ export class DefaultErrorStrategy {
     public reportNoViableAlternative(recognizer: Parser, e: NoViableAltException): void {
         const tokens = recognizer.tokenStream;
         let input;
-        if (tokens !== null) {
+        if (tokens !== null && e.startToken) {
             if (e.startToken.type === Token.EOF) {
                 input = "<EOF>";
             } else {
@@ -310,7 +310,7 @@ export class DefaultErrorStrategy {
      * @param e the recognition exception
      */
     public reportFailedPredicate(recognizer: Parser, e: RecognitionException): void {
-        const ruleName = recognizer.ruleNames[recognizer.context.ruleIndex];
+        const ruleName = recognizer.ruleNames[recognizer.context!.ruleIndex];
         const msg = "rule " + ruleName + " " + e.message;
         recognizer.notifyErrorListeners(msg, e.offendingToken, e);
     }

@@ -4,43 +4,51 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { TerminalNode } from "./TerminalNode.js";
-import { ErrorNode } from "./ErrorNode.js";
+import { ParserRuleContext } from "../ParserRuleContext.js";
+import { RuleContext } from "../RuleContext.js";
+import { ErrorNodeImpl } from "./ErrorNodeImpl.js";
+import { ParseTree } from "./ParseTree.js";
+import { ParseTreeListener } from "./ParseTreeListener.js";
+import { TerminalNodeImpl } from "./TerminalNodeImpl.js";
 
 export class ParseTreeWalker {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    public static DEFAULT = new ParseTreeWalker();
+
     /**
      * Performs a walk on the given parse tree starting at the root and going down recursively
      * with depth-first search. On each node, {@link ParseTreeWalker//enterRule} is called before
      * recursively walking down into child nodes, then
      * {@link ParseTreeWalker//exitRule} is called after the recursive call to wind up.
+     *
      * @param listener The listener used by the walker to process grammar rules
      * @param t The parse tree to be walked on
      */
-    walk(listener, t) {
-        const errorNode = t instanceof ErrorNode ||
-            (t.isErrorNode !== undefined && t.isErrorNode());
+    public walk<T extends ParseTreeListener>(listener: T, t: ParseTree): void {
+        const errorNode = t instanceof ErrorNodeImpl;
         if (errorNode) {
             listener.visitErrorNode(t);
-        } else if (t instanceof TerminalNode) {
+        } else if (t instanceof TerminalNodeImpl) {
             listener.visitTerminal(t);
         } else {
-            this.enterRule(listener, t);
+            const r = t as RuleContext;
+            this.enterRule(listener, r);
             for (let i = 0; i < t.getChildCount(); i++) {
-                const child = t.getChild(i);
-                this.walk(listener, child);
+                this.walk(listener, t.getChild(i)!);
             }
-            this.exitRule(listener, t);
+            this.exitRule(listener, r);
         }
     }
 
     /**
      * Enters a grammar rule by first triggering the generic event {@link ParseTreeListener.enterEveryRule}
      * then by triggering the event specific to the given parse tree node
+     *
      * @param listener The listener responding to the trigger events
      * @param r The grammar rule containing the rule context
      */
-    enterRule(listener, r) {
-        const ctx = r.ruleContext;
+    protected enterRule(listener: ParseTreeListener, r: RuleContext): void {
+        const ctx = r.ruleContext as ParserRuleContext;
         listener.enterEveryRule(ctx);
         ctx.enterRule(listener);
     }
@@ -48,14 +56,13 @@ export class ParseTreeWalker {
     /**
      * Exits a grammar rule by first triggering the event specific to the given parse tree node
      * then by triggering the generic event {@link ParseTreeListener//exitEveryRule}
+     *
      * @param listener The listener responding to the trigger events
      * @param r The grammar rule containing the rule context
      */
-    exitRule(listener, r) {
-        const ctx = r.ruleContext;
+    protected exitRule(listener: ParseTreeListener, r: RuleContext): void {
+        const ctx = r.ruleContext as ParserRuleContext;
         ctx.exitRule(listener);
         listener.exitEveryRule(ctx);
     }
 }
-
-ParseTreeWalker.DEFAULT = new ParseTreeWalker();

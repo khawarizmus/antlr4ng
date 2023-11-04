@@ -149,11 +149,11 @@ export class MySQLErrorListener extends BaseErrorListener {
 
             // Walk up from generic rules to reach something that gives us more context, if needed.
             let context = parser.context;
-            while (MySQLErrorListener.simpleRules.has(context.ruleIndex) && context.parent) {
+            while (context?.parent && MySQLErrorListener.simpleRules.has(context.ruleIndex)) {
                 context = context.parent;
             }
 
-            switch (context.ruleIndex) {
+            switch (context?.ruleIndex) {
                 case MySQLParser.RULE_functionCall:
                     expectedText = "a complete function call or other expression";
                     break;

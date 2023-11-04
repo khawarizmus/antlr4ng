@@ -5,7 +5,6 @@
  */
 
 import { RuleContext } from './RuleContext.js';
-import { TerminalNode } from './tree/TerminalNode.js';
 import { TerminalNodeImpl } from './tree/TerminalNodeImpl.js';
 import { ErrorNodeImpl } from './tree/ErrorNodeImpl.js';
 import { Interval } from "./misc/Interval.js";
@@ -144,7 +143,7 @@ export class ParserRuleContext extends RuleContext {
         }
         for (let j = 0; j < this.children.length; j++) {
             const child = this.children[j];
-            if (child instanceof TerminalNode) {
+            if (child instanceof TerminalNodeImpl) {
                 if (child.symbol.type === ttype) {
                     if (i === 0) {
                         return child;
@@ -164,7 +163,7 @@ export class ParserRuleContext extends RuleContext {
             const tokens = [];
             for (let j = 0; j < this.children.length; j++) {
                 const child = this.children[j];
-                if (child instanceof TerminalNode) {
+                if (child instanceof TerminalNodeImpl) {
                     if (child.symbol.type === ttype) {
                         tokens.push(child);
                     }

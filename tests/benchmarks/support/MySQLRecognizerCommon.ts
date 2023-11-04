@@ -21,7 +21,8 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-import { ParseTree, ParserRuleContext, RuleContext, TerminalNode, Token } from "../../../src/index.js";
+import { ParseTree, ParserRuleContext, RuleContext, Token } from "../../../src/index.js";
+import { TerminalNodeImpl } from "../../../src/tree/TerminalNodeImpl.js";
 import { MySQLParser, TextLiteralContext } from "../generated/MySQLParser.js";
 
 // This interface describes functionality found in both, lexer and parser classes.
@@ -147,12 +148,12 @@ export const sourceTextForRange = (start: Token | ParseTree, stop: Token | Parse
 
     let startToken: Token | null = start as Token;
     if (!isToken) {
-        startToken = (start instanceof TerminalNode) ? start.symbol : (start as ParserRuleContext).start;
+        startToken = (start instanceof TerminalNodeImpl) ? start.symbol : (start as ParserRuleContext).start;
     }
 
     let stopToken: Token | null = stop as Token;
     if (!isToken) { // start + stop must either both Token or ParseTree instances.
-        stopToken = (stop instanceof TerminalNode) ? stop.symbol : (stop as ParserRuleContext).start;
+        stopToken = (stop instanceof TerminalNodeImpl) ? stop.symbol : (stop as ParserRuleContext).start;
     }
 
     const stream = startToken?.getTokenSource()?.inputStream;
