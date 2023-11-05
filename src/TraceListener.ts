@@ -11,25 +11,28 @@ import { ParserRuleContext } from "./ParserRuleContext.js";
 import { ParseTreeListener } from "./tree/ParseTreeListener.js";
 import { TerminalNode } from "./tree/TerminalNode.js";
 
-export class TraceListener extends ParseTreeListener {
+export class TraceListener implements ParseTreeListener {
     private parser: Parser;
 
     public constructor(parser: Parser) {
-        super();
         this.parser = parser;
     }
 
-    public override enterEveryRule(ctx: ParserRuleContext): void {
+    public enterEveryRule(ctx: ParserRuleContext): void {
         console.log("enter   " + this.parser.ruleNames[ctx.ruleIndex] + ", LT(1)=" +
             this.parser.inputStream.LT(1)!.text);
     }
 
-    public override visitTerminal(node: TerminalNode): void {
+    public visitTerminal(node: TerminalNode): void {
         console.log("consume " + node.getSymbol() + " rule " + this.parser.ruleNames[this.parser.context!.ruleIndex]);
     }
 
-    public override exitEveryRule(ctx: ParserRuleContext): void {
+    public exitEveryRule(ctx: ParserRuleContext): void {
         console.log("exit    " + this.parser.ruleNames[ctx.ruleIndex] + ", LT(1)=" +
             this.parser.inputStream.LT(1)!.text);
+    }
+
+    public visitErrorNode(_node: TerminalNode): void {
+        // intentionally empty
     }
 }

@@ -8,9 +8,9 @@ import { ParserRuleContext } from "../ParserRuleContext.js";
 import { ErrorNode } from "./ErrorNode.js";
 import { TerminalNode } from "./TerminalNode.js";
 
-export declare abstract class ParseTreeListener {
-    public visitTerminal(node: TerminalNode): void;
-    public visitErrorNode(node: ErrorNode): void;
-    public enterEveryRule(ctx: ParserRuleContext): void;
-    public exitEveryRule(ctx: ParserRuleContext): void;
+export interface ParseTreeListener {
+    visitTerminal(node: TerminalNode): void;
+    visitErrorNode(node: ErrorNode): void;
+    enterEveryRule(node: ParserRuleContext): void;
+    exitEveryRule(node: ParserRuleContext): void;
 }

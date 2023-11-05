@@ -43,7 +43,7 @@ export class TerminalNodeImpl implements TerminalNode {
         return 0;
     }
 
-    public accept<T>(visitor: ParseTreeVisitor<T>): T {
+    public accept<T>(visitor: ParseTreeVisitor<T>): T | null {
         return visitor.visitTerminal(this);
     }
 

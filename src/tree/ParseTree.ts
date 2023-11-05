@@ -6,6 +6,7 @@
 
 import { Interval } from "../misc/Interval.js";
 import { Parser } from "../Parser.js";
+import { ParseTreeVisitor } from "./ParseTreeVisitor.js";
 
 /**
  * The basic notion of a tree has a parent, a payload, and a list of children.
@@ -32,6 +33,9 @@ export interface ParseTree {
 
     /** If there are children, get the {@code i}th value indexed from 0. */
     getChild(i: number): ParseTree | null;
+
+    /** The {@link ParseTreeVisitor} needs a double dispatch method. */
+    accept<T>(visitor: ParseTreeVisitor<T>): T | null;
 
     /**
      * How many children are there? If there is none, then this

@@ -16,7 +16,7 @@ import { TerminalNodeImpl } from "./TerminalNodeImpl.js";
  * upon no viable alternative exceptions.
  */
 export class ErrorNodeImpl extends TerminalNodeImpl implements ErrorNode {
-    public override accept<T>(visitor: ParseTreeVisitor<T>): T {
+    public override accept<T>(visitor: ParseTreeVisitor<T>): T | null {
         return visitor.visitErrorNode(this);
     }
 }

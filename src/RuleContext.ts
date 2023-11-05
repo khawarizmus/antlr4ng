@@ -139,7 +139,7 @@ export class RuleContext implements ParseTree {
         return 0;
     }
 
-    public accept<T>(visitor: ParseTreeVisitor<T>): T {
+    public accept<T>(visitor: ParseTreeVisitor<T>): T | null {
         return visitor.visitChildren(this);
     }
 

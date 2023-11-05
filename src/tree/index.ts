@@ -9,6 +9,7 @@ export * from "./TerminalNode.js";
 export * from "./ParseTree.js";
 export * from "./ParseTreeListener.js";
 export * from "./ParseTreeVisitor.js";
+export * from "./AbstractParseTreeVisitor.js";
 export * from "./ParseTreeWalker.js";
 
 export * from "./xpath/index.js";
