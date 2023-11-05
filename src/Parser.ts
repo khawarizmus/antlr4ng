@@ -163,7 +163,7 @@ export abstract class Parser extends Recognizer<ParserATNSimulator> {
                 // we must have conjured up a new token during single token
                 // insertion
                 // if it's not the current symbol
-                this.context!.addErrorNode(t);
+                this.context!.addErrorNode(this.createErrorNode(this.context!, t));
             }
         }
 
@@ -198,7 +198,7 @@ export abstract class Parser extends Recognizer<ParserATNSimulator> {
                 // we must have conjured up a new token during single token
                 // insertion
                 // if it's not the current symbol
-                this.context!.addErrorNode(t);
+                this.context!.addErrorNode(this.createErrorNode(this.context!, t));
             }
         }
 
@@ -411,7 +411,7 @@ export abstract class Parser extends Recognizer<ParserATNSimulator> {
         if (this.buildParseTrees || hasListener) {
             let node: ErrorNode | TerminalNode;
             if (this.errorHandler.inErrorRecoveryMode(this)) {
-                node = this.context!.addErrorNode(o);
+                node = this.context!.addErrorNode(this.createErrorNode(this.context!, o));
             } else {
                 node = this.context!.addTokenNode(o);
             }

@@ -14,7 +14,8 @@ import { Trees } from "./tree/Trees.js";
 import { ATN } from "./atn/ATN.js";
 
 export class RuleContext implements ParseTree {
-    public children: ParseTree[] | null;
+    // TODO: move to ParserRuleContext.
+    public children: ParseTree[] | null = null;
 
     /**
      * What state invoked the rule associated with this context?
@@ -24,7 +25,7 @@ export class RuleContext implements ParseTree {
      */
     public invokingState: number;
 
-    public parent: RuleContext | null;
+    #parent: RuleContext | null = null;
 
     /**
      * A rule context is a record of a single rule invocation. It knows
@@ -49,8 +50,15 @@ export class RuleContext implements ParseTree {
      */
     public constructor(parent?: RuleContext | null, invokingState?: number) {
         this.parent = parent ?? null;
-        this.children = null;
         this.invokingState = invokingState ?? -1;
+    }
+
+    public get parent(): RuleContext | null {
+        return this.#parent;
+    }
+
+    public set parent(parent: RuleContext | null) {
+        this.#parent = parent;
     }
 
     public depth(): number {

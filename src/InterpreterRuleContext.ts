@@ -26,7 +26,7 @@ export class InterpreterRuleContext extends ParserRuleContext {
         if (invokingStateNumber !== undefined) {
             super(parent, invokingStateNumber);
         } else {
-            super(parent);
+            super();
         }
 
         this.#ruleIndex = ruleIndex;
