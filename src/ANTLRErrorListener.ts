@@ -95,7 +95,7 @@ export interface ANTLRErrorListener {
      * @param configs the ATN configuration set where the ambiguity was
      * identified
      */
-    reportAmbiguity?(recognizer: Parser,
+    reportAmbiguity(recognizer: Parser,
         dfa: DFA,
         startIndex: number,
         stopIndex: number,
@@ -126,7 +126,7 @@ export interface ANTLRErrorListener {
      * @param configs the ATN configuration set where the SLL conflict was
      * detected
      */
-    reportAttemptingFullContext?(recognizer: Parser,
+    reportAttemptingFullContext(recognizer: Parser,
         dfa: DFA,
         startIndex: number,
         stopIndex: number,
@@ -171,7 +171,7 @@ export interface ANTLRErrorListener {
      * @param configs the ATN configuration set where the unambiguous prediction
      * was determined
      */
-    reportContextSensitivity?(recognizer: Parser,
+    reportContextSensitivity(recognizer: Parser,
         dfa: DFA,
         startIndex: number,
         stopIndex: number,

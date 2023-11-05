@@ -215,7 +215,7 @@ export class DefaultErrorStrategy {
         if (this.inErrorRecoveryMode(recognizer)) {
             return;
         }
-        const s = recognizer.interpreter.atn.states[recognizer.state]!;
+        const s = recognizer.atn.states[recognizer.state]!;
         const la = recognizer.tokenStream.LA(1);
         // try cheaper subset first; might get lucky. seems to shave a wee bit off
         const nextTokens = recognizer.atn.nextTokens(s);
@@ -463,7 +463,7 @@ export class DefaultErrorStrategy {
         // if current token is consistent with what could come after current
         // ATN state, then we know we're missing a token; error recovery
         // is free to conjure up and insert the missing token
-        const atn = recognizer.interpreter.atn;
+        const atn = recognizer.atn;
         const currentState = atn.states[recognizer.state];
         const next = currentState!.transitions[0].target;
         const expectingAtLL2 = atn.nextTokens(next, recognizer.context);
@@ -693,7 +693,7 @@ export class DefaultErrorStrategy {
      * at run-time upon error to avoid overhead during parsing.
      */
     public getErrorRecoverySet(recognizer: Parser): IntervalSet {
-        const atn = recognizer.interpreter.atn;
+        const atn = recognizer.atn;
         let ctx: ParserRuleContext | null = recognizer.context;
         const recoverSet = new IntervalSet();
         while (ctx !== null && ctx.invokingState >= 0) {

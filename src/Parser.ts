@@ -129,7 +129,7 @@ export abstract class Parser extends Recognizer<ParserATNSimulator> {
         this.setTrace(false);
         this._precedenceStack = [];
         this._precedenceStack.push(0);
-        if (this.interpreter !== null) {
+        if (this.interpreter) {
             this.interpreter.reset();
         }
     }

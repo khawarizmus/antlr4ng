@@ -289,6 +289,7 @@ export class ParserATNSimulator extends ATNSimulator {
     public static dfa_debug = false;
     public static retry_debug = false;
 
+    /** SLL, LL, or LL + exact ambig detection? */
     public predictionMode: number;
     public readonly decisionToDFA: DFA[];
 
@@ -310,9 +311,6 @@ export class ParserATNSimulator extends ATNSimulator {
     protected _startIndex = 0;
     protected _outerContext: ParserRuleContext | null = null;
     protected _dfa: DFA | null = null;
-
-    /** SLL, LL, or LL + exact ambig detection? */
-    private mode = PredictionMode.LL;
 
     public constructor(recog: Parser, atn: ATN, decisionToDFA: DFA[], sharedContextCache: PredictionContextCache) {
         super(atn, sharedContextCache);
