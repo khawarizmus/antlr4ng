@@ -6,7 +6,7 @@
 
 /* eslint-disable jsdoc/require-returns, jsdoc/require-param */
 
-import { Token } from "../Token.js";
+import { isToken } from "../Token.js";
 import { RuleContext } from "../RuleContext.js";
 
 import { escapeWhitespace } from "../utils/helpers.js";
@@ -76,7 +76,7 @@ export class Trees {
         }
         // no recog for rule names
         const payload = t.getPayload();
-        if (payload instanceof Token) {
+        if (isToken(payload)) {
             return payload.text;
         }
 

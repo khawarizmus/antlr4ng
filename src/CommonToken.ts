@@ -10,10 +10,10 @@ import { CharStream } from "./CharStream.js";
 import { Recognizer } from "./Recognizer.js";
 import { Token } from "./Token.js";
 import { TokenSource } from "./TokenSource.js";
+import { WritableToken } from "./WritableToken.js";
 import { ATNSimulator } from "./atn/ATNSimulator.js";
 
-// TODO: this has to implement WritableToken (which requires Token to be an interface).
-export class CommonToken extends Token {
+export class CommonToken implements WritableToken {
     /**
      * An empty tuple which is used as the default value of
      * {@link source} for tokens that do not have a source.
@@ -33,24 +33,49 @@ export class CommonToken extends Token {
      */
     public source: [TokenSource | null, CharStream | null];
 
+    public tokenIndex = -1;
+
+    public start = 0;
+
+    public stop = 0;
+
+    /**
+     * This is the backing field for {@link #getType} and {@link #setType}.
+     */
+    public type = 0;
+
+    /**
+     * This is the backing field for {@link #getLine} and {@link #setLine}.
+     */
+    public line = 0;
+
+    /**
+     * This is the backing field for {@link #getCharPositionInLine} and
+     * {@link #setCharPositionInLine}.
+     */
+    public column = -1; // set to invalid position
+
+    /**
+     * This is the backing field for {@link #getChannel} and
+     * {@link #setChannel}.
+     */
+    public channel = Token.DEFAULT_CHANNEL;
+
     /**
      * This is the backing field for {@link #getText} when the token text is
      * explicitly set in the constructor or via {@link #setText}.
      *
      * @see #getText()
      */
-    protected _text: string | null = null;
+    #text: string | null = null;
 
     public constructor(source: [TokenSource | null, CharStream | null], type: number, channel: number, start: number,
         stop: number) {
-        super();
-
-        this.source = source ?? CommonToken.EMPTY_SOURCE;
-        this.type = type ?? 0;
-        this.channel = channel !== undefined ? channel : Token.DEFAULT_CHANNEL;
-        this.start = start !== undefined ? start : -1;
-        this.stop = stop !== undefined ? stop : -1;
-        this.tokenIndex = -1;
+        this.source = source;
+        this.type = type;
+        this.channel = channel ?? Token.DEFAULT_CHANNEL;
+        this.start = start;
+        this.stop = stop;
         if (this.source[0] !== null) {
             this.line = source[0]!.line;
             // eslint-disable-next-line no-underscore-dangle
@@ -59,6 +84,14 @@ export class CommonToken extends Token {
             this.column = -1;
         }
     };
+
+    public getTokenSource(): TokenSource | null {
+        return this.source[0] ?? null;
+    }
+
+    public getInputStream(): CharStream | null {
+        return this.source[1] ?? null;
+    }
 
     /**
      * Constructs a new {@link CommonToken} as a copy of another {@link Token}.
@@ -71,27 +104,29 @@ export class CommonToken extends Token {
      * will be constructed from the result of {@link Token//getTokenSource} and
      * {@link Token//getInputStream}.</p>
      */
-    public override clone(): CommonToken {
+    public clone(): CommonToken {
         const t = new CommonToken(this.source, this.type, this.channel, this.start, this.stop);
         t.tokenIndex = this.tokenIndex;
         t.line = this.line;
         t.column = this.column;
-        t.text = this.text;
+        t.#text = this.#text;
 
         return t;
     }
 
-    public override cloneWithType(type: number): CommonToken {
+    public cloneWithType(type: number): CommonToken {
         const t = new CommonToken(this.source, type, this.channel, this.start, this.stop);
         t.tokenIndex = this.tokenIndex;
         t.line = this.line;
         t.column = this.column;
-        if (type === Token.EOF) { t.text = ""; }
+        if (type === Token.EOF) {
+            t.#text = "";
+        }
 
         return t;
     }
 
-    public override toString(recognizer?: Recognizer<ATNSimulator>): string {
+    public toString(recognizer?: Recognizer<ATNSimulator>): string {
         let channelStr = "";
         if (this.channel > 0) {
             channelStr = ",channel=" + this.channel;
@@ -115,14 +150,16 @@ export class CommonToken extends Token {
             channelStr + "," + this.line + ":" + this.column + "]";
     }
 
-    public override get text(): string | null {
-        if (this._text !== null) {
-            return this._text;
+    public get text(): string | null {
+        if (this.#text !== null) {
+            return this.#text;
         }
+
         const input = this.getInputStream();
         if (input === null) {
             return null;
         }
+
         const n = input.size;
         if (this.start < n && this.stop < n) {
             return input.getText(this.start, this.stop);
@@ -131,7 +168,34 @@ export class CommonToken extends Token {
         }
     }
 
-    public override set text(text: string | null) {
-        this._text = text;
+    public set text(text: string) {
+        this.#text = text;
     }
+
+    // WritableToken implementation
+
+    public setText(text: string | null): void {
+        this.#text = text;
+    }
+
+    public setType(ttype: number): void {
+        this.type = ttype;
+    }
+
+    public setLine(line: number): void {
+        this.line = line;
+    }
+
+    public setCharPositionInLine(pos: number): void {
+        this.column = pos;
+    }
+
+    public setChannel(channel: number): void {
+        this.channel = channel;
+    }
+
+    public setTokenIndex(index: number): void {
+        this.tokenIndex = index;
+    }
+
 }

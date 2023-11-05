@@ -13,7 +13,7 @@ import { TokenSource } from "./TokenSource.js";
  * This default implementation of {@link TokenFactory} creates
  * {@link CommonToken} objects.
  */
-export class CommonTokenFactory extends TokenFactory<CommonToken> {
+export class CommonTokenFactory implements TokenFactory<CommonToken> {
     /**
      * The default {@link CommonTokenFactory} instance.
      *
@@ -42,7 +42,6 @@ export class CommonTokenFactory extends TokenFactory<CommonToken> {
     protected readonly copyText: boolean = false;
 
     public constructor(copyText?: boolean) {
-        super();
         /**
          * Indicates whether {@link CommonToken//setText} should be called after
          * constructing tokens to explicitly set the text. This is useful for cases
@@ -61,7 +60,7 @@ export class CommonTokenFactory extends TokenFactory<CommonToken> {
         this.copyText = copyText ?? false;
     }
 
-    public override create(source: [TokenSource | null, CharStream | null], type: number, text: string, channel: number,
+    public create(source: [TokenSource | null, CharStream | null], type: number, text: string, channel: number,
         start: number, stop: number, line: number, column: number): CommonToken {
         const t = new CommonToken(source, type, channel, start, stop);
         t.line = line;
