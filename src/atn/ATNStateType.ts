@@ -19,4 +19,4 @@ export const ATNStateType = {
     STAR_LOOP_ENTRY: 10,
     PLUS_LOOP_BACK: 11,
     LOOP_END: 12,
-};
+} as const;

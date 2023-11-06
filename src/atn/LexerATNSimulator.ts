@@ -460,13 +460,13 @@ export class LexerATNSimulator extends ATNSimulator {
     protected getEpsilonTarget(input: CharStream, config: LexerATNConfig, trans: Transition, configs: ATNConfigSet,
         speculative: boolean, treatEofAsEpsilon: boolean): LexerATNConfig | null {
         let cfg = null;
-        if (trans.getSerializationType() === TransitionType.RULE) {
+        if (trans.serializationType === TransitionType.RULE) {
             const newContext = SingletonPredictionContext.create(config.context,
                 (trans as RuleTransition).followState.stateNumber);
             cfg = new LexerATNConfig({ state: trans.target, context: newContext }, config);
-        } else if (trans.getSerializationType() === TransitionType.PRECEDENCE) {
+        } else if (trans.serializationType === TransitionType.PRECEDENCE) {
             throw new Error("Precedence predicates are not supported in lexers.");
-        } else if (trans.getSerializationType() === TransitionType.PREDICATE) {
+        } else if (trans.serializationType === TransitionType.PREDICATE) {
             // Track traversing semantic predicates. If we traverse,
             // we cannot add a DFA state for this "reach" computation
             // because the DFA would not test the predicate again in the
@@ -493,7 +493,7 @@ export class LexerATNSimulator extends ATNSimulator {
             if (this.evaluatePredicate(input, pt.ruleIndex, pt.predIndex, speculative)) {
                 cfg = new LexerATNConfig({ state: trans.target }, config);
             }
-        } else if (trans.getSerializationType() === TransitionType.ACTION) {
+        } else if (trans.serializationType === TransitionType.ACTION) {
             if (config.context === null || config.context.hasEmptyPath()) {
                 // execute actions anywhere in the start rule for a token.
                 //
@@ -514,11 +514,11 @@ export class LexerATNSimulator extends ATNSimulator {
                 // ignore actions in referenced rules
                 cfg = new LexerATNConfig({ state: trans.target }, config);
             }
-        } else if (trans.getSerializationType() === TransitionType.EPSILON) {
+        } else if (trans.serializationType === TransitionType.EPSILON) {
             cfg = new LexerATNConfig({ state: trans.target }, config);
-        } else if (trans.getSerializationType() === TransitionType.ATOM ||
-            trans.getSerializationType() === TransitionType.RANGE ||
-            trans.getSerializationType() === TransitionType.SET) {
+        } else if (trans.serializationType === TransitionType.ATOM ||
+            trans.serializationType === TransitionType.RANGE ||
+            trans.serializationType === TransitionType.SET) {
             if (treatEofAsEpsilon) {
                 if (trans.matches(Token.EOF, 0, Lexer.MAX_CHAR_VALUE)) {
                     cfg = new LexerATNConfig({ state: trans.target }, config);

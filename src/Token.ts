@@ -68,12 +68,12 @@ export interface Token {
     /**
       Gets the {@link TokenSource} which created this token.
      */
-    getTokenSource(): TokenSource | null;
+    get tokenSource(): TokenSource | null;
 
     /**
      * Gets the {@link CharStream} from which this token was derived.
      */
-    getInputStream(): CharStream | null;
+    get inputStream(): CharStream | null;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -120,5 +120,5 @@ export namespace Token {
 export const isToken = (candidate: unknown): candidate is Token => {
     const token = candidate as Token;
 
-    return token.getTokenSource !== undefined && token.text !== undefined;
+    return token.tokenSource !== undefined && token.channel !== undefined;
 };

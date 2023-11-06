@@ -186,7 +186,7 @@ export class ParserInterpreter extends Parser {
         }
 
         const transition = p.transitions[predictedAlt - 1];
-        switch (transition.getSerializationType()) {
+        switch (transition.serializationType) {
             case TransitionType.EPSILON:
                 if (this.#pushRecursionContextStates.get(p.stateNumber) &&
                     !(transition.target instanceof LoopEndState)) {
@@ -304,7 +304,7 @@ export class ParserInterpreter extends Parser {
                 throw new Error("Expected exception to have an offending token");
             }
 
-            const source = tok.getTokenSource();
+            const source = tok.tokenSource;
             const stream = source?.inputStream ?? null;
             const sourcePair: [TokenSource | null, CharStream | null] = [source, stream];
 

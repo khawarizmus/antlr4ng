@@ -10,8 +10,8 @@ import { isToken } from "../Token.js";
 import { RuleContext } from "../RuleContext.js";
 
 import { escapeWhitespace } from "../utils/helpers.js";
-import { ErrorNodeImpl } from "./ErrorNodeImpl.js";
-import { TerminalNodeImpl } from "./TerminalNodeImpl.js";
+import { ErrorNode } from "./ErrorNode.js";
+import { TerminalNode } from "./TerminalNode.js";
 import { ParseTree } from "./ParseTree.js";
 import { Parser } from "../Parser.js";
 
@@ -66,9 +66,9 @@ export class Trees {
                 }
 
                 return ruleNames[t.ruleIndex];
-            } else if (t instanceof ErrorNodeImpl) {
+            } else if (t instanceof ErrorNode) {
                 return t.toString();
-            } else if (t instanceof TerminalNodeImpl) {
+            } else if (t instanceof TerminalNode) {
                 if (t.symbol !== null) {
                     return t.symbol.text;
                 }
@@ -140,7 +140,7 @@ export class Trees {
 
     private static doFindAllNodes(t: ParseTree, index: number, findTokens: boolean, nodes: ParseTree[]): void {
         // check this node (the root) first
-        if (findTokens && (t instanceof TerminalNodeImpl)) {
+        if (findTokens && (t instanceof TerminalNode)) {
             if (t.symbol?.type === index) {
                 nodes.push(t);
             }

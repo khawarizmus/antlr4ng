@@ -60,7 +60,7 @@ export class CommonTokenFactory implements TokenFactory<CommonToken> {
         this.copyText = copyText ?? false;
     }
 
-    public create(source: [TokenSource | null, CharStream | null], type: number, text: string, channel: number,
+    public create(source: [TokenSource | null, CharStream | null], type: number, text: string | null, channel: number,
         start: number, stop: number, line: number, column: number): CommonToken {
         const t = new CommonToken(source, type, channel, start, stop);
         t.line = line;

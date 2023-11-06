@@ -24,8 +24,6 @@ import { RuleTransition } from "./atn/RuleTransition.js";
 import { IntervalSet } from "./misc/IntervalSet.js";
 import { RuleContext } from "./RuleContext.js";
 import { TraceListener } from "./TraceListener.js";
-import { TerminalNodeImpl } from "./tree/TerminalNodeImpl.js";
-import { ErrorNodeImpl } from "./tree/ErrorNodeImpl.js";
 
 export interface IDebugPrinter {
     println(s: string): void;
@@ -33,6 +31,7 @@ export interface IDebugPrinter {
 }
 
 export abstract class Parser extends Recognizer<ParserATNSimulator> {
+    /** For testing only. */
     public printer: IDebugPrinter | null = null;
 
     /**
@@ -418,7 +417,7 @@ export abstract class Parser extends Recognizer<ParserATNSimulator> {
             //node.invokingState = this.state;
             if (hasListener) {
                 this._parseListeners!.forEach((listener) => {
-                    if (node instanceof ErrorNodeImpl) {
+                    if (node instanceof ErrorNode) {
                         listener.visitErrorNode(node);
                     } else {
                         listener.visitTerminal(node);
@@ -700,10 +699,10 @@ export abstract class Parser extends Recognizer<ParserATNSimulator> {
     }
 
     public createTerminalNode(parent: ParserRuleContext, t: Token): TerminalNode {
-        return new TerminalNodeImpl(t);
+        return new TerminalNode(t);
     }
 
     public createErrorNode(parent: ParserRuleContext, t: Token): ErrorNode {
-        return new ErrorNodeImpl(t);
+        return new ErrorNode(t);
     }
 }

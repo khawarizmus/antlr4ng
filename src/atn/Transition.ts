@@ -59,6 +59,6 @@ export abstract class Transition {
         return null;
     }
 
-    public abstract getSerializationType(): number;
+    public abstract get serializationType(): number;
     public abstract matches(symbol: number, minVocabSymbol: number, maxVocabSymbol: number): boolean;
 }

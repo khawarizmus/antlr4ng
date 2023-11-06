@@ -24,7 +24,7 @@ export class ActionTransition extends Transition {
         return true;
     }
 
-    public override getSerializationType(): number {
+    public get serializationType(): number {
         return TransitionType.ACTION;
     }
 

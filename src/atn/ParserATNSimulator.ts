@@ -1518,7 +1518,7 @@ export class ParserATNSimulator extends ATNSimulator {
 
     protected getEpsilonTarget(config: ATNConfig, t: Transition, collectPredicates: boolean, inContext: boolean,
         fullCtx: boolean, treatEofAsEpsilon: boolean): ATNConfig | null {
-        switch (t.getSerializationType()) {
+        switch (t.serializationType) {
             case TransitionType.RULE:
                 return this.ruleTransition(config, t as RuleTransition);
             case TransitionType.PRECEDENCE:

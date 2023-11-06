@@ -13,7 +13,7 @@ export class WildcardTransition extends Transition {
         super(target);
     }
 
-    public override getSerializationType(): number {
+    public override get serializationType(): number {
         return TransitionType.WILDCARD;
     }
 

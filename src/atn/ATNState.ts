@@ -4,7 +4,7 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-import { IntervalSet } from "../index.js";
+import { IntervalSet } from "../misc/IntervalSet.js";
 import { IComparable } from "../utils/helpers.js";
 import { ATN } from "./ATN.js";
 import { Transition } from "./Transition.js";

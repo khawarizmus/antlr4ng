@@ -10,9 +10,6 @@ import { LexerAction } from "./LexerAction.js";
 import { Lexer } from "../Lexer.js";
 import { HashCode } from "../misc/HashCode.js";
 
-import type { LexerActionExecutor } from "./LexerActionExecutor.js";
-import type { CharStream } from "../CharStream.js";
-
 /**
  * This implementation of {@link LexerAction} is used for tracking input offsets
  * for position-dependent actions within a {@link LexerActionExecutor}.

@@ -45,7 +45,9 @@
         "test": "node --no-warnings --experimental-vm-modules node_modules/jest/bin/jest.js --no-coverage",
         "generate-test-parser": "cli/index.js -Dlanguage=TypeScript -o tests/benchmarks/generated -visitor -listener -Xexact-output-dir tests/benchmarks/MySQLLexer.g4 tests/benchmarks/MySQLParser.g4",
         "generate-xpath-lexer": "cli/index.js -Dlanguage=TypeScript -o src/tree/xpath/generated -no-visitor -no-listener -Xexact-output-dir src/tree/xpath/XPathLexer.g4",
-        "run-benchmarks": "node --no-warnings --experimental-vm-modules --loader ts-node/esm tests/benchmarks/run-benchmarks.ts"
+        "run-benchmarks": "node --no-warnings --experimental-vm-modules  --loader ts-node/esm tests/benchmarks/run-benchmarks.ts",
+        "profile benchmarks": "node --no-warnings --experimental-vm-modules --prof --loader ts-node/esm tests/benchmarks/run-benchmarks.ts",
+        "process profile tick file": " node --prof-process isolate-0x130008000-75033-v8.log > processed.txt"
     },
     "exports": {
         "types": "./src/index.ts",

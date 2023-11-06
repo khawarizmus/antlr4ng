@@ -29,7 +29,7 @@ export class PrecedencePredicateTransition extends AbstractPredicateTransition {
         return new SemanticContext.PrecedencePredicate(this.precedence);
     }
 
-    public getSerializationType(): number {
+    public get serializationType(): number {
         return TransitionType.PRECEDENCE;
     }
 

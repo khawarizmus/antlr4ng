@@ -4,22 +4,11 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-export { ATN } from "./atn/ATN.js";
-export { ATNDeserializer } from "./atn/ATNDeserializer.js";
-export { ATNSimulator } from "./atn/ATNSimulator.js";
-export { ATNConfigSet } from "./atn/ATNConfigSet.js";
-export { ATNConfig } from "./atn/ATNConfig.js";
-export { DecisionState } from "./atn/DecisionState.js";
-export { LexerActionExecutor } from "./atn/LexerActionExecutor.js";
-export { LexerATNSimulator } from "./atn/LexerATNSimulator.js";
+export * from "./atn/index.js";
+
 export { LexerNoViableAltException } from "./LexerNoViableAltException.js";
-export { ParserATNSimulator } from "./atn/ParserATNSimulator.js";
 export { ParserRuleContext } from "./ParserRuleContext.js";
-export { PredictionContextCache } from "./atn/PredictionContextCache.js";
-export * from "./atn/PredictionMode.js";
 export { RuleContext } from "./RuleContext.js";
-export { RuleTransition } from "./atn/RuleTransition.js";
-export * from "./atn/Transition.js";
 
 export * from "./CharStream.js";
 export * from "./CharStreams.js";

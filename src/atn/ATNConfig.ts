@@ -11,7 +11,7 @@ import { HashCode } from "../misc/HashCode.js";
 import { ATNState } from "./ATNState.js";
 import { PredictionContext } from "./PredictionContext.js";
 import { Recognizer } from "../Recognizer.js";
-import { ATNSimulator } from "../index.js";
+import { ATNSimulator } from "./ATNSimulator.js";
 
 export interface IATNConfigParameters {
     state?: ATNState | null,

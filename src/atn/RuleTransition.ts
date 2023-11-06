@@ -26,7 +26,7 @@ export class RuleTransition extends Transition {
         return true;
     }
 
-    public override getSerializationType(): number {
+    public override get serializationType(): number {
         return TransitionType.RULE;
     }
 

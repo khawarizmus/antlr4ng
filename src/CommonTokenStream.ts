@@ -8,7 +8,7 @@
 
 import { Token } from "./Token.js";
 import { BufferedTokenStream } from "./BufferedTokenStream.js";
-import { TokenSource } from "./index.js";
+import { TokenSource } from "./TokenSource.js";
 
 /**
  * This class extends {@link BufferedTokenStream} with functionality to filter

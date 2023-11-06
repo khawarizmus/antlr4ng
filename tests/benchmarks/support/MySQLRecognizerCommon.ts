@@ -22,7 +22,7 @@
  */
 
 import { ParseTree, ParserRuleContext, RuleContext, Token } from "../../../src/index.js";
-import { TerminalNodeImpl } from "../../../src/tree/TerminalNodeImpl.js";
+import { TerminalNode } from "../../../src/tree/TerminalNode.js";
 import { MySQLParser, TextLiteralContext } from "../generated/MySQLParser.js";
 
 // This interface describes functionality found in both, lexer and parser classes.
@@ -37,7 +37,7 @@ export interface IMySQLRecognizerCommon {
 }
 
 // SQL modes that control parsing behavior.
-export enum SqlMode {
+export const enum SqlMode {
     NoMode,
     AnsiQuotes,
     HighNotPrecedence,
@@ -148,15 +148,15 @@ export const sourceTextForRange = (start: Token | ParseTree, stop: Token | Parse
 
     let startToken: Token | null = start as Token;
     if (!isToken) {
-        startToken = (start instanceof TerminalNodeImpl) ? start.symbol : (start as ParserRuleContext).start;
+        startToken = (start instanceof TerminalNode) ? start.symbol : (start as ParserRuleContext).start;
     }
 
     let stopToken: Token | null = stop as Token;
     if (!isToken) { // start + stop must either both Token or ParseTree instances.
-        stopToken = (stop instanceof TerminalNodeImpl) ? stop.symbol : (stop as ParserRuleContext).start;
+        stopToken = (stop instanceof TerminalNode) ? stop.symbol : (stop as ParserRuleContext).start;
     }
 
-    const stream = startToken?.getTokenSource()?.inputStream;
+    const stream = startToken?.tokenSource?.inputStream;
     const stopIndex = stop && stopToken ? stopToken.stop : 1e100;
     let result = stream?.getText(startToken ? startToken.start : 0, stopIndex) ?? "";
     if (keepQuotes || result.length < 2) {

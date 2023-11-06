@@ -29,7 +29,7 @@ export class AtomTransition extends Transition {
         return this.labelValue === symbol;
     }
 
-    public override getSerializationType(): number {
+    public override get serializationType(): number {
         return TransitionType.ATOM;
     }
 

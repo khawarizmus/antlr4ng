@@ -29,7 +29,7 @@ export class PredicateTransition extends AbstractPredicateTransition {
         return false;
     }
 
-    public getSerializationType(): number {
+    public get serializationType(): number {
         return TransitionType.PREDICATE;
     }
 

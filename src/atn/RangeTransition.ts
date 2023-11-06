@@ -26,7 +26,7 @@ export class RangeTransition extends Transition {
         return this.#label;
     }
 
-    public getSerializationType(): number {
+    public get serializationType(): number {
         return TransitionType.RANGE;
     }
 

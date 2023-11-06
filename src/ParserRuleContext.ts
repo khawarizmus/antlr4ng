@@ -7,8 +7,6 @@
 /* eslint-disable jsdoc/require-returns, jsdoc/require-param */
 
 import { RuleContext } from "./RuleContext.js";
-import { TerminalNodeImpl } from "./tree/TerminalNodeImpl.js";
-import { ErrorNodeImpl } from "./tree/ErrorNodeImpl.js";
 import { Interval } from "./misc/Interval.js";
 import { Token } from "./Token.js";
 import { RecognitionException } from "./RecognitionException.js";
@@ -88,7 +86,7 @@ export class ParserRuleContext extends RuleContext {
             this.children = [];
             // reset parent pointer for any error nodes
             ctx.children.forEach((child) => {
-                if (child instanceof ErrorNodeImpl) {
+                if (child instanceof ErrorNode) {
                     this.children!.push(child);
                     child.parent = this;
                 }
@@ -138,7 +136,7 @@ export class ParserRuleContext extends RuleContext {
     }
 
     public addTokenNode(token: Token): TerminalNode {
-        const node = new TerminalNodeImpl(token);
+        const node = new TerminalNode(token);
         this.addAnyChild(node);
         node.parent = this;
 
@@ -147,7 +145,7 @@ export class ParserRuleContext extends RuleContext {
 
     /**
      * Add a child to this node based upon badToken.  It
-     *  creates a ErrorNodeImpl rather than using
+     *  creates a ErrorNode rather than using
      *  {@link Parser#createErrorNode(ParserRuleContext, Token)}. I'm leaving this
      *  in for compatibility but the parser doesn't use this anymore.
      *
@@ -191,7 +189,7 @@ export class ParserRuleContext extends RuleContext {
         }
 
         for (const child of this.children) {
-            if (child instanceof TerminalNodeImpl) {
+            if (child instanceof TerminalNode) {
                 if (child.symbol?.type === ttype) {
                     if (i === 0) {
                         return child;
@@ -211,7 +209,7 @@ export class ParserRuleContext extends RuleContext {
         } else {
             const tokens = [];
             for (const child of this.children) {
-                if (child instanceof TerminalNodeImpl) {
+                if (child instanceof TerminalNode) {
                     if (child.symbol?.type === ttype) {
                         tokens.push(child);
                     }

@@ -28,7 +28,7 @@ export class SetTransition extends Transition {
         return this.#label;
     }
 
-    public override getSerializationType(): number {
+    public get serializationType(): number {
         return TransitionType.SET;
     }
 

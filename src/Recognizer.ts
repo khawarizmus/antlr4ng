@@ -16,6 +16,7 @@ import { ANTLRErrorListener } from "./ANTLRErrorListener.js";
 import { RecognitionException } from "./RecognitionException.js";
 import { ATN } from "./atn/ATN.js";
 import { RuleContext } from "./RuleContext.js";
+import { IntStream } from "./IntStream.js";
 
 export abstract class Recognizer<ATNInterpreter extends ATNSimulator> {
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -146,4 +147,7 @@ export abstract class Recognizer<ATNInterpreter extends ATNSimulator> {
     public abstract get grammarFileName(): string;
     public abstract get ruleNames(): string[];
     public abstract get vocabulary(): Vocabulary;
+
+    public abstract get inputStream(): IntStream;
+    public abstract set inputStream(input: IntStream);
 }

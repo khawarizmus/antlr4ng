@@ -36,7 +36,7 @@ export class EpsilonTransition extends Transition {
         return this.#outermostPrecedenceReturn;
     }
 
-    public getSerializationType(): number {
+    public get serializationType(): number {
         return TransitionType.EPSILON;
     }
 

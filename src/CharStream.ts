@@ -99,30 +99,35 @@ export class CharStream implements IntStream {
         this.index = Math.min(index, this.data.length);
     }
 
-    public getText(intervalOrStart: Interval | number, stop: number): string {
-        let start;
+    public getText(start: number, stop: number): string;
+    public getText(interval: Interval): string;
+    public getText(intervalOrStart: Interval | number, stop?: number): string {
+        let begin;
+        let end: number;
         if (intervalOrStart instanceof Interval) {
-            start = intervalOrStart.start;
-            stop = intervalOrStart.stop;
+            begin = intervalOrStart.start;
+            end = intervalOrStart.stop;
         } else {
-            start = intervalOrStart;
+            begin = intervalOrStart;
+            end = stop ?? this.data.length - 1;
         }
 
-        if (stop >= this.data.length) {
-            stop = this.data.length - 1;
+        if (end >= this.data.length) {
+            end = this.data.length - 1;
         }
-        if (start >= this.data.length) {
+
+        if (begin >= this.data.length) {
             return "";
         } else {
             if (this.decodeToUnicodeCodePoints) {
                 let result = "";
-                for (let i = start; i <= stop; i++) {
+                for (let i = begin; i <= end; i++) {
                     result += String.fromCodePoint(this.data[i]);
                 }
 
                 return result;
             } else {
-                return this.stringData.slice(start, stop + 1);
+                return this.stringData.slice(begin, end + 1);
             }
         }
     }

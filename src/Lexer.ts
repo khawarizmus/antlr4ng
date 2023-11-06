@@ -80,13 +80,11 @@ export abstract class Lexer extends Recognizer<LexerATNSimulator> implements Tok
     public _text: string | null = null;
 
     protected _factory: TokenFactory<Token>;
-    protected _tokenFactorySourcePair: [TokenSource | null, CharStream | null];
 
     public constructor(input: CharStream) {
         super();
         this._input = input;
         this._factory = CommonTokenFactory.DEFAULT;
-        this._tokenFactorySourcePair = [this, input];
     }
 
     public reset(seekBack = true): void {
@@ -234,7 +232,7 @@ export abstract class Lexer extends Recognizer<LexerATNSimulator> implements Tok
      * custom Token objects or provide a new factory.
      */
     public emit(): Token {
-        const t = this._factory.create(this._tokenFactorySourcePair, this._type,
+        const t = this._factory.create([this, this._input], this._type,
             this._text, this._channel, this._tokenStartCharIndex, this
                 .getCharIndex() - 1, this._tokenStartLine,
             this._tokenStartColumn);
@@ -246,7 +244,7 @@ export abstract class Lexer extends Recognizer<LexerATNSimulator> implements Tok
     public emitEOF(): Token {
         const cpos = this.column;
         const lpos = this.line;
-        const eof = this._factory.create(this._tokenFactorySourcePair, Token.EOF,
+        const eof = this._factory.create([this, this._input], Token.EOF,
             null, Token.DEFAULT_CHANNEL, this._input.index,
             this._input.index - 1, lpos, cpos);
         this.emitToken(eof);

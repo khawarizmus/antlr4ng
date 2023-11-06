@@ -18,4 +18,4 @@ export const TransitionType = {
     NOT_SET: 8,
     WILDCARD: 9,
     PRECEDENCE: 10,
-};
+} as const;

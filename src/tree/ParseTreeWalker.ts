@@ -6,10 +6,10 @@
 
 import { ParserRuleContext } from "../ParserRuleContext.js";
 import { RuleContext } from "../RuleContext.js";
-import { ErrorNodeImpl } from "./ErrorNodeImpl.js";
+import { ErrorNode } from "./ErrorNode.js";
 import { ParseTree } from "./ParseTree.js";
 import { ParseTreeListener } from "./ParseTreeListener.js";
-import { TerminalNodeImpl } from "./TerminalNodeImpl.js";
+import { TerminalNode } from "./TerminalNode.js";
 
 export class ParseTreeWalker {
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -25,10 +25,10 @@ export class ParseTreeWalker {
      * @param t The parse tree to be walked on
      */
     public walk<T extends ParseTreeListener>(listener: T, t: ParseTree): void {
-        const errorNode = t instanceof ErrorNodeImpl;
+        const errorNode = t instanceof ErrorNode;
         if (errorNode) {
             listener.visitErrorNode(t);
-        } else if (t instanceof TerminalNodeImpl) {
+        } else if (t instanceof TerminalNode) {
             listener.visitTerminal(t);
         } else {
             const r = t as RuleContext;

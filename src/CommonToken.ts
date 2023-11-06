@@ -85,11 +85,11 @@ export class CommonToken implements WritableToken {
         }
     };
 
-    public getTokenSource(): TokenSource | null {
+    public get tokenSource(): TokenSource | null {
         return this.source[0] ?? null;
     }
 
-    public getInputStream(): CharStream | null {
+    public get inputStream(): CharStream | null {
         return this.source[1] ?? null;
     }
 
@@ -155,7 +155,7 @@ export class CommonToken implements WritableToken {
             return this.#text;
         }
 
-        const input = this.getInputStream();
+        const input = this.inputStream;
         if (input === null) {
             return null;
         }
